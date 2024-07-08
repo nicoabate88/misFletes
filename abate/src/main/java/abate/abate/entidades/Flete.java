@@ -1,0 +1,262 @@
+package abate.abate.entidades;
+
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+public class Flete {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Temporal(TemporalType.DATE)
+    private Date fechaCarga;
+    @OneToOne
+    private Cliente cliente;
+    private String origenFlete;
+    @Temporal(TemporalType.DATE)
+    private Date fechaFlete;
+    private String destinoFlete;
+    private Double kmFlete;
+    private String tipoCereal;
+    private Double tarifa;
+    private String cartaPorte;
+    private String ctg;
+    private Double kgFlete;
+    @OneToOne
+    private Usuario chofer;
+    @OneToOne
+    private Usuario usuario;
+    private Double neto;
+    private Double iva;
+    private Double total;
+    private Double porcientoChofer;
+    private Double porcentajeChofer;
+    private String estado;
+    @OneToOne
+    private Gasto gasto;
+    @OneToOne
+    private Imagen imagenCP;
+    @OneToOne
+    private Imagen imagenDescarga;
+
+    public Flete() {
+    }
+
+    public Flete(Long id, Date fechaCarga, Cliente cliente, String origenFlete, Date fechaFlete, String destinoFlete, Double kmFlete, String tipoCereal, Double tarifa, String cartaPorte, String ctg, Double kgFlete, Usuario chofer, Usuario usuario, Double neto, Double iva, Double total, Double porcientoChofer, Double porcentajeChofer, String estado, Gasto gasto, Imagen imagenCP, Imagen imagenDescarga) {
+        this.id = id;
+        this.fechaCarga = fechaCarga;
+        this.cliente = cliente;
+        this.origenFlete = origenFlete;
+        this.fechaFlete = fechaFlete;
+        this.destinoFlete = destinoFlete;
+        this.kmFlete = kmFlete;
+        this.tipoCereal = tipoCereal;
+        this.tarifa = tarifa;
+        this.cartaPorte = cartaPorte;
+        this.ctg = ctg;
+        this.kgFlete = kgFlete;
+        this.chofer = chofer;
+        this.usuario = usuario;
+        this.neto = neto;
+        this.iva = iva;
+        this.total = total;
+        this.porcientoChofer = porcientoChofer;
+        this.porcentajeChofer = porcentajeChofer;
+        this.estado = estado;
+        this.gasto = gasto;
+        this.imagenCP = imagenCP;
+        this.imagenDescarga = imagenDescarga;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getFechaCarga() {
+        return fechaCarga;
+    }
+
+    public void setFechaCarga(Date fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getOrigenFlete() {
+        return origenFlete;
+    }
+
+    public void setOrigenFlete(String origenFlete) {
+        this.origenFlete = origenFlete;
+    }
+
+    public Date getFechaFlete() {
+        return fechaFlete;
+    }
+
+    public void setFechaFlete(Date fechaFlete) {
+        this.fechaFlete = fechaFlete;
+    }
+
+    public String getDestinoFlete() {
+        return destinoFlete;
+    }
+
+    public void setDestinoFlete(String destinoFlete) {
+        this.destinoFlete = destinoFlete;
+    }
+
+    public Double getKmFlete() {
+        return kmFlete;
+    }
+
+    public void setKmFlete(Double kmFlete) {
+        this.kmFlete = kmFlete;
+    }
+
+    public String getTipoCereal() {
+        return tipoCereal;
+    }
+
+    public void setTipoCereal(String tipoCereal) {
+        this.tipoCereal = tipoCereal;
+    }
+
+    public Double getTarifa() {
+        return tarifa;
+    }
+
+    public void setTarifa(Double tarifa) {
+        this.tarifa = tarifa;
+    }
+
+    public String getCartaPorte() {
+        return cartaPorte;
+    }
+
+    public void setCartaPorte(String cartaPorte) {
+        this.cartaPorte = cartaPorte;
+    }
+
+    public String getCtg() {
+        return ctg;
+    }
+
+    public void setCtg(String ctg) {
+        this.ctg = ctg;
+    }
+
+    public Double getKgFlete() {
+        return kgFlete;
+    }
+
+    public void setKgFlete(Double kgFlete) {
+        this.kgFlete = kgFlete;
+    }
+
+    public Usuario getChofer() {
+        return chofer;
+    }
+
+    public void setChofer(Usuario chofer) {
+        this.chofer = chofer;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Double getNeto() {
+        return neto;
+    }
+
+    public void setNeto(Double neto) {
+        this.neto = neto;
+    }
+
+    public Double getIva() {
+        return iva;
+    }
+
+    public void setIva(Double iva) {
+        this.iva = iva;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public Double getPorcientoChofer() {
+        return porcientoChofer;
+    }
+
+    public void setPorcientoChofer(Double porcientoChofer) {
+        this.porcientoChofer = porcientoChofer;
+    }
+
+    public Double getPorcentajeChofer() {
+        return porcentajeChofer;
+    }
+
+    public void setPorcentajeChofer(Double porcentajeChofer) {
+        this.porcentajeChofer = porcentajeChofer;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Gasto getGasto() {
+        return gasto;
+    }
+
+    public void setGasto(Gasto gasto) {
+        this.gasto = gasto;
+    }
+
+    public Imagen getImagenCP() {
+        return imagenCP;
+    }
+
+    public void setImagenCP(Imagen imagenCP) {
+        this.imagenCP = imagenCP;
+    }
+
+    public Imagen getImagenDescarga() {
+        return imagenDescarga;
+    }
+
+    public void setImagenDescarga(Imagen imagenDescarga) {
+        this.imagenDescarga = imagenDescarga;
+    }
+
+}

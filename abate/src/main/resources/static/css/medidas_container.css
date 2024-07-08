@@ -1,0 +1,132 @@
+
+svg {
+    color : darkblue;
+}
+
+/* Estilo para pantallas md */
+@media (max-width: 991.98px) {
+    h4{
+        font-size: 21px;
+    }
+}
+/* Estilo para pantallas sm */
+@media (max-width: 767.98px) {
+    h4 {
+        font-size: 21px;
+    }
+}
+
+h4 {
+    color: white;
+}
+                       
+h5 {
+    color : darkblue;
+    font-family: 'Roboto', sans-serif;
+}
+
+h6 {
+    color : darkblue;
+}
+
+p {
+    color : darkblue;
+
+}
+
+a {
+    text-decoration: none; /* Elimina el subrayado por defecto */
+}
+
+a:hover {
+    text-decoration: none; /* Mantiene el subrayado desactivado al pasar el cursor */
+}
+
+#dimgray {
+    color : dimgray;
+}
+
+#white {
+    color : white;
+}
+
+#darkblue {
+    color : darkblue;
+}
+#darkgray {
+    color : darkgray;
+}
+
+.card-header {
+    background: darkblue;
+    border: none;
+}
+
+#sinbordes {
+    background: none;
+    border: none;
+}
+
+
+#mensaje{
+    background: dimgray;
+}
+
+label {
+    color : dimgray;
+}
+
+.btn {
+    color : white;
+    background: darkblue;
+}
+
+#bgWhite {
+    background: white;
+}
+
+#color-card {
+
+    background: whitesmoke;
+}
+
+#retornar {
+
+    background:  #ff3333;
+}
+
+#modificar {
+
+    color : #ff3333;
+    font-size: 14px;
+}
+
+#pdf{
+
+    color : #ff3333;
+
+}
+
+#icono2 {
+    font-size: 14px;
+}
+
+#icono {
+    color : white;
+    font-size: 14px;
+}
+
+#azul {
+    color : darkslateblue;
+}
+
+
+
+
+
+
+
+
+     
+
+
