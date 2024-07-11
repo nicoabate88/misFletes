@@ -120,7 +120,7 @@ public class CombustibleServicio {
             carga.setConsumoPromedio(0.0);
         } else {
             carga.setCompleto("SI");
-            Double consumoPromedio = consumoPromedioTanque(consumoRed, kmRecorrido, litros, usuario);
+            Double consumoPromedio = consumoPromedioTanqueModifica(consumoRed, kmRecorrido, litros, usuario, usuario.getId());
             carga.setConsumoPromedio(consumoPromedio);
         }
         
@@ -235,6 +235,47 @@ public class CombustibleServicio {
             
             for(Combustible c : listaCargas){
                 if(c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null){
+                    break;
+                }
+                listaPromedio.add(c);
+            }  
+        } 
+        
+        if(!listaPromedio.isEmpty()){  //si listaPromedio no está vacía
+            
+            km = km;
+            litros = litros;
+            
+            for(Combustible c : listaPromedio){
+                km = km + c.getKmRecorrido();
+                litros = litros + c.getLitro();
+                        
+        }
+        
+           Double consumoPromedio = ((100*litros)/km);
+           consumo = Math.round(consumoPromedio * 100.0) / 100.0;
+            
+        }
+        
+        return consumo;
+    }
+    
+    public Double consumoPromedioTanqueModifica(Double consumo, Double km, Double litros, Usuario chofer, Long id){
+        
+        ArrayList<Combustible> listaPromedio = new ArrayList();
+       
+        ArrayList<Combustible> ultimasCargas = combustibleRepositorio.findTop2ByUsuarioOrderByIdDesc(id);  //se obtienen ultimas 2 cargas
+        Combustible anteultimaCarga = ultimasCargas.get(1);  //se obtiene anteultima carga
+        
+        if(anteultimaCarga.getCompleto().equalsIgnoreCase("NO")){  
+            
+            ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByUsuarioOrderByIdDesc(chofer);
+            listaCargas.remove(0);
+            
+            for(Combustible c : listaCargas){
+                if(c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null){
+                    System.out.println("id en bucle"+c.getId());
+                            
                     break;
                 }
                 listaPromedio.add(c);

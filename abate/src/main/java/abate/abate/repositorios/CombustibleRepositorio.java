@@ -24,8 +24,11 @@ public interface CombustibleRepositorio extends JpaRepository<Combustible, Long>
     
     ArrayList<Combustible> findAllByOrderByIdDesc();  //devuelve la lista de combustibles de forma descendente
     
-    ArrayList<Combustible> findAllByUsuarioOrderByIdDesc(Usuario chofer);
-                 
+    ArrayList<Combustible> findAllByUsuarioOrderByIdDesc(Usuario chofer);  // Método para obtener el último registro
+    
+    @Query("SELECT c FROM Combustible c WHERE usuario_id = :id ORDER BY c.id DESC")  // Método para obtener el anteúltimo registro
+    ArrayList<Combustible> findTop2ByUsuarioOrderByIdDesc(@Param("id") Long id);
+                           
      ArrayList<Combustible> findByFechaCargaBetweenAndUsuario(Date desde, Date hasta, Usuario chofer);
     
 }
