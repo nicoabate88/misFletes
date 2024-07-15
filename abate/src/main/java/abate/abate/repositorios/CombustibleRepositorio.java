@@ -16,9 +16,8 @@ public interface CombustibleRepositorio extends JpaRepository<Combustible, Long>
     
     @Query("SELECT MAX(id) FROM Combustible")
     public Long ultimaCarga();       //devuelve id de ultimo combustible registrado
-    
-    @Query(value = "SELECT * FROM Combustible c WHERE usuario_id = :id ORDER BY c.id ASC LIMIT 1", nativeQuery = true)
-    Optional<Combustible> findFirstByUsuarioOrderByIdAsc(@Param("id") Long id);  //devuelve un registro de un chofer en particular para verificar si existe km iniciales
+       
+    Optional<Combustible> findFirstByUsuarioOrderByIdAsc(Usuario chofer);   //devuelve un registro de un chofer en particular para verificar si existe km iniciales
     
     Combustible findTopByUsuarioOrderByIdDesc(Usuario chofer); //devuelve ultimo Combustible registrado de chofer especifico
     

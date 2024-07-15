@@ -26,16 +26,12 @@
                                 </div>
 
                                 <div class="card mb-4" id="color-card">
-                                    <div class="row">
-                                        <div class="col-8">
                                             <div class="card-body">
                                                 <h6 th:text="'Importe: $'+${importe}"></h6>
                                                 <h6 id="dimgray" th:text="'Cliente: '+${recibo.cliente.nombre}"></h6>
                                                 <h6 id="dimgray" th:text="'Fecha: '+${fecha}"></h6>
                                                 <p id="dimgray" th:text="${recibo.observacion}"></p>
-                                            </div>
-                                        </div>
-                                    </div>    
+                                            </div>   
                                 </div>
 
                                 <div th:if="${exito != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        

@@ -16,7 +16,7 @@
                             /* Estilo para pantallas sm */
                             @media (max-width: 767.98px) {
                                 .table {
-                                    font-size: 11px;
+                                    font-size: 10px;
                                 }
                             }
                         </style>
@@ -45,28 +45,28 @@
                                     </div>
 
                                     <table class="table table-borderless table-sm" id="dimgray">
-                                        <thead>
+                                       <thead>
                                             <tr class="row">
-                                                <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">Fecha</th>
+                                                <th class="col-1 col-sm-1 col-md-1 col-lg-2 col-xl-2">Fecha</th>
                                                 <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">Km Anterior</th>                                            
                                                 <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">Km Carga</th>
-                                                <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center">Km</th>
+                                                <th class="col-1 col-sm-1 col-md-1 col-lg-2 col-xl-2 text-center">Km</th>
                                                 <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center">Litros</th>
-                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">Consumo Carga</th>
+                                                <th class="col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center">Consumo</th>
                                                 <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center">Lleno</th>
-                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">Consumo Tanque</th>
+                                                <th class="col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center">Promedio Tanque</th>
                                             </tr>
                                         </thead>
                                         <tbody th:each="carga : ${cargas}">
                                             <tr class="row">
-                                                <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" th:text="${carga.fechaCarga}"></td>
+                                                <td class="col-1 col-sm-1 col-md-1 col-lg-2 col-xl-2" th:text="${carga.fechaCarga}"></td>
                                                 <td id="darkgray" class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.kmAnterior}"></td>
                                                 <td class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.kmCarga}"></td>
-                                                <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center" th:text="${carga.kmRecorrido}"></td>
+                                                <td class="col-1 col-sm-1 col-md-1 col-lg-2 col-xl-2 text-center" th:text="${carga.kmRecorrido}"></td>
                                                 <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center" th:text="${carga.litro}"></td>
-                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.consumo}+' Lts'"></th>
+                                                <th class="col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center" th:text="${carga.consumo}+' Lts'"></th>
                                                 <td id="darkblue" class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center" th:text="${carga.completo}" th:if="${carga.completo == 'SI'}"></td>
-                                                <td id="darkblue" class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.consumoPromedio}+' Lts'" th:if="${carga.completo == 'SI'}"></td>
+                                                <td id="darkblue" class="col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center" th:text="${carga.consumoPromedio}+' Lts'" th:if="${carga.completo == 'SI'}"></td>
                                             </tr>     
                                         </tbody>
                                     </table>

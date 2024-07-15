@@ -63,9 +63,10 @@
                                                 <div class="card-body">
                                                     <h6 th:text="'Fecha: '+${carga.fechaCarga}"></h6>
                                                     <p class="mb-1" id="dimgray" th:text="'Km Actual: '+${carga.kmCarga}"></p>
-                                                    <h6 id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}+' - Litros: '+${carga.litro}"></h6>
+                                                    <p class="mb-1" id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}"></p>
+                                                    <p class="mb-1" id="darkgray" th:text="'Litros: '+${carga.litro}"></p>
                                                     <p class="mb-1" id="darkgray" th:text="'Tanque Lleno: '+${carga.completo}"></p>
-                                                    <h6 class="mb-0" th:text="'Consumo '+${carga.consumo}+' Lts / 100 Km'"></h6>
+                                                    <h6 class="mb-0" id="dimgray" th:text="'Consumo '+${carga.consumo}+' Lts'"></h6>
                                                 </div>
                                             </div>
                                             <div class="col-4 text-center card-body">

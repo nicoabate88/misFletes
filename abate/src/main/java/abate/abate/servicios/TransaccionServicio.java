@@ -343,8 +343,6 @@ public class TransaccionServicio {
 
     public ArrayList<Transaccion> buscarTransaccionIdCuenta(Long idCuenta) {
 
-        Cuenta cuenta = cuentaServicio.buscarCuenta(idCuenta);
-
         ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCuenta(idCuenta);
 
         Collections.sort(lista, TransaccionComparador.ordenarFechaAcs);

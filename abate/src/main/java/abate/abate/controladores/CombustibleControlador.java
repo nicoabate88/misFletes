@@ -44,7 +44,7 @@ public class CombustibleControlador {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         
-        boolean flag = combustibleServicio.kmIniciales(logueado.getId());
+        boolean flag = combustibleServicio.kmIniciales(logueado);
         
         if(flag == true){
             
@@ -53,9 +53,9 @@ public class CombustibleControlador {
         
         return "combustible_registrar.html";
             
-        } else {
+         } else {
          
-        modelo.addAttribute("chofer", logueado);
+        modelo.put("chofer", logueado);
         
         return "combustible_registrarPrimerCarga";
             
@@ -137,17 +137,19 @@ public class CombustibleControlador {
 
     }
     
-     @GetMapping("/listarCargasAdmin/{id}")
+    @GetMapping("/listarCargasAdmin/{id}")
     public String listarCargasAdmin(@PathVariable Long id, ModelMap modelo) throws ParseException{
         
-        boolean flag = combustibleServicio.kmIniciales(id);
+        Usuario chofer = choferServicio.buscarChofer(id);
+        
+        boolean flag = combustibleServicio.kmIniciales(chofer);
         
         if(flag == true){
             
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
         
-        modelo.put("chofer", choferServicio.buscarChofer(id));
+        modelo.put("chofer", chofer);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.addAttribute("cargas", combustibleServicio.buscarCargasIdChofer(id, desde, hasta));
@@ -156,7 +158,7 @@ public class CombustibleControlador {
             
         } else {
          
-        modelo.addAttribute("chofer", choferServicio.buscarChofer(id));
+        modelo.put("chofer", chofer);
         
         return "combustible_registrarPrimerCarga";
             

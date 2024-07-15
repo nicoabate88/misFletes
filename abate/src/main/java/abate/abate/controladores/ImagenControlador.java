@@ -94,7 +94,7 @@ public class ImagenControlador {
         Combustible carga = combustibleServicio.buscarCombustible(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Carga de Combustible " + carga.getFechaCarga());
+        imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -106,7 +106,7 @@ public class ImagenControlador {
 
         modelo.put("carga", carga);
         modelo.put("fecha", carga.getFechaCarga());
-        modelo.put("exito", "Imagen CARGADA con éxito");
+        modelo.put("exito", "Imagen de Diesel CARGADA con éxito");
 
         return "combustible_registrado.html";
 
@@ -570,7 +570,7 @@ public class ImagenControlador {
         Combustible carga = combustibleServicio.buscarCombustible(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Carga de Combustible " + carga.getFechaCarga());
+        imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -582,7 +582,7 @@ public class ImagenControlador {
           
             modelo.put("carga", carga);
             modelo.put("fecha", carga.getFechaCarga());
-            modelo.put("exito", "Imagen de Combustible MODIFICADO con éxito");
+            modelo.put("exito", "Imagen de Diesel MODIFICADO con éxito");
             
             return "combustible_mostrar.html";
 

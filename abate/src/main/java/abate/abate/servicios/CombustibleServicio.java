@@ -320,16 +320,23 @@ public class CombustibleServicio {
         
     }
     
-    public boolean kmIniciales(Long idChofer){
+    public boolean kmIniciales(Usuario chofer){
         
-        boolean flag = false;
-        
-        Optional<Combustible> iniciales = combustibleRepositorio.findFirstByUsuarioOrderByIdAsc(idChofer);
+        Optional<Combustible> iniciales = combustibleRepositorio.findFirstByUsuarioOrderByIdAsc(chofer);
         if (iniciales.isPresent()) {
-            flag = true;
-        }
+            
+            boolean flag = true;
+            
+            return flag;
+            
+        } else {
+            
+            boolean flag = false;
+            
+            return flag;
+            
+        }  
         
-        return flag;
         
     }
     

@@ -94,7 +94,7 @@
                                                     </div>
 
                                                     <a type="button" th:href="@{/flete/aceptar/__${flete.id}__}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                                                             <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
                                                         </svg> 
                                                     </a>
@@ -108,9 +108,6 @@
 
                                 <div th:if="${exito != null}" class="card-body mb-5 col-md-5 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
-                                </div>
-                                <div class="col-2">
-                                    <a class="btn btn-primary" type="button" th:href="@{/flete/listarIdCliente/__${flete.cliente.id}__}">Aceptar</a>
                                 </div>
                             </div>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
