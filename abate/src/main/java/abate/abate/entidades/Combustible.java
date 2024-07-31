@@ -27,6 +27,8 @@ public class Combustible {
     private String completo;
     private String estado;
     @OneToOne
+    private Camion camion;
+    @OneToOne
     private Imagen imagen;
     @OneToOne
     private Usuario usuario;
@@ -34,7 +36,7 @@ public class Combustible {
     public Combustible() {
     }
 
-    public Combustible(Long id, Date fechaCarga, Double kmCarga, Double kmAnterior, Double kmRecorrido, Double litro, Double consumo, Double consumoPromedio, String completo, String estado, Imagen imagen, Usuario usuario) {
+    public Combustible(Long id, Date fechaCarga, Double kmCarga, Double kmAnterior, Double kmRecorrido, Double litro, Double consumo, Double consumoPromedio, String completo, String estado, Camion camion, Imagen imagen, Usuario usuario) {
         this.id = id;
         this.fechaCarga = fechaCarga;
         this.kmCarga = kmCarga;
@@ -45,6 +47,7 @@ public class Combustible {
         this.consumoPromedio = consumoPromedio;
         this.completo = completo;
         this.estado = estado;
+        this.camion = camion;
         this.imagen = imagen;
         this.usuario = usuario;
     }
@@ -129,6 +132,14 @@ public class Combustible {
         this.estado = estado;
     }
 
+    public Camion getCamion() {
+        return camion;
+    }
+
+    public void setCamion(Camion camion) {
+        this.camion = camion;
+    }
+
     public Imagen getImagen() {
         return imagen;
     }
@@ -145,11 +156,6 @@ public class Combustible {
         this.usuario = usuario;
     }
 
-   
     
-      
-   
-    
-    
-    
+
 }

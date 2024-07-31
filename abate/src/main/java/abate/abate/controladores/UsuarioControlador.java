@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/usuario")
-//@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class UsuarioControlador {
 
     @Autowired

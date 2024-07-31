@@ -7,19 +7,18 @@
                     <link rel="stylesheet" href="/css/medidas_container.css">  
                         </head>
                         <body>
-
                                 <div class="container">
                                     <div class="card-header mb-4">
                                         <div class="row">
                                             <div class="col-2">   
-                                                <a title="Volver" th:href="@{/index}" type="button">
+                                                <a title="Volver" th:href="@{/combustible/listarAdmin/__${camion.id}__}" type="button">
                                                     <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                                                         <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                                                     </svg> 
                                                 </a>   
                                             </div>
                                             <div  class="col-10">
-                                                <h4>Carga de Diesel</h4>
+                                                <h4>Registro de KM</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -30,34 +29,33 @@
                                     
                                     <form class="row g-3" th:action="@{/combustible/registroPrimerCarga}" method="POST">
                                         
-                                        <input hidden th:value="${chofer.id}" name="idChofer"> 
-                                            
-                                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
-                                            <label for="chofer" class="form-floting">Chofer/Dominio</label>
-                                            <input type="text" class="form-control" id="chofer" th:value="${chofer.nombre}+' - Dominio '+${chofer.dominio}" disabled readonly>
-                                        </div> 
-                                        <div class="d-none d-sm-block col-lg-6 col-xl-6">
+                                        <input hidden th:value="${camion.id}" name="idCamion"> 
+                                       
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
+                                            <label for="camion" class="form-floting">Camión</label>
+                                            <input type="text" class="form-control" id="camion" th:value="${camion.dominio}" name="idCamion" disabled readonly>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
                                             <label for="fecha" class="form-label">Fecha</label>
                                             <input type="date" class="form-control" id="fecha" name="fecha" required>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-5">
                                             <label for="km" class="form-label">KM Actual</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">KM</span>
                                                 <input type="number" class="form-control" id="km" placeholder="Ingrese KM" name="km" required>
                                             </div>    
                                         </div>
-                                        <div class="d-none d-sm-block col-lg-4 col-xl-4">
-                                        </div>
-                                         
+                                     
+                                        <div class="d-block d-md-none col-sm-6 col-md-6">
+                                        </div>    
+                                            
                                         <div class="row text-center">
                                             <div class="col-8 col-md-8">
                                                 <button class="btn btn-primary" type="submit">Aceptar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
-                                                <a class="btn btn-primary" type="button" th:href="@{/index}">Cancelar</a>
+                                                <a class="btn btn-primary" type="button" th:href= "@{/combustible/registrarAdmin/__${camion.id}__}">Cancelar</a>
                                             </div>
                                         </div>
                                     </form>

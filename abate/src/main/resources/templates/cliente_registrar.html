@@ -26,29 +26,29 @@
 
                                 <form class="row g-3" th:action="@{/cliente/registro}" method="POST">
 
-                                    <div class="col-md-5 mb-2">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-2">
                                         <label for="validationDefault01" class="form-label">Apellido y Nombre</label>
                                         <input type="text" class="form-control" id="validationDefault01" placeholder="Ingrese Apellido y Nombre" name="nombre" th:value="${nombre}" required>
                                     </div>
-                                    <div class="col-6 col-md-5 mb-2">
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                         <label for="validationDefault02" class="form-label">CUIT</label>
                                         <input type="number" class="form-control" id="validationDefault02" placeholder="Ingrese CUIT" name="cuit" th:value="${cuit}">
                                     </div>
                                     <div class="d-block d-md-none col-6">
                                     </div>
-                                    <div class="col-md-5 mb-2">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-2">
                                         <label for="validationDefault01" class="form-label">Localidad</label>
                                         <input type="text" class="form-control" id="validationDefault01" placeholder="Ingrese Localidad" name="localidad" th:value="${localidad}">
                                     </div>
-                                    <div class="col-md-5 mb-2">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-2">
                                         <label for="validationDefault01" class="form-label">Dirección</label>
                                         <input type="text" class="form-control" id="validationDefault01" placeholder="Ingrese Dirección" name="direccion" th:value="${direccion}">
                                     </div>
-                                    <div class="col-6 col-md-5 mb-2">
+                                    <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                         <label for="validationDefault01" class="form-label">Teléfono</label>
                                         <input type="number" class="form-control" id="validationDefault01" placeholder="Ingrese Teléfono" name="telefono" th:value="${telefono}">
                                     </div>
-                                    <div class="col-md-5 mb-5">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mb-5">
                                         <label for="validationDefault01" class="form-label">Email</label>
                                         <input type="email" class="form-control" id="validationDefault01" placeholder="Ingrese Email" name="email" th:value="${email}">
                                     </div>
@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="row text-center">
                                         <div class="col-8 col-md-8">
-                                            <button class="btn btn-primary" type="submit">Aceptar</button>
+                                            <button class="btn btn-primary" type="submit">Registrar</button>
                                         </div>
                                         <div class="col-4 col-md-4">
                                             <a class="btn btn-primary" type="button" th:href= "@{/cliente/registrar}">Cancelar</a>

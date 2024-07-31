@@ -1,5 +1,6 @@
 package abate.abate.repositorios;
 
+import abate.abate.entidades.Camion;
 import abate.abate.entidades.Usuario;
 import java.util.ArrayList;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +22,7 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
 
     @Query("SELECT u FROM Usuario u WHERE u.rol = 'ADMIN'")
     public ArrayList<Usuario> buscarUsuariosAdmin();
+    
+    Usuario findTopByCamionOrderByIdDesc(Camion camion);
 
 }

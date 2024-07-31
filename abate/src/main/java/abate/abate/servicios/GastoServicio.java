@@ -51,7 +51,7 @@ public class GastoServicio {
             importe = importe + d.getTotal();
         }
 
-        String nombre = "GASTO FLETE ID " + idFlete;
+        String nombre = "GASTO FTE ID " + idFlete;
         Gasto gasto = new Gasto();
 
         gasto.setChofer(flete.getChofer());
@@ -59,6 +59,7 @@ public class GastoServicio {
         gasto.setNombre(nombre);
         gasto.setImporte(importe);
         gasto.setUsuario(user);
+        gasto.setCamion(flete.getCamion());
 
         gastoRepositorio.save(gasto);
 
@@ -143,6 +144,7 @@ public class GastoServicio {
         }
 
         gasto.setNombre("ELIMINADO");
+        gasto.setUsuario(user);
         gasto.setImporte(0.0);
 
         gastoRepositorio.save(gasto);

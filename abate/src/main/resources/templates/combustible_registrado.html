@@ -26,8 +26,9 @@
                                 <div class="card mb-4" id="color-card">
 
                                     <div class="card-body">
-                                        <h6 th:text="'Fecha: '+${fecha}"></h6>
-                                        <p class="mb-1" id="dimgray" th:text="'KM Anterior: '+${carga.kmAnterior}+' Km Actual: '+${carga.kmCarga}"></p>
+                                        <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha: '+${fecha}"></h6>
+                                        <p class="mb-1" id="dimgray" th:text="'KM Anterior: '+${carga.kmAnterior}+' - Actual: '+${carga.kmCarga}"></p>
                                         <h6 id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}+' - Litros: '+${carga.litro}"></h6>
                                         <p class="mb-1" id="darkgray" th:text="'Tanque Lleno: '+${carga.completo}"></p>
                                         <h6 th:text="'Consumo '+${carga.consumo}+' Lts / 100 Km'"></h6>

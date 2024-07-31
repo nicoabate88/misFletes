@@ -35,10 +35,12 @@
                                                     <p id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}+' ' +${flete.kmFlete} +' KM'"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.tipoCereal}+' '+${flete.kgFlete}+' KG - Tarifa $'+${flete.tarifa}"></h6>
-                                                    <h6 id="dimgray" th:text="'Neto $'+${flete.neto}"></h6>
+                                                    <h6 th:if="${flete.comisionTpte} != 0.0" id="azul" th:text="'Comisión Tpte: '+${flete.comisionTpte}+'% - $'+${flete.comisionTpteValor}"></h6>
+                                                    <h6 id="dimgray" th:text="'Neto $'+${flete.neto}" th:if="${flete.estado == 'ACEPTADO'}"></h6>
                                                     <p id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
                                                     <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
+                                                    <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}" th:if="${flete.estado == 'ACEPTADO'}"></h6>
+                                                    <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}"></h6>
                                                     <p id="dimgray" th:text="'Gasto: $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                                 </div>
                                             </div>
@@ -88,10 +90,6 @@
                                     <div th:if="${exito != null}" class="card-body mb-4 col-md-5 text-center" id="mensaje">                        
                                         <h6 id="white" th:text="${exito}"></h6>                                                                             
                                     </div>
-                                    
-                                     <div class="col-2">
-                                                <a class="btn btn-primary" type="button" th:href="@{/flete/listar}">Aceptar</a>
-                                </div>
                                     
                                 </div>
                             </section>

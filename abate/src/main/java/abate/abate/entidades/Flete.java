@@ -32,12 +32,17 @@ public class Flete {
     @OneToOne
     private Usuario chofer;
     @OneToOne
+    private Camion camion;
+    @OneToOne
     private Usuario usuario;
     private Double neto;
     private Double iva;
     private Double total;
     private Double porcientoChofer;
     private Double porcentajeChofer;
+    private Double comisionTpte;
+    private Double comisionTpteValor;
+    private String comisionTpteChofer;
     private String estado;
     @OneToOne
     private Gasto gasto;
@@ -49,7 +54,7 @@ public class Flete {
     public Flete() {
     }
 
-    public Flete(Long id, Date fechaCarga, Cliente cliente, String origenFlete, Date fechaFlete, String destinoFlete, Double kmFlete, String tipoCereal, Double tarifa, String cartaPorte, String ctg, Double kgFlete, Usuario chofer, Usuario usuario, Double neto, Double iva, Double total, Double porcientoChofer, Double porcentajeChofer, String estado, Gasto gasto, Imagen imagenCP, Imagen imagenDescarga) {
+    public Flete(Long id, Date fechaCarga, Cliente cliente, String origenFlete, Date fechaFlete, String destinoFlete, Double kmFlete, String tipoCereal, Double tarifa, String cartaPorte, String ctg, Double kgFlete, Usuario chofer, Camion camion, Usuario usuario, Double neto, Double iva, Double total, Double porcientoChofer, Double porcentajeChofer, Double comisionTpte, Double comisionTpteValor, String comisionTpteChofer, String estado, Gasto gasto, Imagen imagenCP, Imagen imagenDescarga) {
         this.id = id;
         this.fechaCarga = fechaCarga;
         this.cliente = cliente;
@@ -63,12 +68,16 @@ public class Flete {
         this.ctg = ctg;
         this.kgFlete = kgFlete;
         this.chofer = chofer;
+        this.camion = camion;
         this.usuario = usuario;
         this.neto = neto;
         this.iva = iva;
         this.total = total;
         this.porcientoChofer = porcientoChofer;
         this.porcentajeChofer = porcentajeChofer;
+        this.comisionTpte = comisionTpte;
+        this.comisionTpteValor = comisionTpteValor;
+        this.comisionTpteChofer = comisionTpteChofer;
         this.estado = estado;
         this.gasto = gasto;
         this.imagenCP = imagenCP;
@@ -179,6 +188,14 @@ public class Flete {
         this.chofer = chofer;
     }
 
+    public Camion getCamion() {
+        return camion;
+    }
+
+    public void setCamion(Camion camion) {
+        this.camion = camion;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -227,6 +244,30 @@ public class Flete {
         this.porcentajeChofer = porcentajeChofer;
     }
 
+    public Double getComisionTpte() {
+        return comisionTpte;
+    }
+
+    public void setComisionTpte(Double comisionTpte) {
+        this.comisionTpte = comisionTpte;
+    }
+
+    public Double getComisionTpteValor() {
+        return comisionTpteValor;
+    }
+
+    public void setComisionTpteValor(Double comisionTpteValor) {
+        this.comisionTpteValor = comisionTpteValor;
+    }
+
+    public String getComisionTpteChofer() {
+        return comisionTpteChofer;
+    }
+
+    public void setComisionTpteChofer(String comisionTpteChofer) {
+        this.comisionTpteChofer = comisionTpteChofer;
+    }
+
     public String getEstado() {
         return estado;
     }
@@ -258,5 +299,10 @@ public class Flete {
     public void setImagenDescarga(Imagen imagenDescarga) {
         this.imagenDescarga = imagenDescarga;
     }
+    
+    
+   
+   
+   
 
 }

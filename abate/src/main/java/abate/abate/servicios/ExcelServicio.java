@@ -20,7 +20,7 @@ public class ExcelServicio {
         Elements tables = doc.select("table");
 
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Exported Data");
+        Sheet sheet = workbook.createSheet("MisFletes");
 
         // Crear estilos para el título y el subtítulo
         CellStyle titleStyle = workbook.createCellStyle();
@@ -78,7 +78,7 @@ public class ExcelServicio {
         }
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=exported_data.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=MisFletes.xlsx");
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
         workbook.close();

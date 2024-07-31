@@ -1,8 +1,9 @@
-
 package abate.abate.servicios;
 
+import abate.abate.entidades.Camion;
 import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Usuario;
+import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.ChoferComparador;
@@ -19,51 +20,53 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CombustibleServicio {
-    
+
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
     @Autowired
     private CombustibleRepositorio combustibleRepositorio;
-    
+    @Autowired
+    private CamionRepositorio camionRepositorio;
+
     @Transactional
-    public void crearPrimerCarga(String fecha, Double km, Long idUsuario) throws ParseException{
-        
-        Usuario usuario = new Usuario();
-        Optional<Usuario> user = usuarioRepositorio.findById(idUsuario);
-        if (user.isPresent()) {
-            usuario = user.get();
+    public void crearPrimerCarga(String fecha, Double km, Long idCamion, Usuario usuario) throws ParseException {
+
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
         }
-        
+
         Date f = convertirFecha(fecha);
-        
+
         Combustible carga = new Combustible();
-        
+
         carga.setFechaCarga(f);
         carga.setKmCarga(km);
         carga.setUsuario(usuario);
         carga.setCompleto("SI");
         carga.setEstado("ACEPTADO");
         carga.setConsumoPromedio(0.0);
-        
-        combustibleRepositorio.save(carga);
-        
-    }
-    
-    @Transactional
-    public void crearCarga(String fecha, Double kmCarga, Double litros, String completo, Long idUsuario) throws ParseException{
+        carga.setCamion(camion);
 
-        Usuario usuario = new Usuario();
-        Optional<Usuario> user = usuarioRepositorio.findById(idUsuario);
-        if (user.isPresent()) {
-            usuario = user.get();
+        combustibleRepositorio.save(carga);
+
+    }
+
+    @Transactional
+    public void crearCarga(Long idCamion, String fecha, Double kmAnterior, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
         }
 
         Date f = convertirFecha(fecha);
-        Double kmAnterior = kmAnterior(usuario);
         Double kmRecorrido = kmCarga - kmAnterior;
-        Double consumo = ((100*litros)/kmRecorrido);
+        Double consumo = ((100 * litros) / kmRecorrido);
         Double consumoRed = Math.round(consumo * 100.0) / 100.0;
-        
+
         Combustible carga = new Combustible();
 
         carga.setFechaCarga(f);
@@ -74,38 +77,33 @@ public class CombustibleServicio {
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
         carga.setEstado("ACEPTADO");
-        
-        if(completo.equalsIgnoreCase("NO")){
+        carga.setCamion(camion);
+
+        if (completo.equalsIgnoreCase("NO")) {
             carga.setCompleto("NO");
             carga.setConsumoPromedio(0.0);
         } else {
             carga.setCompleto("SI");
-            Double consumoPromedio = consumoPromedioTanque(consumoRed, kmRecorrido, litros, usuario);
+            Double consumoPromedio = consumoPromedioTanque(consumoRed, kmRecorrido, litros, camion);
             carga.setConsumoPromedio(consumoPromedio);
         }
-        
+
         combustibleRepositorio.save(carga);
 
     }
-    
+
     @Transactional
-    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo, Long idChofer) throws ParseException{
-        
+    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+
         Combustible carga = new Combustible();
         Optional<Combustible> cga = combustibleRepositorio.findById(id);
-        if(cga.isPresent()){
+        if (cga.isPresent()) {
             carga = cga.get();
-        }
-        
-        Usuario usuario = new Usuario();
-        Optional<Usuario> user = usuarioRepositorio.findById(idChofer);
-        if (user.isPresent()) {
-            usuario = user.get();
         }
 
         Date f = convertirFecha(fecha);
         Double kmRecorrido = kmCarga - carga.getKmAnterior();
-        Double consumo = ((100*litros)/kmRecorrido);
+        Double consumo = ((100 * litros) / kmRecorrido);
         Double consumoRed = Math.round(consumo * 100.0) / 100.0;
 
         carga.setFechaCarga(f);
@@ -114,50 +112,73 @@ public class CombustibleServicio {
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
         carga.setEstado("ACEPTADO");
-        
-        if(completo.equalsIgnoreCase("NO")){
+        carga.setUsuario(usuario);
+
+        if (completo.equalsIgnoreCase("NO")) {
             carga.setCompleto("NO");
             carga.setConsumoPromedio(0.0);
         } else {
             carga.setCompleto("SI");
-            Double consumoPromedio = consumoPromedioTanqueModifica(consumoRed, kmRecorrido, litros, usuario, usuario.getId());
+            Double consumoPromedio = consumoPromedioTanqueModifica(consumoRed, kmRecorrido, litros, carga.getCamion(), carga.getCamion().getId());
             carga.setConsumoPromedio(consumoPromedio);
         }
-        
+
         combustibleRepositorio.save(carga);
 
     }
-    
+
     @Transactional
-    public void eliminarCarga(Long id) throws ParseException{
-        
+    public void eliminarCarga(Long id) throws ParseException {
+
         Combustible carga = new Combustible();
         Optional<Combustible> cga = combustibleRepositorio.findById(id);
-        if(cga.isPresent()){
+        if (cga.isPresent()) {
             carga = cga.get();
         }
 
         carga.setImagen(null);
         carga.setUsuario(null);
-        
+
         combustibleRepositorio.save(carga);
-        
+
         combustibleRepositorio.deleteById(id);
 
     }
-    
-    
-     public ArrayList<Combustible> buscarCargasChofer(Long idChofer) {
-         
-        Usuario chofer = usuarioRepositorio.getById(idChofer);
 
-        ArrayList<Combustible> lista = combustibleRepositorio.findAllByUsuarioOrderByIdDesc(chofer);
+    public ArrayList<Combustible> buscarCargasCamion(Long idCamion) {
+
+        Camion camion = camionRepositorio.getById(idCamion);
+
+        ArrayList<Combustible> lista = combustibleRepositorio.findAllByCamionOrderByIdDesc(camion);
 
         return lista;
-        
+
     }
-    
-     public ArrayList<Combustible> buscarCargasIdChofer(Long id, String desde, String hasta) throws ParseException {
+
+    public ArrayList<Combustible> buscarCargasIdCamion(Long id, String desde, String hasta) throws ParseException {
+
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(id);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
+
+        ArrayList<Combustible> lista = combustibleRepositorio.findByFechaCargaBetweenAndCamion(d, h, camion);
+
+        Collections.sort(lista, CombustibleComparador.ordenarIdDesc);
+
+        if (!lista.isEmpty()) {
+            Combustible carga = lista.get(0);
+            carga.setEstado("ULTIMO");
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Combustible> buscarCargasIdChofer(Long id, String desde, String hasta) throws ParseException {
 
         Usuario chofer = new Usuario();
         Optional<Usuario> chf = usuarioRepositorio.findById(id);
@@ -167,38 +188,36 @@ public class CombustibleServicio {
 
         Date d = convertirFecha(desde);
         Date h = convertirFecha(hasta);
+        Boolean flag = false;
 
         ArrayList<Combustible> lista = combustibleRepositorio.findByFechaCargaBetweenAndUsuario(d, h, chofer);
 
         Collections.sort(lista, CombustibleComparador.ordenarIdDesc);
 
-        Combustible carga = lista.get(0);
-        carga.setEstado("ULTIMO");
-        
-        return lista;
-    }
-     
-    public ArrayList<Usuario> buscarConsumoCamiones() {
-
-        ArrayList<Usuario> lista = usuarioRepositorio.buscarUsuariosChofer();
-        
-        for(Usuario u : lista){
-            u.setPorcentaje(consumoPromedioCamion(u.getId()));
+        if (!lista.isEmpty()) {
+            Combustible carga = lista.get(0);
+            Combustible ultimaCarga = combustibleRepositorio.findTopByCamionOrderByIdDesc(carga.getCamion());
+            if (carga.getId() == ultimaCarga.getId()) {
+                flag = true;
+            }
         }
 
-        Collections.sort(lista, ChoferComparador.ordenarNombreAsc);
+        if (!lista.isEmpty() && flag == true) {
+            Combustible carga = lista.get(0);
+            carga.setEstado("ULTIMO");
+        }
 
         return lista;
     }
 
-    public Double consumoPromedioCamion(Long idChofer) {
+    public Double consumoPromedioCamion(Long idCamion) {
 
-        Usuario chofer = usuarioRepositorio.getById(idChofer);
+        Camion camion = camionRepositorio.getById(idCamion);
         Double litros = 0.0;
         Double km = 0.0;
         Double redondeado = 0.0;
 
-        ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByUsuarioOrderByIdDesc(chofer);
+        ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByCamionOrderByIdDesc(camion);
 
         if (!listaCargas.isEmpty()) {
 
@@ -221,128 +240,132 @@ public class CombustibleServicio {
 
         }
 
-    } 
-    
-    public Double consumoPromedioTanque(Double consumo, Double km, Double litros, Usuario chofer){
-        
+    }
+
+    public Double consumoPromedioTanque(Double consumo, Double km, Double litros, Camion camion) {
+
         ArrayList<Combustible> listaPromedio = new ArrayList();
-       
-        Combustible ultimaCarga = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
-        
-        if(ultimaCarga.getCompleto().equalsIgnoreCase("NO")){  
-            
-            ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByUsuarioOrderByIdDesc(chofer);
-            
-            for(Combustible c : listaCargas){
-                if(c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null){
+
+        Combustible ultimaCarga = combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
+
+        if (ultimaCarga.getCompleto().equalsIgnoreCase("NO")) {
+
+            ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByCamionOrderByIdDesc(camion);
+
+            for (Combustible c : listaCargas) {
+                if (c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null) {
                     break;
                 }
                 listaPromedio.add(c);
-            }  
-        } 
-        
-        if(!listaPromedio.isEmpty()){  //si listaPromedio no está vacía
-            
+            }
+        }
+
+        if (!listaPromedio.isEmpty()) {  //si listaPromedio no está vacía
+
             km = km;
             litros = litros;
-            
-            for(Combustible c : listaPromedio){
+
+            for (Combustible c : listaPromedio) {
                 km = km + c.getKmRecorrido();
                 litros = litros + c.getLitro();
-                        
+
+            }
+
+            Double consumoPromedio = ((100 * litros) / km);
+            consumo = Math.round(consumoPromedio * 100.0) / 100.0;
+
         }
-        
-           Double consumoPromedio = ((100*litros)/km);
-           consumo = Math.round(consumoPromedio * 100.0) / 100.0;
-            
-        }
-        
+
         return consumo;
     }
-    
-    public Double consumoPromedioTanqueModifica(Double consumo, Double km, Double litros, Usuario chofer, Long id){
-        
+
+    public Double consumoPromedioTanqueModifica(Double consumo, Double km, Double litros, Camion camion, Long id) {
+
         ArrayList<Combustible> listaPromedio = new ArrayList();
-       
-        ArrayList<Combustible> ultimasCargas = combustibleRepositorio.findTop2ByUsuarioOrderByIdDesc(id);  //se obtienen ultimas 2 cargas
+
+        ArrayList<Combustible> ultimasCargas = combustibleRepositorio.findTop2ByCamionOrderByIdDesc(id);  //se obtienen ultimas 2 cargas
         Combustible anteultimaCarga = ultimasCargas.get(1);  //se obtiene anteultima carga
-        
-        if(anteultimaCarga.getCompleto().equalsIgnoreCase("NO")){  
-            
-            ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByUsuarioOrderByIdDesc(chofer);
+
+        if (anteultimaCarga.getCompleto().equalsIgnoreCase("NO")) {
+
+            ArrayList<Combustible> listaCargas = combustibleRepositorio.findAllByCamionOrderByIdDesc(camion);
             listaCargas.remove(0);
-            
-            for(Combustible c : listaCargas){
-                if(c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null){
-                    System.out.println("id en bucle"+c.getId());
-                            
+
+            for (Combustible c : listaCargas) {
+                if (c.getCompleto().equalsIgnoreCase("SI") || c.getConsumo() == null) {
+
                     break;
                 }
+
                 listaPromedio.add(c);
-            }  
-        } 
-        
-        if(!listaPromedio.isEmpty()){  //si listaPromedio no está vacía
-            
+            }
+        }
+
+        if (!listaPromedio.isEmpty()) {  //si listaPromedio no está vacía
+
             km = km;
             litros = litros;
-            
-            for(Combustible c : listaPromedio){
+
+            for (Combustible c : listaPromedio) {
                 km = km + c.getKmRecorrido();
                 litros = litros + c.getLitro();
-                        
+
+            }
+
+            Double consumoPromedio = ((100 * litros) / km);
+            consumo = Math.round(consumoPromedio * 100.0) / 100.0;
+
         }
-        
-           Double consumoPromedio = ((100*litros)/km);
-           consumo = Math.round(consumoPromedio * 100.0) / 100.0;
-            
-        }
-        
+
         return consumo;
     }
-    
+
     public Long buscarUltimo() {
 
         return combustibleRepositorio.ultimaCarga();
 
     }
-    
-    public Combustible buscarCombustible(Long id){
-        
+
+    public Combustible buscarCombustibleIdImagen(Long id) {
+
+        return combustibleRepositorio.buscarCombustibleIdImagen(id);
+    }
+
+    public Combustible buscarCombustible(Long id) {
+
         return combustibleRepositorio.getById(id);
     }
-    
-    public Double kmAnterior(Usuario chofer){
-        
-        Combustible ultimaCarga = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
-        
+
+    public Double kmAnterior(Camion camion) {
+
+        Combustible ultimaCarga = combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
+
         return ultimaCarga.getKmCarga();
-        
+
     }
-    
-    public boolean kmIniciales(Usuario chofer){
-        
-        Optional<Combustible> iniciales = combustibleRepositorio.findFirstByUsuarioOrderByIdAsc(chofer);
+
+    public boolean kmIniciales(Camion camion) {
+
+        Optional<Combustible> iniciales = combustibleRepositorio.findFirstByCamionOrderByIdAsc(camion);
         if (iniciales.isPresent()) {
-            
+
             boolean flag = true;
-            
+
             return flag;
-            
+
         } else {
-            
+
             boolean flag = false;
-            
+
             return flag;
-            
-        }  
-        
-        
+
+        }
+
     }
-    
-     public Date convertirFecha(String fecha) throws ParseException { 
+
+    public Date convertirFecha(String fecha) throws ParseException {
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         return formato.parse(fecha);
     }
-    
+
 }

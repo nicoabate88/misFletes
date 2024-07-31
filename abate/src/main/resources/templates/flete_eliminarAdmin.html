@@ -36,7 +36,7 @@
                                                      <h6 id="dimgray" th:text="'Neto $' +${flete.neto} +' + IVA $' +${flete.iva}"></h6>
                                                      <h6 id="dimgray" th:text="'TOTAL $' +${flete.total}"></h6>
                                                     <p class="card-text" id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
-                                                    <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
+                                                    <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}+' - Camión '+${flete.camion.dominio}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
                                                     <p id="dimgray" th:text="'Gasto: $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                                 </div>

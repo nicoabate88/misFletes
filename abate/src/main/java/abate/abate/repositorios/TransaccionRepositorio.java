@@ -1,6 +1,8 @@
 package abate.abate.repositorios;
 
+import abate.abate.entidades.Cliente;
 import abate.abate.entidades.Transaccion;
+import abate.abate.entidades.Usuario;
 import java.util.ArrayList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +37,8 @@ public interface TransaccionRepositorio extends JpaRepository<Transaccion, Long>
             + "WHERE c.id = :id AND t.concepto != 'ELIMINADO'", nativeQuery = true)
     public ArrayList<Transaccion> buscarTransaccionCuenta(@Param("id") Long id);
 
+    Transaccion findTopByChoferOrderByIdDesc(Usuario chofer);
+    
+    Transaccion findTopByClienteOrderByIdDesc(Cliente cliente);
+    
 }

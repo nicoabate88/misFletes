@@ -1,10 +1,11 @@
 package abate.abate.controladores;
 
+import abate.abate.entidades.Cuenta;
 import abate.abate.entidades.Entrega;
 import abate.abate.entidades.Usuario;
 import abate.abate.servicios.ChoferServicio;
+import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.EntregaServicio;
-import abate.abate.servicios.UsuarioServicio;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import javax.servlet.http.HttpSession;
@@ -20,32 +21,38 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/entrega")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
 public class EntregaControlador {
 
-    @Autowired
-    private UsuarioServicio usuarioServicio;
     @Autowired
     private EntregaServicio entregaServicio;
     @Autowired
     private ChoferServicio choferServicio;
+    @Autowired
+    private CuentaServicio cuentaServicio;
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrar")
     public String registrarEntrega(ModelMap modelo) {
 
-        modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc());
+        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasChofer());
 
         return "entrega_registrar.html";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrarId/{id}")
     public String registrarEntrega(@PathVariable Long id, ModelMap modelo) {
-
-        modelo.addAttribute("chofer", usuarioServicio.buscarUsuario(id));
+        
+        Cuenta cuenta = cuentaServicio.buscarCuentaChofer(id);
+        String saldo = convertirNumeroMiles(cuenta.getSaldo());
+        
+        modelo.put("cuenta", cuenta);
+        modelo.put("saldo", saldo);
 
         return "entrega_registrarId.html";
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/registro")
     public String registroEntrega(@RequestParam Long idChofer, @RequestParam String fecha,
             @RequestParam Double importe, @RequestParam(required = false) String observacion,
@@ -98,6 +105,7 @@ public class EntregaControlador {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
 
@@ -108,6 +116,7 @@ public class EntregaControlador {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/modifica/{id}")
     public String modifica(@RequestParam Long id, @RequestParam Long idChofer, @RequestParam String fecha,
             @RequestParam Double importe, @RequestParam(required = false) String observacion,
@@ -127,7 +136,8 @@ public class EntregaControlador {
 
         return "entrega_registrado.html";
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, ModelMap modelo) {
 
@@ -135,7 +145,8 @@ public class EntregaControlador {
 
         return "entrega_eliminar.html";
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/elimina/{id}")
     public String elimina(@PathVariable Long id, HttpSession session, ModelMap modelo) {
 

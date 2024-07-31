@@ -74,10 +74,12 @@ public class ClienteServicio {
 
     @Transactional
     public void eliminarCliente(Long id) throws MiException {
+        
+        Cliente cliente = clienteRepositorio.getById(id);
+        
+        Transaccion transaccion = transaccionRepositorio.findTopByClienteOrderByIdDesc(cliente);
 
-        ArrayList<Transaccion> listaTransaccion = transaccionRepositorio.buscarTransaccionIdCliente(id);
-
-        if (listaTransaccion.isEmpty()) {
+        if (transaccion == null) {
 
             clienteRepositorio.deleteById(id);
 

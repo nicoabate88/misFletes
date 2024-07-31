@@ -1,8 +1,12 @@
 package abate.abate.servicios;
 
+import abate.abate.entidades.Camion;
+import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Transaccion;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
+import abate.abate.repositorios.CamionRepositorio;
+import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.TransaccionRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.ChoferComparador;
@@ -23,19 +27,30 @@ public class ChoferServicio {
     private CuentaServicio cuentaServicio;
     @Autowired
     private TransaccionRepositorio transaccionRepositorio;
+    @Autowired
+    private CamionRepositorio camionRepositorio;
+    @Autowired
+    private CombustibleRepositorio combustibleRepositorio;
 
     @Transactional
-    public void crearChofer(String nombre, String cuil, String dominio, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
+    public void crearChofer(String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
 
-        validarDatos(nombre, nombreUsuario, password, password2);
+        validarDatos(nombre, nombreUsuario, cuil, password, password2);
         String nombreM = nombre.toUpperCase();
-        String dominioM = dominio.toUpperCase();
-
+        
         Usuario user = new Usuario();
+        
+        if(idCamion != null){
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+        user.setCamion(camion);
+        }
 
         user.setNombre(nombreM);
         user.setCuil(cuil);
-        user.setDominio(dominioM);
         user.setUsuario(nombreUsuario);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRol("CHOFER");
@@ -48,20 +63,29 @@ public class ChoferServicio {
     }
 
     @Transactional
-    public void modificarChofer(Long id, String nombre, String cuil, String dominio, String nombreUsuario, Double porcentaje) {
+    public void modificarChofer(Long id, String nombre, Long cuil, Long  idCamion, String nombreUsuario, Double porcentaje) {
 
         String nombreM = nombre.toUpperCase();
-        String dominioM = dominio.toUpperCase();
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(id);
         if (u.isPresent()) {
             user = u.get();
         }
+        
+        if(idCamion != 0){
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+        user.setCamion(camion);
+        } else {
+            user.setCamion(null);
+        }
 
         user.setNombre(nombreM);
         user.setCuil(cuil);
-        user.setDominio(dominioM);
         user.setUsuario(nombreUsuario);
         user.setPorcentaje(porcentaje);
 
@@ -72,15 +96,19 @@ public class ChoferServicio {
     @Transactional
     public void eliminarChofer(Long id) throws MiException {
 
-        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionIdChofer(id);
-        if (lista.isEmpty()) {
-
+        Usuario chofer = usuarioRepositorio.getById(id);
+        
+        Transaccion transaccion = transaccionRepositorio.findTopByChoferOrderByIdDesc(chofer);
+        Combustible combustible = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
+        
+        if (transaccion == null && combustible == null) {
+      
             usuarioRepositorio.deleteById(id);
             cuentaServicio.eliminarCuentaChofer(id);
 
         } else {
 
-            throw new MiException("El Chofer no puede ser eliminado, tiene Flete o Entrega asociado");
+            throw new MiException("El Chofer no puede ser eliminado, tiene Flete, Entrega y/o Combustible asociado");
         }
 
     }
@@ -105,7 +133,7 @@ public class ChoferServicio {
         return usuarioRepositorio.ultimoUsuario();
     }
 
-    public void validarDatos(String nombre, String nombreUsuario, String password, String password2) throws MiException {
+    public void validarDatos(String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {
 
         ArrayList<Usuario> lista = (ArrayList<Usuario>) usuarioRepositorio.findAll();
 
@@ -115,6 +143,9 @@ public class ChoferServicio {
             }
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
                 throw new MiException("El nombre de Usuario ya se encuentra registrado");
+            }
+            if (u.getCuil() == cuil) {
+                throw new MiException("El CUIL de Usuario ya se encuentra registrado");
             }
         }
         if (!password.equals(password2)) {

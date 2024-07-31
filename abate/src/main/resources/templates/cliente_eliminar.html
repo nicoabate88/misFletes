@@ -26,8 +26,7 @@
                                 </div>
 
                                 <div class="card mb-4" id="color-card">
-                                    <div class="row">
-                                        <div class="col-8">
+                                
                                             <div class="card-body">
                                                 <h6 id="darkblue" th:text="'Cliente: '+${cliente.nombre}"></h6>
                                                 <h6 class="mb-1" id="dimgray" th:text="'ID: '+${cliente.id}+' - CUIT: '+${cliente.cuit}"></h6>
@@ -36,8 +35,7 @@
                                                 <p class="mb-0"  id="dimgray" th:text="'Teléfono '+${cliente.telefono}"></p>
                                                 <p class="mb-0" id="dimgray" th:text="'Email: '+${cliente.email}"></p>
                                             </div>
-                                        </div>
-                                    </div>   
+                                        
                                 </div>  
 
                                 <div th:if="${error == null}" class="card-header mb-4 col-md-6 text-center">

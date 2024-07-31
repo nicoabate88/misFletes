@@ -11,7 +11,7 @@
                                 <div class="card-header mb-2">
                                     <div class="row">
                                         <div class="col-2">   
-                                            <a title="Volver" th:href="@{/combustible/listar/__${carga.usuario.id}__}" type="button">
+                                            <a title="Volver" th:href="@{/index}" type="button">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                                                     <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                                                 </svg> 
@@ -25,11 +25,12 @@
                                 
                                 <div class="card mb-4" id="color-card">
                                         <div class="card-body">
-                                        <h6 th:text="'Fecha: '+${carga.fechaCarga}"></h6>
-                                        <p class="mb-1" id="dimgray" th:text="'KM Anterior: '+${carga.kmAnterior}+' - KM Actual: '+${carga.kmCarga}"></p>
-                                        <h6 id="dimgray" th:text="'KM Recorrido: '+${carga.kmRecorrido}+' - Litros: '+${carga.litro}"></h6>
-                                        <h6 id="dimgray" th:text="'Consumo Litros: '+${carga.consumo}"></h6>
-                                        <p class="mb-0" id="dimgray" th:text="'Tanque Lleno: '+${carga.completo}"></p>
+                                        <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha: '+${carga.fechaCarga}"></h6>
+                                        <p class="mb-1" id="dimgray" th:text="'KM Anterior: '+${carga.kmAnterior}+' - Actual: '+${carga.kmCarga}"></p>
+                                        <h6 id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}+' - Litros: '+${carga.litro}"></h6>
+                                        <p class="mb-1" id="darkgray" th:text="'Tanque Lleno: '+${carga.completo}"></p>
+                                        <h6 th:text="'Consumo '+${carga.consumo}+' Lts / 100 Km'"></h6>
                                     </div>
                                         </div>
 
@@ -42,7 +43,7 @@
                                         <a class="btn btn-primary" type="button" th:href= "@{/combustible/elimina/__${carga.id}__}">Eliminar</a>
                                     </div>
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-2">
-                                        <a class="btn btn-primary" type="button" th:href="@{/combustible/listar/__${carga.usuario.id}__}">Cancelar</a>
+                                        <a class="btn btn-primary" type="button" th:href="@{/index}">Cancelar</a>
                                     </div>
                                 </div>
                             </div>

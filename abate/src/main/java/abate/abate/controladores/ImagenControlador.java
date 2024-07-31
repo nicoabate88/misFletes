@@ -168,7 +168,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "CP CARGADA con éxito");
             
-            return "flete_registradoChofer.html";
+            return "flete_modificadoChofer.html";
             
         } else {
             
@@ -176,7 +176,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "CP CARGADA con éxito");
             
-            return "flete_registradoAdmin.html";
+            return "flete_modificadoAdmin.html";
             
         }
         
@@ -205,7 +205,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "Ticket de Descarga CARGADO con éxito");
             
-            return "flete_registradoChofer.html";
+            return "flete_modificadoChofer.html";
             
         } else {
             
@@ -213,7 +213,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "Ticket de Descarga CARGADO con éxito");
             
-            return "flete_registradoAdmin.html";
+            return "flete_modificadoAdmin.html";
             
         }
 
@@ -402,7 +402,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "CP MODIFICADA con éxito");
             
-            return "flete_registradoChofer.html";
+            return "flete_modificadoChofer.html";
             
         } else {
             
@@ -410,7 +410,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "CP MODIFICADA con éxito");
             
-            return "flete_registradoAdmin.html";
+            return "flete_modificadoAdmin.html";
             
         }
 
@@ -495,7 +495,7 @@ public class ImagenControlador {
             modelo.put("fecha", flete.getFechaFlete());
             modelo.put("exito", "Ticket de Descarga MODIFICADO con éxito");
             
-            return "flete_registradoChofer.html";
+            return "flete_modificadoChofer.html";
             
         } else {
             
@@ -510,36 +510,59 @@ public class ImagenControlador {
     }
     
      @GetMapping("/verCombustible/{id}")
-    public String verCombustible(@PathVariable Long id, Model model) {
+    public String verCombustible(@PathVariable Long id, Model model, HttpSession session) {
 
         Combustible carga = combustibleServicio.buscarCombustible(id);
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         if (carga.getImagen() != null) {
 
             Long idImagen = carga.getImagen().getId();
             Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
 
-            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+            if ((logueado.getRol().equalsIgnoreCase("CHOFER")) && (imagen.getTipo().equalsIgnoreCase("application/pdf"))) {
 
                 model.addAttribute("imagenNombre", imagen.getNombre());
                 model.addAttribute("id", idImagen);
+                model.addAttribute("idUsuario", carga.getUsuario().getId());
 
                 return "imagen_mostrarCombustiblePdf.html";
+
+            } if((logueado.getRol().equalsIgnoreCase("ADMIN")) && (imagen.getTipo().equalsIgnoreCase("application/pdf"))){
+                
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+                model.addAttribute("idUsuario", carga.getUsuario().getId());
+
+                return "imagen_mostrarCombustiblePdfAdmin.html";
+                
+            }
+            
+            if ((logueado.getRol().equalsIgnoreCase("ADMIN")) && (!imagen.getTipo().equalsIgnoreCase("application/pdf"))) {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+                model.addAttribute("idUsuario", carga.getUsuario().getId());
+
+                return "imagen_mostrarCombustibleAdmin.html";
 
             } else {
 
                 model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
                 model.addAttribute("imagenNombre", imagen.getNombre());
                 model.addAttribute("id", idImagen);
+                model.addAttribute("idUsuario", carga.getUsuario().getId());
 
                 return "imagen_mostrarCombustible.html";
             }
 
         } else {
 
-           model.addAttribute("carga", combustibleServicio.buscarCombustible(id));
+            model.addAttribute("carga", combustibleServicio.buscarCombustible(id));
 
-          return "imagen_combustibleCargar.html";
+            return "imagen_combustibleCargar.html";
 
         }
     }
@@ -567,10 +590,10 @@ public class ImagenControlador {
     @PostMapping("/modificaCombustible")
     public String modificaCombustible(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
 
-        Combustible carga = combustibleServicio.buscarCombustible(id);
+        Combustible carga = combustibleServicio.buscarCombustibleIdImagen(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
+        imagen.setNombre("Carga de Diesel " + carga.getId());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -584,7 +607,7 @@ public class ImagenControlador {
             modelo.put("fecha", carga.getFechaCarga());
             modelo.put("exito", "Imagen de Diesel MODIFICADO con éxito");
             
-            return "combustible_mostrar.html";
+            return "combustible_modificado.html";
 
     }
     

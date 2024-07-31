@@ -12,16 +12,16 @@
                                 <div class="card-header mb-4">
                                     <div class="row">
                                         <div class="col-2">   
-                                            <a title="Volver" th:href="@{/index}"  type="button">
+                                            <a title="Volver" th:href="@{/index}" type="button">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                                                     <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                                                 </svg> 
                                             </a>   
                                         </div>
-                                        <div  class="col-8">
+                                        <div  class="col-7">
                                             <h4>Modificar Carga de Diesel</h4>
                                         </div>
-                                        <div  class="col-2 text-center">
+                                        <div  class="col-3 text-center">
                                             <a th:href="@{/combustible/eliminar/__${carga.id}__}">
                                                 <svg id='white' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump-diesel" viewBox="0 0 16 16">
                                                     <path d="M3.5 2a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5zM4 14V9h1.796q.75 0 1.237.293t.725.85Q8 10.7 8 11.487q0 .792-.242 1.355a1.8 1.8 0 0 1-.732.861Q6.54 14 5.796 14zm1.666-4.194h-.692v3.385h.692q.343 0 .595-.103a1 1 0 0 0 .412-.315q.162-.213.241-.528.084-.314.083-.74 0-.565-.144-.94a1.1 1.1 0 0 0-.436-.569q-.293-.19-.75-.19Z"/>
@@ -33,11 +33,10 @@
                                 <form id="form" class="row g-3" th:action="@{/combustible/modifica/__${carga.id}__}" method="POST">
 
                                     <input hidden th:value="${carga.id}" name="id">
-                                        <input hidden th:value="${carga.usuario.id}" name="idChofer"> 
 
                                             <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
                                                 <label for="chofer" class="form-floting">Dominio</label>
-                                                <input type="text" class="form-control" id="chofer" th:value="${carga.usuario.dominio}" disabled readonly>
+                                                <input type="text" class="form-control" id="chofer" th:value="${carga.camion.dominio}" disabled readonly>
                                             </div>
                                             <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
                                                 <label for="kmAnterior" class="form-floting">KM Carga Anterior</label>
@@ -78,10 +77,10 @@
 
                                             <div class="row text-center">
                                                 <div class="col-8 col-md-8">
-                                                    <button class="btn btn-primary" type="submit">Aceptar</button>
+                                                    <button class="btn btn-primary" type="submit">Modificar</button>
                                                 </div>
                                                 <div class="col-4 col-md-4">
-                                                    <a class="btn btn-primary" type="button" th:href= "@{/combustible/listar/__${carga.usuario.id}__}">Cancelar</a>
+                                                    <a class="btn btn-primary" type="button" th:href="@{/index}">Cancelar</a>
                                                 </div>
                                             </div>
                                             </form>
@@ -95,6 +94,12 @@
                                                         alert('KM Carga Actual debe ser mayor que KM Carga Anterior: ' + kmAnterior);
                                                         event.preventDefault(); // Prevenir el envío del formulario
                                                     }
+                                                    const litros = parseInt(document.getElementById('litro').value);
+            
+                                                    if (litros <= 0) {
+                                                    alert('Litros debe ser mayor que 0');
+                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                }
                                                 });
                                             </script>
                                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -1,8 +1,10 @@
 package abate.abate.controladores;
 
+import abate.abate.entidades.Cuenta;
 import abate.abate.entidades.Recibo;
 import abate.abate.entidades.Usuario;
 import abate.abate.servicios.ClienteServicio;
+import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.ReciboServicio;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -19,27 +21,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/recibo")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class ReciboControlador {
 
     @Autowired
     private ClienteServicio clienteServicio;
     @Autowired
     private ReciboServicio reciboServicio;
+    @Autowired
+    private CuentaServicio cuentaServicio;
 
     @GetMapping("/registrar")
     public String registrarRecibo(ModelMap modelo) {
 
-        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc());
+        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasCliente());
 
         return "recibo_registrar.html";
     }
 
     @GetMapping("/registrarId/{id}")
     public String registrarReciboId(@PathVariable Long id, ModelMap modelo) {
-
-        modelo.addAttribute("cliente", clienteServicio.buscarCliente(id));
-
+        
+        Cuenta cuenta = cuentaServicio.buscarCuentaCliente(id);
+        String saldo = convertirNumeroMiles(cuenta.getSaldo());
+        
+        modelo.put("cuenta", cuenta);
+        modelo.put("saldo", saldo);
+        
         return "recibo_registrarId.html";
     }
 

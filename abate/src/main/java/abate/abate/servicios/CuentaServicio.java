@@ -99,6 +99,18 @@ public class CuentaServicio {
         return cuentaRepositorio.buscarIdCuentaIdChofer(idChofer);
 
     }
+    
+     public Cuenta buscarCuentaChofer(Long idChofer) {
+
+        return cuentaRepositorio.buscarCuentaIdChofer(idChofer);
+
+    }
+     
+    public Cuenta buscarCuentaCliente(Long idCliente) {
+
+        return cuentaRepositorio.buscarCuentaIdCliente(idCliente);
+
+    } 
 
     public ArrayList<Cuenta> buscarCuentasChofer() {
 
@@ -243,9 +255,9 @@ public class CuentaServicio {
 
         Double saldo = 0.0;
         Long idCliente = transaccion.getCliente().getId();
-        int numeroInt = transaccion.getId().intValue();
 
         transaccion.setConcepto("ELIMINADO");
+        transaccion.setCliente(null);
         transaccion.setImporte(0.0);
         transaccionRepositorio.save(transaccion);
 
@@ -273,6 +285,7 @@ public class CuentaServicio {
 
         transaccion.setConcepto("ELIMINADO");
         transaccion.setImporte(0.0);
+        transaccion.setChofer(null);
         transaccionRepositorio.save(transaccion);
 
         Cuenta cuenta = cuentaRepositorio.buscarCuentaIdChofer(idChofer);

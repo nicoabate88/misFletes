@@ -26,37 +26,42 @@
                                     </div>
 
                                     <form class="row g-3" th:action="@{/chofer/registro}" method="POST">
-                                        <div class="col-12 col-md-5 mb-2">
+                                        <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="nombre" class="form-label">Apellido y Nombre de Chofer</label>
                                             <input type="text" class="form-control" id="nombre" placeholder="Ingrese Apellido y Nombre" name="nombre" th:value="${nombre}" required>
                                         </div>
                                        
-                                        <div class="col-6 col-md-5 mb-2">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="cuil" class="form-label">CUIL de Chofer</label>
-                                            <input type="text" class="form-control" id="cuil" placeholder="Ingrese CUIL" name="cuil" th:value="${cuil}" required>
+                                            <input type="number" class="form-control" id="cuil" placeholder="Ingrese CUIL" name="cuil" th:value="${cuil}" required>
                                         </div>
-                                        <div class="col-6 col-md-5 mb-2">
-                                            <label for="dominio" class="form-label">Dominio de Camión</label>
-                                            <input type="text" class="form-control" id="dominio" placeholder="Ingrese Dominio" name="dominio" th:value="${dominio}" required>
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
+                                            <label for="camion" class="form-floting">Dominio de Camión</label>
+                                            <select class="form-control" id="camion" name="idCamion">
+                                                <option selected disabled value="">Seleccione Camión</option>
+                                                <option th:each="camion : ${camiones}"
+                                                        th:value="${camion.id}"
+                                                        th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"/>
+                                            </select>
                                         </div>
-                                        <div class="col-6 col-md-5 mb-2">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="porcentaje" class="form-label">Porcentaje de Chofer</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">%</span>
-                                                <input type="number" class="form-control" id="porcentaje" placeholder="Ingrese porcentaje" name="porcentaje" th:value="${porcentaje}" required>     
+                                                <input type="number" step="0.01" class="form-control" id="porcentaje" placeholder="Ingrese porcentaje" name="porcentaje" th:value="${porcentaje}" required>     
                                             </div>
                                         </div>
-                                        <div class="col-6 col-md-5 mb-2">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="usuario" class="form-label">Nombre de Usuario</label>
                                             <input type="text" class="form-control" id="usuario" placeholder="Ingrese Nombre de Usuario" name="nombreUsuario" th:value="${nombreUsuario}" required>
                                         </div>
-                                        <div class="d-none d-sm-block col-md-5">
+                                        <div class="d-none d-sm-block col-md-6">
                                         </div>
-                                        <div class="col-6 col-md-5 mb-2">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="contra" class="form-label">Contraseña</label>
                                             <input type="password" class="form-control" id="contra" placeholder="Ingrese Contraseña" name="password" required>
                                         </div>
-                                        <div class="col-6 col-md-5 mb-5">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
                                             <label for="contra2" class="form-label">Contraseña</label>
                                             <input type="password" class="form-control" id="contra2" placeholder="Repita Contraseña" name="password2" required>
                                         </div>
@@ -67,7 +72,7 @@
                                         </div>
                                         <div class="row text-center">
                                             <div class="col-8 col-md-8">
-                                                <button class="btn btn-primary" type="submit">Aceptar</button>
+                                                <button class="btn btn-primary" type="submit">Registrar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
                                                 <a class="btn btn-primary" type="button" th:href= "@{/chofer/registrar}">Cancelar</a>

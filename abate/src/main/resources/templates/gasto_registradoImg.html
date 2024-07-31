@@ -26,10 +26,9 @@
 
                                 <div class="card mb-4" id="color-card">
                                      <div class="card-body">
-                                        <h6 th:text="'Importe: $'+${gasto.importe}"></h6>
-                                        <h6 id="dimgray" th:text="'Chofer: '+${gasto.chofer.nombre}"></h6>
+                                        <h6 th:text="'Importe $'+${gasto.importe}"></h6>
                                         <h6 id="dimgray" th:text="${gasto.nombre}"></h6>
-                                        <p id="dimgray" th:text="'Fecha: '+${gasto.fecha}"></p>
+                                        <p id="dimgray" th:text="'Fecha '+${gasto.fecha}"></p>
                                     </div>
 
                                     <div class="table-responsive">

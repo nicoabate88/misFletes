@@ -8,12 +8,14 @@ svg {
     h4{
         font-size: 21px;
     }
+
 }
 /* Estilo para pantallas sm */
 @media (max-width: 767.98px) {
     h4 {
         font-size: 21px;
     }
+    
 }
 
 h4 {
@@ -21,6 +23,11 @@ h4 {
 }
                        
 h5 {
+    color : darkblue;
+    font-family: 'Roboto', sans-serif;
+}
+
+h3 {
     color : darkblue;
     font-family: 'Roboto', sans-serif;
 }
@@ -98,7 +105,7 @@ label {
 #modificar {
 
     color : #ff3333;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 #pdf{
@@ -108,7 +115,7 @@ label {
 }
 
 #icono2 {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #icono {
@@ -119,6 +126,7 @@ label {
 #azul {
     color : darkslateblue;
 }
+
 
 
 

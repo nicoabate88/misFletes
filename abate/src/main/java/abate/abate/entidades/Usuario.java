@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Usuario {
@@ -15,22 +16,23 @@ public class Usuario {
     private String usuario;
     private String password;
     private String rol;
-    private String cuil;
-    private String dominio;
+    private Long cuil;
     private Double porcentaje;
+    @OneToOne
+    private Camion camion;
 
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String usuario, String password, String rol, String cuil, String dominio, Double porcentaje) {
+    public Usuario(Long id, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, Camion camion) {
         this.id = id;
         this.nombre = nombre;
         this.usuario = usuario;
         this.password = password;
         this.rol = rol;
         this.cuil = cuil;
-        this.dominio = dominio;
         this.porcentaje = porcentaje;
+        this.camion = camion;
     }
 
     public Long getId() {
@@ -73,20 +75,12 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public String getCuil() {
+    public Long getCuil() {
         return cuil;
     }
 
-    public void setCuil(String cuil) {
+    public void setCuil(Long cuil) {
         this.cuil = cuil;
-    }
-
-    public String getDominio() {
-        return dominio;
-    }
-
-    public void setDominio(String dominio) {
-        this.dominio = dominio;
     }
 
     public Double getPorcentaje() {
@@ -97,4 +91,15 @@ public class Usuario {
         this.porcentaje = porcentaje;
     }
 
+    public Camion getCamion() {
+        return camion;
+    }
+
+    public void setCamion(Camion camion) {
+        this.camion = camion;
+    }
+
+    
+
+    
 }
