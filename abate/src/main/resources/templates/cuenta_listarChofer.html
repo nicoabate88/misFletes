@@ -23,15 +23,15 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <h6 th:text="'Total Saldo: $'+${saldo}"></h6>  
+                                    <h6 th:text="'Total Saldo $'+${saldo}"></h6>  
                                 </div>
                                 <div th:each="cuenta : ${cuentas}">
                                     <div class="card mb-1" id="color-card">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-9">
-                                                    <h6 th:text="'Chofer: '+${cuenta.chofer.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="'Saldo: $'+${cuenta.saldo}"></h6>
+                                                    <h6 th:text="'Chofer '+${cuenta.chofer.nombre}"></h6>
+                                                    <h6 id="dimgray" th:text="'Saldo $'+${cuenta.saldo}"></h6>
                                                 </div>
                                                 <div class="col-3">
                                                     <div class="text-center">

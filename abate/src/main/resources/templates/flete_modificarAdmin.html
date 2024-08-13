@@ -58,7 +58,7 @@
                                                 <option selected th:text="${flete.camion.dominio}" th:value="${flete.camion.id}"></option>
                                                 <option th:each="camion : ${camiones}"
                                                         th:value="${camion.id}"
-                                                        th:text="${camion.dominio}"/>
+                                                        th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"/>
                                             </select>
                                         </div>     
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
@@ -100,13 +100,14 @@
                                         </div>
                                           
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="tipo" class="form-floting">Tipo de Cereal</label>
+                                            <label for="tipo" class="form-floting">Tipo de Carga</label>
                                             <select class="form-control" id="tipo" name="tipoCereal" required>
                                                 <option selected th:text="${flete.tipoCereal}" th:value="${flete.tipoCereal}"></option>
                                                 <option value="SOJA">SOJA</option>
                                                 <option value="MAIZ">MAIZ</option>
                                                 <option value="TRIGO">TRIGO</option>
                                                 <option value="GIRASOL">GIRASOL</option>
+                                                <option value="ROLLOS">ROLLOS</option>
                                                 <option value="OTRO">OTRO</option>
                                             </select>
                                         </div>
@@ -174,10 +175,9 @@
                                             <span class="input-group-text">$</span>
                                             <input type="number" class="form-control" id="validationDefault02" th:value="${flete.porcentajeChofer}" readonly>
                                             </div>    
-                                        </div>
+                                        </div>   
                                          
-                                         
-                                        <div class="row col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5" th:if="${flete.estado != 'PENDIENTE'}">
+                                        <div class="row col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5" th:if="${flete.estado != 'PENDIENTE'}">
                                             
                                             <div class="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
                                                     <div class="form-check">
@@ -200,13 +200,9 @@
                                                             </svg>
                                                         </a>
                                             </div>
-                                           
-                                        </div>   
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5">
-                                               
                                         </div>    
-                                        <div class="d-none d-sm-block col-lg-6 col-xl-6" th:if="${flete.estado != 'PENDIENTE'}">
-                                            </div>    
+                                        <div class="d-none d-sm-block col-sm-6 col-md-6 col-lg-9 col-xl-9" th:if="${flete.estado != 'PENDIENTE'}">
+                                        </div>    
                                             
                                         <div class="row text-center mb-5">
                                             <div class="col-8 col-md-8">
@@ -235,31 +231,38 @@
                                                     if (fechaFlete < fechaCarga) {
                                                     alert('Fecha de Flete debe ser igual o mayor que Fecha de Carga');
                                                     event.preventDefault(); // Evita que el formulario se envíe
+                                                    return;
                                                 }
             
                                                     if (km <= 0) {
                                                     alert('KM de Flete debe ser mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                  if (tarifa <= 0) {
                                                     alert('Tarifa debe ser mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                 if (kg <= 0) {
                                                     alert('KG debe ser mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                 if (comision < 0) {
                                                     alert('Comisión de Tpte debe ser igual o mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                 if (iva < 0) {
                                                     alert('IVA debe ser igual o mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                 if (porcentaje < 0) {
                                                     alert('Porcentaje Chofer debe ser igual o mayor que 0');
                                                     event.preventDefault(); // Prevenir el envío del formulario
+                                                    return;
                                                 }
                                                 });
                                                 

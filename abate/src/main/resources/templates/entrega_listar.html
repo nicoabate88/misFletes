@@ -27,9 +27,9 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="card-body">
-                                                    <h6 th:text="'Importe: $'+${entrega.importe}"></h6>
-                                                    <h6 id="dimgray" th:text="'Chofer: '+${entrega.chofer.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="'Fecha: '+${entrega.fecha}"></h6>
+                                                    <h6 th:text="'Importe $'+${entrega.importe}"></h6>
+                                                    <h6 id="dimgray" th:text="'Fecha '+${entrega.fecha}+' - ID'+${entrega.idEntrega}"></h6>
+                                                    <p id="dimgray" class="mb-1" th:text="'Chofer '+${entrega.chofer.nombre}"></p>
                                                     <p class='mb-0' id="dimgray" th:text="${entrega.observacion}"></p>
                                                 </div>
                                             </div>

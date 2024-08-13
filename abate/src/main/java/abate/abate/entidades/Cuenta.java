@@ -14,6 +14,7 @@ public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idOrg;
     @OneToOne
     private Cliente cliente;
     @OneToOne
@@ -25,8 +26,9 @@ public class Cuenta {
     public Cuenta() {
     }
 
-    public Cuenta(Long id, Cliente cliente, Usuario chofer, Double saldo, List<Transaccion> transaccion) {
+    public Cuenta(Long id, Long idOrg, Cliente cliente, Usuario chofer, Double saldo, List<Transaccion> transaccion) {
         this.id = id;
+        this.idOrg = idOrg;
         this.cliente = cliente;
         this.chofer = chofer;
         this.saldo = saldo;
@@ -39,6 +41,14 @@ public class Cuenta {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public Cliente getCliente() {
@@ -72,5 +82,7 @@ public class Cuenta {
     public void setTransaccion(List<Transaccion> transaccion) {
         this.transaccion = transaccion;
     }
+    
+    
 
 }

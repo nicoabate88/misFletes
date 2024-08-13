@@ -20,41 +20,37 @@
                                                 </svg> 
                                             </a>   
                                         </div>
-                                        <div  class="col-10">
+                                        <div  class="col-7">
                                             <h4>Fletes</h4>
+                                        </div>
+                                         <div class="col-3 text-center" th:if="${flag == true}">
+                                            <form class="row g-3" th:action="@{/flete/exportarAdminIdChofer}" method="POST">
+                                                   <input hidden th:value="${desde}" name="desde"> 
+                                                   <input hidden th:value="${hasta}" name="hasta">    
+                                                   <input hidden th:value="${chofer.id}" name="idChofer">       
+                                                       <button class="btn btn-light" type="submit">
+                                                           <h6 id="icono">Exportar</h6> 
+                                                       </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="card-header mb-2" id="bgWhite">
-                                    <form class="row container mb-0" th:action="@{/flete/exportar}" method="POST">
-                                        <input hidden th:value="${desde}" name="desde">
-                                            <input hidden th:value="${hasta}" name="hasta">
-                                                <input hidden th:value="${chofer.id}" name="id">
-                                        <div class="row">
-                                            <div class="col-6 col-md-3 col-lg-3 col-xl-3">
-                                                <label for="desde" class="form-label">Desde</label>
-                                                <input type="date" class="form-control" id="desde" th:value="${desde}" disabled readonly>
-                                            </div>
-                                            <div class="col-6 col-md-3 col-lg-3 col-xl-3">
-                                                <label for="hasta" class="form-label">Hasta</label>
-                                                <input type="date" class="form-control" id="hasta" th:value="${hasta}" disabled readonly>                                                                                          
-                                            </div> 
-                                            <div class="col-10 col-md-4 col-lg-4 col-xl-4">
+                                    <div class="row">
+                                        <div class="col-6 col-md-3 col-lg-3 col-xl-3">
+                                            <label for="desde" class="form-label">Desde</label>
+                                            <input type="date" class="form-control" id="desde" th:value="${desde}" disabled readonly>
+                                        </div>
+                                        <div class="col-6 col-md-3 col-lg-3 col-xl-3">
+                                            <label for="hasta" class="form-label">Hasta</label>
+                                            <input type="date" class="form-control" id="hasta" th:value="${hasta}" disabled readonly>                                                                                          
+                                        </div> 
+                                        <div class="col-10 col-md-4 col-lg-4 col-xl-4">
                                             <label for="chofer" class="form-floting">Chofer</label>
                                             <input type="text" class="form-control" id="chofer" th:value="${chofer.nombre}" disabled readonly>
                                         </div>
-                                        
-                                        <div class="col-1">
-                                                  <label for="ver" class="form-floting">Exportar</label> 
-                                                    <button id="ver"  class="btn btn-primary" type="submit">
-                                                        <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="24" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16">
-                                                            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0"/>
-                                                        </svg>
-                                                    </button>
-                                            </div>
-                                            </div>                                    
-                                    </form>   
+                                    </div>                                    
                                 </div>
 
                              <div th:each="flete : ${fletes}">
@@ -64,7 +60,7 @@
                                             <div class="col-9 col-md-9">
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID '+${flete.id}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p class="mb-0" id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
                                                     <p class="mb-1" id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>

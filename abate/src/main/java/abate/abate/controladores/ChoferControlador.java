@@ -4,6 +4,8 @@ import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.servicios.CamionServicio;
 import abate.abate.servicios.ChoferServicio;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,9 +28,11 @@ public class ChoferControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrar")
-    public String registrar(ModelMap modelo) {
+    public String registrar(ModelMap modelo, HttpSession session) {
         
-        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc());
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
 
         return "chofer_registrar.html";
     }
@@ -37,16 +41,18 @@ public class ChoferControlador {
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre, @RequestParam Long cuil, @RequestParam(required = false) Long idCamion,
             @RequestParam Double porcentaje, @RequestParam String nombreUsuario, @RequestParam String password,
-            @RequestParam String password2, ModelMap modelo) {
+            @RequestParam String password2, ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
-            choferServicio.crearChofer(nombre, cuil, idCamion, nombreUsuario, porcentaje, password, password2);
+            choferServicio.crearChofer(logueado.getIdOrg(), nombre, cuil, idCamion, nombreUsuario, porcentaje, password, password2);
             Long id = choferServicio.buscarUltimo();
             modelo.put("chofer", choferServicio.buscarChofer(id));
             modelo.put("exito", "Chofer REGISTRADO con éxito");
 
-            return "chofer_mostrar.html";
+            return "chofer_registrado.html";
 
         } catch (MiException ex) {
 
@@ -62,9 +68,10 @@ public class ChoferControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/listar")
-    public String listar(ModelMap modelo) {
-
-        modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc());
+    public String listar(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc(logueado.getIdOrg()));
 
         return "chofer_listar.html";
     }
@@ -80,10 +87,12 @@ public class ChoferControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable Long id, ModelMap modelo) {
+    public String modificar(@PathVariable Long id, ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.put("chofer", choferServicio.buscarChofer(id));
-        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc());
+        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
 
         return "chofer_modificar.html";
 
@@ -91,15 +100,28 @@ public class ChoferControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/modifica/{id}")
-    public String modifica(@RequestParam Long id, @RequestParam String nombre, @RequestParam Long cuil, 
-            @RequestParam(required = false) Long idCamion, @RequestParam Double porcentaje, @RequestParam String nombreUsuario, ModelMap modelo) {
-        
-        choferServicio.modificarChofer(id, nombre, cuil, idCamion, nombreUsuario, porcentaje);
+    public String modifica(@RequestParam Long id, @RequestParam String nombre, @RequestParam Long cuil,
+            @RequestParam(required = false) Long idCamion, @RequestParam Double porcentaje, @RequestParam String nombreUsuario, ModelMap modelo, HttpSession session) {
 
-        modelo.put("chofer", choferServicio.buscarChofer(id));
-        modelo.put("exito", "Chofer MODIFICADO con éxito");
+        try {
+            choferServicio.modificarChofer(id, nombre, cuil, idCamion, nombreUsuario, porcentaje);
 
-        return "chofer_mostrar.html";
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.put("exito", "Chofer MODIFICADO con éxito");
+
+            return "chofer_registrado.html";
+
+        } catch (MiException ex) {
+
+            Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
+            modelo.put("error", ex.getMessage());
+            
+            return "chofer_modificar.html";
+
+        }
 
     }
 

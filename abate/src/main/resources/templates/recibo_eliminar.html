@@ -27,14 +27,14 @@
 
                                 <div class="card mb-4" id="color-card">
                                     <div class="card-body">
-                                        <h6 th:text="'Importe: $'+${recibo.importe}"></h6>
-                                        <h6 id="dimgray" th:text="'Cliente: '+${recibo.cliente.nombre}"></h6>
-                                        <h6 id="dimgray" th:text="'Fecha: '+${recibo.fecha}"></h6>
+                                        <h6 th:text="'Importe $'+${recibo.importe}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha '+${recibo.fecha}+' - ID'+${recibo.idRecibo}"></h6>
+                                        <p id="dimgray" class="mb-1" th:text="'Cliente '+${recibo.cliente.nombre}"></p>
                                         <p class="mb-0" id="dimgray" th:text="${recibo.observacion}"></p>
                                     </div>
                                 </div>
                                 
-                                <div th:if="${error == null}" class="card-header mb-4 col-md-6 text-center">
+                                <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
                                     <h6 id="white">¿Seguro desea ELIMINAR este Recibo?</h6>
                                 </div>
                                 <div th:if="${error != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        

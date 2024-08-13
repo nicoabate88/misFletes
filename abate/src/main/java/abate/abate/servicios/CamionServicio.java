@@ -32,9 +32,9 @@ public class CamionServicio {
     
     
     @Transactional
-    public void crearCamion(String marca, String modelo, String dominio) throws MiException {
+    public void crearCamion(Long idOrg, String marca, String modelo, String dominio) throws MiException {
 
-        validarDatos(dominio);
+        validarDatos(idOrg, dominio);
         
         Camion camion = new Camion();
 
@@ -42,6 +42,7 @@ public class CamionServicio {
         String modeloMayusculas = modelo.toUpperCase();
         String dominioMayusculas = dominio.toUpperCase();
 
+        camion.setIdOrg(idOrg);
         camion.setMarca(marcaMayusculas);
         camion.setModelo(modeloMayusculas);
         camion.setDominio(dominioMayusculas);
@@ -51,14 +52,15 @@ public class CamionServicio {
     }
     
     @Transactional
-    public void modificarCamion(Long id, String marca, String modelo, String dominio) {
+    public void modificarCamion(Long id, String marca, String modelo, String dominio) throws MiException {
 
         Camion camion = new Camion();
         Optional<Camion> cam = camionRepositorio.findById(id);
         if (cam.isPresent()) {
             camion = cam.get();
         }
-
+        validarDatosModificar(camion, dominio);
+        
         String marcaMayusculas = marca.toUpperCase();
         String modeloMayusculas = modelo.toUpperCase();
         String dominioMayusculas = dominio.toUpperCase();
@@ -91,9 +93,9 @@ public class CamionServicio {
 
     }
     
-     public ArrayList<Camion> buscarCamionesAsc() {
+     public ArrayList<Camion> buscarCamionesAsc(Long idOrg) {
 
-        ArrayList<Camion> lista = (ArrayList<Camion>) camionRepositorio.findAll();
+        ArrayList<Camion> lista = camionRepositorio.buscarCamiones(idOrg);
 
         Collections.sort(lista, CamionComparador.ordenarDominioAsc); 
 
@@ -112,9 +114,9 @@ public class CamionServicio {
 
     } 
      
-    public void validarDatos(String dominio) throws MiException {
+    public void validarDatos(Long idOrg, String dominio) throws MiException {
 
-        ArrayList<Camion> lista = (ArrayList<Camion>) camionRepositorio.findAll();
+        ArrayList<Camion> lista = camionRepositorio.buscarCamiones(idOrg);
 
         for (Camion c : lista) {
             if (c.getDominio().equalsIgnoreCase(dominio)) {
@@ -123,4 +125,16 @@ public class CamionServicio {
         }
     } 
     
+    public void validarDatosModificar(Camion camion, String dominio) throws MiException {
+
+        ArrayList<Camion> lista = camionRepositorio.buscarCamiones(camion.getIdOrg());
+
+        if(!camion.getDominio().equalsIgnoreCase(dominio)){
+        for (Camion c : lista) {
+            if (c.getDominio().equalsIgnoreCase(dominio)) {
+                throw new MiException("El DOMINIO de Camión ya está registrado");
+            }
+        }
+    } 
+    }
 }

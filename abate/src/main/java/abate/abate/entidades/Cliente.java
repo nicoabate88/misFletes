@@ -11,6 +11,7 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idOrg;
     private String nombre;
     private Long cuit;
     private String localidad;
@@ -21,8 +22,9 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(Long id, String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) {
+    public Cliente(Long id, Long idOrg, String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) {
         this.id = id;
+        this.idOrg = idOrg;
         this.nombre = nombre;
         this.cuit = cuit;
         this.localidad = localidad;
@@ -37,6 +39,14 @@ public class Cliente {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public String getNombre() {
@@ -86,5 +96,7 @@ public class Cliente {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    
 
 }

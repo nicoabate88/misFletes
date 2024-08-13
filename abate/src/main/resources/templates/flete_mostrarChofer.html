@@ -31,7 +31,7 @@
                                             <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID '+${flete.id}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}+' ' +${flete.kmFlete} +' KM'"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.tipoCereal}+' '+${flete.kgFlete}+' KG - Tarifa $'+${flete.tarifa}"></h6>
@@ -40,7 +40,7 @@
                                                     <p id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
                                                     <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}" th:if="${flete.estado == 'ACEPTADO'}"></h6>
-                                                    <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}"></h6>
+                                                    <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}+' - '+${flete.camion.marca}+' '+${flete.camion.modelo}"></h6>
                                                     <p id="dimgray" th:text="'Gasto: $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                                 </div>
                                             </div>
@@ -87,7 +87,7 @@
                                         </div>
                                     </div>    
                                     
-                                    <div th:if="${exito != null}" class="card-body mb-4 col-md-5 text-center" id="mensaje">                        
+                                    <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                         <h6 id="white" th:text="${exito}"></h6>                                                                             
                                     </div>
                                     

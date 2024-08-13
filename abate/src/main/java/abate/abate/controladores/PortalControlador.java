@@ -26,7 +26,7 @@ public class PortalControlador {
     }
     
     @GetMapping("/index")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER', 'ROLE_CEO')")
     public String index(HttpSession session, ModelMap modelo) {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
@@ -39,12 +39,20 @@ public class PortalControlador {
 
             return "index_chofer.html";
 
-        } else {
+        } else if(logueado.getRol().equalsIgnoreCase("ADMIN")) {
 
             modelo.put("usuario", nombreMayuscula);
             modelo.put("id", logueado.getId());
 
             return "index_admin.html";
+            
+        } else {
+            
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("id", logueado.getId());
+
+            return "index_ceo.html";
+            
         }
 
     }

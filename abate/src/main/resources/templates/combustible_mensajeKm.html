@@ -26,11 +26,11 @@
                                 <div class="card mb-4" id="color-card">
 
                                     <div class="card-body">
-                                        <h6 th:text="'Es necesario registrar KM de Camión:'"></h6>
-                                        <h6 id="dimgray" th:text="'Dominio '+${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
+                                        <h6 th:text="'Es necesario registrar KM de Camión'"></h6>
+                                        <h6 id="dimgray" th:text="'Camión '+${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
                                     </div>
                                 </div>
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
                                 <div class="row text-center">

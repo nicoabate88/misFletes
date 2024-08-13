@@ -43,6 +43,18 @@ public class DetalleServicio {
         return lista;
 
     }
+    
+    @Transactional
+    public void cancelarDetalle(Long idFlete) {
+
+        ArrayList<Detalle> lista = detalleRepositorio.buscarDetallesFlete(idFlete);
+
+        if (!lista.isEmpty()) {
+            for (Detalle d : lista) {
+                eliminarDetalle(d.getId());
+            }
+        }
+    }
 
     @Transactional
     public void eliminarDetalle(Long id) {

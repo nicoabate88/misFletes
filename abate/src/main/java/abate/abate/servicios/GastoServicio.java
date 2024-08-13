@@ -31,7 +31,7 @@ public class GastoServicio {
     private FleteRepositorio fleteRepositorio;
 
     @Transactional
-    public void crearGasto(Long idFlete, Long idUsuario) throws ParseException {
+    public void crearGasto(Long idOrg, Long idFlete, Long idUsuario) throws ParseException {
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
@@ -51,9 +51,10 @@ public class GastoServicio {
             importe = importe + d.getTotal();
         }
 
-        String nombre = "GASTO FTE ID " + idFlete;
+        String nombre = "GASTO FTE ID" + idFlete;
         Gasto gasto = new Gasto();
 
+        gasto.setIdOrg(idOrg);
         gasto.setChofer(flete.getChofer());
         gasto.setFecha(flete.getFechaFlete());
         gasto.setNombre(nombre);

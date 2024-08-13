@@ -15,6 +15,8 @@ public class Recibo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idRecibo;
+    private Long idOrg;
     @OneToOne
     private Cliente cliente;
     @Temporal(TemporalType.DATE)
@@ -27,8 +29,10 @@ public class Recibo {
     public Recibo() {
     }
 
-    public Recibo(Long id, Cliente cliente, Date fecha, Double importe, String observacion, Usuario usuario) {
+    public Recibo(Long id, Long idRecibo, Long idOrg, Cliente cliente, Date fecha, Double importe, String observacion, Usuario usuario) {
         this.id = id;
+        this.idRecibo = idRecibo;
+        this.idOrg = idOrg;
         this.cliente = cliente;
         this.fecha = fecha;
         this.importe = importe;
@@ -42,6 +46,22 @@ public class Recibo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdRecibo() {
+        return idRecibo;
+    }
+
+    public void setIdRecibo(Long idRecibo) {
+        this.idRecibo = idRecibo;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public Cliente getCliente() {
@@ -84,4 +104,5 @@ public class Recibo {
         this.usuario = usuario;
     }
 
+    
 }

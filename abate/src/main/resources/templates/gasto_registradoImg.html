@@ -60,16 +60,15 @@
                                                 <th></th>
                                                 <td></td>
                                                 <td></td>
-                                                <th id="darkblue">TOTAL:</th>
+                                                <th id="darkblue">TOTAL</th>
                                                 <th id="darkblue" th:text="'$'+${gasto.importe}"></th>
                                                 <td></td>
                                             </tr>
                                         </table>
                                     </div>
-
                                 </div>
 
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
 

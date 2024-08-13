@@ -20,8 +20,18 @@
                                                 </svg> 
                                             </a>   
                                         </div>
-                                        <div  class="col-10">
+                                        <div  class="col-7">
                                             <h4>Fletes</h4>
+                                        </div>
+                                        <div class="col-3 text-center" th:if="${flag == true}">
+                                            <form class="row g-3" th:action="@{/flete/exportarAdminDesdeChofer}" method="POST">
+                                                <input hidden th:value="${desde}" name="desde"> 
+                                                <input hidden th:value="${hasta}" name="hasta">    
+                                                <input hidden th:value="${chofer.id}" name="idChofer">       
+                                                    <button class="btn btn-light" type="submit">
+                                                          <h6 id="icono">Exportar</h6> 
+                                                    </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -57,7 +67,7 @@
                                             <div class="col-9 col-md-9">
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID '+${flete.id}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p class="mb-0" id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
                                                     <p class="mb-1" id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>

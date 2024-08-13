@@ -33,9 +33,9 @@ public class ChoferServicio {
     private CombustibleRepositorio combustibleRepositorio;
 
     @Transactional
-    public void crearChofer(String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
+    public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
 
-        validarDatos(nombre, nombreUsuario, cuil, password, password2);
+        validarDatos(idOrg, nombre, nombreUsuario, cuil, password, password2);
         String nombreM = nombre.toUpperCase();
         
         Usuario user = new Usuario();
@@ -48,7 +48,8 @@ public class ChoferServicio {
         }
         user.setCamion(camion);
         }
-
+        
+        user.setIdOrg(idOrg);
         user.setNombre(nombreM);
         user.setCuil(cuil);
         user.setUsuario(nombreUsuario);
@@ -63,7 +64,7 @@ public class ChoferServicio {
     }
 
     @Transactional
-    public void modificarChofer(Long id, String nombre, Long cuil, Long  idCamion, String nombreUsuario, Double porcentaje) {
+    public void modificarChofer(Long id, String nombre, Long cuil, Long  idCamion, String nombreUsuario, Double porcentaje) throws MiException {
 
         String nombreM = nombre.toUpperCase();
 
@@ -72,6 +73,8 @@ public class ChoferServicio {
         if (u.isPresent()) {
             user = u.get();
         }
+        
+        validarDatosModificar(user, nombre, nombreUsuario, cuil);
         
         if(idCamion != 0){
         Camion camion = new Camion();
@@ -118,40 +121,84 @@ public class ChoferServicio {
         return usuarioRepositorio.getById(id);
 
     }
+    
+     public ArrayList<Usuario> bucarChoferesNombreAsc(Long idOrg) {
 
-    public ArrayList<Usuario> bucarChoferesNombreAsc() {
-
-        ArrayList<Usuario> lista = usuarioRepositorio.buscarUsuariosChofer();
+        ArrayList<Usuario> lista = usuarioRepositorio.buscarUsuariosChofer(idOrg);
 
         Collections.sort(lista, ChoferComparador.ordenarNombreAsc);
 
         return lista;
     }
+     
+    public ArrayList<Usuario> bucarUsuarios(Long idOrg) {
+
+        ArrayList<Usuario> lista = usuarioRepositorio.buscarUsuarios(idOrg);
+
+        return lista;
+    } 
 
     public Long buscarUltimo() {
 
         return usuarioRepositorio.ultimoUsuario();
     }
 
-    public void validarDatos(String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {
+    public void validarDatos(Long idOrg, String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {
 
-        ArrayList<Usuario> lista = (ArrayList<Usuario>) usuarioRepositorio.findAll();
-
+        ArrayList<Usuario> lista = bucarUsuarios(idOrg);
         for (Usuario u : lista) {
-            if (u.getNombre().equalsIgnoreCase(nombre)) {
-                throw new MiException("El nombre de Chofer ya se encuentra registrado");
-            }
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
                 throw new MiException("El nombre de Usuario ya se encuentra registrado");
             }
-            if (u.getCuil() == cuil) {
-                throw new MiException("El CUIL de Usuario ya se encuentra registrado");
+        }
+
+        ArrayList<Usuario> listaChoferes = usuarioRepositorio.buscarUsuariosChofer(idOrg);
+        for (Usuario u : listaChoferes) {
+            if (u.getNombre().equalsIgnoreCase(nombre)) {
+                throw new MiException("El nombre de Chofer ya se encuentra registrado");
+            }
+            if (u.getCuil().equals(cuil)) {
+                throw new MiException("El CUIL de Chofer ya se encuentra registrado");
             }
         }
+
         if (!password.equals(password2)) {
             throw new MiException("Las contraseñas ingresadas deben ser iguales");
         }
 
     }
+    
+     public void validarDatosModificar(Usuario user, String nombre, String nombreUsuario, Long cuil) throws MiException {
+
+        ArrayList<Usuario> lista = bucarUsuarios(user.getIdOrg());
+        
+        if(!user.getUsuario().equalsIgnoreCase(nombreUsuario)){
+        for(Usuario u: lista){    
+            if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+                throw new MiException("El nombre de Usuario ya se encuentra registrado");
+            }
+        }
+        }
+        
+        ArrayList<Usuario> listaChoferes = usuarioRepositorio.buscarUsuariosChofer(user.getIdOrg());
+        
+        if(!user.getNombre().equalsIgnoreCase(nombre)){
+        for (Usuario u : listaChoferes) {
+            if (u.getNombre().equalsIgnoreCase(nombre)) {
+                throw new MiException("El nombre de Chofer ya se encuentra registrado");
+            }
+        }
+        }
+        
+        if(!user.getCuil().equals(cuil)){
+            for(Usuario u: listaChoferes){
+            if (u.getCuil().equals(cuil)) {
+                throw new MiException("El CUIL de Chofer ya se encuentra registrado");
+            }
+            }
+        }
+        }
+
+    
 
 }

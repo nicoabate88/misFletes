@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                                 
-                                <div th:if="${exito != null}" class="card-body mb-2 col-md-5 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-2 text-center" id="mensaje">                        
                                         <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
 
@@ -43,7 +43,7 @@
                                             <div class="col-9 col-md-9">
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID '+${flete.id}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p class="mb-0" id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
                                                     <p class="mb-1" id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>

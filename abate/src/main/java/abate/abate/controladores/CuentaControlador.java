@@ -2,6 +2,7 @@ package abate.abate.controladores;
 
 import abate.abate.entidades.Cuenta;
 import abate.abate.entidades.Transaccion;
+import abate.abate.entidades.Usuario;
 import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.EntregaServicio;
 import abate.abate.servicios.FleteServicio;
@@ -10,6 +11,7 @@ import abate.abate.servicios.ReciboServicio;
 import abate.abate.servicios.TransaccionServicio;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -37,10 +39,12 @@ public class CuentaControlador {
     private EntregaServicio entregaServicio;
 
     @GetMapping("/listarChofer")
-    public String listarChofer(ModelMap modelo) {
+    public String listarChofer(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         Double total = 0.0;
-        ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasChofer();
+        ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasChofer(logueado.getIdOrg());
         for (Cuenta c : cuentas) {
             total = total + c.getSaldo();
         }
@@ -83,10 +87,12 @@ public class CuentaControlador {
     }
 
     @GetMapping("/listarCliente")
-    public String listarCliente(ModelMap modelo) {
+    public String listarCliente(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         Double total = 0.0;
-        ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasCliente();
+        ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasCliente(logueado.getIdOrg());
         for (Cuenta c : cuentas) {
             total = total + c.getSaldo();
         }

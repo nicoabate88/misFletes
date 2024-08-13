@@ -19,8 +19,15 @@
                             </svg> 
                         </a>   
                     </div>
-                    <div  class="col-10">
+                    <div  class="col-7">
                         <h4>Modificar Imagen de Gasto</h4>
+                    </div>
+                    <div  class="col-3 text-center">
+                        <a th:href="@{/imagen/eliminarGasto/__${id}__}">
+                            <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                                <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"/>
+                            </svg>  <h6 id="icono">Eliminar</h6> </a>
                     </div>
                 </div>
             </div>
@@ -30,7 +37,7 @@
                 <form class="row g-3" th:action="@{/imagen/modificaGasto}" method="POST" enctype="multipart/form-data">
                     <input hidden th:value="${id}" name="id"> 
                         <div class="col-12 mb-5">
-                            <label id="darkblue" for="file">Cargar Imagen de Gasto:</label>
+                            <label id="darkblue" for="file">Cargar Imagen de Gasto</label>
                             <input type="file" id="file" name="file" accept="image/*" required>
                         </div>    
                         
@@ -45,17 +52,28 @@
                 </form>
             </div>
 
-            </div>
-        
+            </div>     
          <script>
-                                document.getElementById('file').onchange = function () {
+                                document.getElementById('file').onchange = function () {                            
+                                       
+                                    const file = this.files[0];
+                                    const fileType = file.type;                        
+                                    
                                     if (this.files[0].size > 5 * 1024 * 1024) { // 5MB in bytes
                                         alert("La imagen es demasiado grande. El tamaño máximo permitido es 5MB.");
                                         this.value = ''; // Clear the input
+                                        return;
                                     }
+                                    
+                                     // Verifica el tipo de archivo (imágenes o PDF)
+                                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+                                    if (!allowedTypes.includes(fileType)) {
+                                    alert("El archivo debe ser de tipo jpeg, png, gif o pdf");
+                                    this.value = ''; // Limpia el input
+                                    return; // Detiene la ejecución del script
+                                   }
                                 };
                             </script>
-
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     </body>

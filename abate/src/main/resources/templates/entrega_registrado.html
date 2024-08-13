@@ -24,13 +24,13 @@
                                 </div>
                                 <div class="card mb-4" id="color-card">
                                             <div class="card-body">
-                                                <h6 th:text="'Importe: $'+${importe}"></h6>
-                                                <h6 id="dimgray" th:text="'Chofer: '+${entrega.chofer.nombre}"></h6>
-                                                <h6 id="dimgray" th:text="'Fecha: '+${fecha}"></h6>
+                                                <h6 th:text="'Importe $'+${importe}"></h6>
+                                                <h6 id="dimgray" th:text="'Fecha '+${fecha}+' - ID'+${entrega.idEntrega}"></h6>
+                                                <p id="dimgray" class="mb-1" th:text="'Chofer '+${entrega.chofer.nombre}"></p>
                                                 <p class="mb-0" id="dimgray" th:text="${entrega.observacion}"></p>
                                             </div>
                                 </div>
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
                                 <div class="col-2">

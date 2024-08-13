@@ -32,9 +32,11 @@ public class EntregaControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrar")
-    public String registrarEntrega(ModelMap modelo) {
+    public String registrarEntrega(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasChofer());
+        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasChofer(logueado.getIdOrg()));
 
         return "entrega_registrar.html";
     }
@@ -60,7 +62,7 @@ public class EntregaControlador {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        entregaServicio.crearEntrega(idChofer, fecha, importe, observacion, logueado.getId());
+        entregaServicio.crearEntrega(logueado.getIdOrg(), idChofer, fecha, importe, observacion, logueado.getId());
         Long id = entregaServicio.buscarUltimo();
         Entrega entrega = entregaServicio.buscarEntrega(id);
         String total = convertirNumeroMiles(entrega.getImporte());
@@ -75,9 +77,11 @@ public class EntregaControlador {
     }
 
     @GetMapping("/listar")
-    public String listar(ModelMap modelo) {
+    public String listar(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("entregas", entregaServicio.buscarEntregas());
+        modelo.addAttribute("entregas", entregaServicio.buscarEntregas(logueado.getIdOrg()));
 
         return "entrega_listar.html";
     }
@@ -107,10 +111,12 @@ public class EntregaControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable Long id, ModelMap modelo) {
+    public String modificar(@PathVariable Long id, ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.put("entrega", entregaServicio.buscarEntrega(id));
-        modelo.addAttribute("clientes", choferServicio.bucarChoferesNombreAsc());
+        modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc(logueado.getIdOrg()));
 
         return "entrega_modificar.html";
 

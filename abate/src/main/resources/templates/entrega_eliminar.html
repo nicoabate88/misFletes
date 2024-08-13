@@ -24,14 +24,14 @@
                                 </div>
                                 <div class="card mb-4" id="color-card">
                                             <div class="card-body">
-                                                <h6 th:text="'Importe: $'+${entrega.importe}"></h6>
-                                                <h6 id="dimgray" th:text="'Chofer: '+${entrega.chofer.nombre}"></h6>
-                                                <h6 id="dimgray" th:text="'Fecha: '+${entrega.fecha}"></h6>
-                                                <p class="mb-0" id="dimgray" th:text="'Observación: '+${entrega.observacion}"></p>
+                                                <h6 th:text="'Importe $'+${entrega.importe}"></h6>
+                                                <h6 id="dimgray" th:text="'Chofer '+${entrega.chofer.nombre}"></h6>
+                                                <h6 id="dimgray" th:text="'Fecha '+${entrega.fecha}+' - ID'+${entrega.idEntrega}"></h6>
+                                                <p class="mb-0" id="dimgray" th:text="${entrega.observacion}"></p>
                                             </div>
                                         </div>
 
-                                <div th:if="${error == null}" class="card-header mb-4 col-md-6 text-center">
+                                <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
                                     <h6 id="white">¿Seguro desea ELIMINAR esta Entrega?</h6>
                                 </div>
                                 <div th:if="${error != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        

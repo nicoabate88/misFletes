@@ -25,14 +25,13 @@
                                 
                                 <div class="card mb-4" id="color-card">
                                     <div class="card-body">
-                                        <h6 th:text="'Camión '+${carga.camion.dominio}"></h6>
-                                        <h6 id="dimgray" th:text="'Marca '+${carga.camion.marca}+' Modelo '+${carga.camion.modelo}"></h6>
-                                        <p class="mb-1" id="dimgray" th:text="'Fecha: '+${fecha}"></p>
-                                        <p class="mb-1" id="dimgray" th:text="'Km Camión '+${carga.kmCarga}"></p>
+                                        <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha '+${fecha}"></h6>
+                                        <p class="mb-1" id="dimgray" th:text="${carga.kmCarga}+' Km'"></p>
                                     </div>
                                 </div>
                           
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-6 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
                                 <div class="col-2">

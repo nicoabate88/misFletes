@@ -60,7 +60,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFlete(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Gasto Flete ID" + id);
+        imagen.setNombre("Gasto Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         
         if(file.getContentType().equals("application/pdf")){
@@ -127,7 +127,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFlete(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("CP Flete ID" + id);
+        imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -138,7 +138,6 @@ public class ImagenControlador {
         imagenServicio.crearImagenCP(id, imagen);
 
         modelo.put("flete", flete);
-        modelo.put("exito", "CP CARGADA con éxito");
 
         return "imagen_descargaCargarDesdeFlete.html";
 
@@ -150,7 +149,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFlete(id);
         
         Imagen imagen = new Imagen();
-        imagen.setNombre("CP Flete ID" + id);
+        imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -187,7 +186,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFlete(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Descarga Flete ID" + id);
+        imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -224,7 +223,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFlete(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Descarga Flete ID" + id);
+        imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -235,7 +234,7 @@ public class ImagenControlador {
         imagenServicio.crearImagenDescarga(id, imagen);
 
         modelo.put("flete", flete);
-        modelo.put("exito", "Ticket de Descarga CARGADO con éxito");
+        modelo.put("exito", "CP y Ticket de Descarga CARGADO con éxito");
 
         return "flete_agregarGasto.html";
 
@@ -305,7 +304,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFleteIdGasto(gasto.getId());
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Gasto Flete ID" + flete.getId());
+        imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -321,6 +320,44 @@ public class ImagenControlador {
 
         return "gasto_registradoImg.html";
 
+    }
+    
+    @GetMapping("/eliminarGasto/{id}")
+    public String eliminarGasto(@PathVariable Long id, ModelMap model) {
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        model.addAttribute("imagenNombre", imagen.getNombre());
+        model.addAttribute("id", id);
+        
+
+        return "imagen_eliminarGasto.html";
+    }
+    
+    @GetMapping("/eliminaGasto/{id}")
+    public String eliminaGasto(@PathVariable Long id, HttpSession session, ModelMap modelo) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        imagenServicio.eliminarImagenGasto(id);
+        
+        String nombreMayuscula = logueado.getUsuario().toUpperCase();
+
+        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("chofer", logueado);
+            modelo.put("exito", "Imagen de Gasto ELIMINADA con éxito");
+
+            return "index_chofer.html";
+
+        } else {
+
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("id", logueado.getId());
+            modelo.put("exito", "Imagen de Gasto ELIMINADA con éxito");
+
+            return "index_admin.html";
+        }
     }
 
     @GetMapping("/verCP/{id}")
@@ -358,6 +395,19 @@ public class ImagenControlador {
         }
     }
     
+    @GetMapping("/ver-pdf/{id}")
+    public ResponseEntity<byte[]> verPdf(@PathVariable Long id) {
+    Imagen pdf = imagenServicio.obtenerImagenPorId(id);
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getNombre() + "\"")
+        .header("X-Frame-Options", "ALLOWALL")  // Permite que el contenido se cargue en un iframe
+        .contentType(MediaType.APPLICATION_PDF)
+        .body(pdf.getDatos());
+}
+    
+ 
+    
     @GetMapping("/descargarCPpdf/{id}")
     public String descargarCPpdf(@PathVariable Long id, ModelMap modelo){
         
@@ -384,7 +434,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFleteIdImagenCP(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("CP Flete ID" + flete.getId());
+        imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -414,6 +464,43 @@ public class ImagenControlador {
             
         }
 
+    }
+    
+    @GetMapping("/eliminarCP/{id}")
+    public String eliminarCP(@PathVariable Long id, ModelMap model) {
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        model.addAttribute("imagenNombre", imagen.getNombre());
+        model.addAttribute("id", id);
+
+        return "imagen_eliminarCP.html";
+    }
+    
+    @GetMapping("/eliminaCP/{id}")
+    public String eliminaCP(@PathVariable Long id, HttpSession session, ModelMap modelo) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        imagenServicio.eliminarImagenCP(id);
+        
+        String nombreMayuscula = logueado.getUsuario().toUpperCase();
+
+        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("chofer", logueado);
+            modelo.put("exito", "Carta de Porte ELIMINADA con éxito");
+
+            return "index_chofer.html";
+
+        } else {
+
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("id", logueado.getId());
+            modelo.put("exito", "Carta de Porte ELIMINADA con éxito");
+
+            return "index_admin.html";
+        }
     }
 
     @GetMapping("/verDescarga/{id}")
@@ -477,7 +564,7 @@ public class ImagenControlador {
         Flete flete = fleteServicio.buscarFleteIdImagenDescarga(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Descarga Flete ID" + flete.getId());
+        imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -509,7 +596,44 @@ public class ImagenControlador {
 
     }
     
-     @GetMapping("/verCombustible/{id}")
+    @GetMapping("/eliminarDescarga/{id}")
+    public String eliminarDescarga(@PathVariable Long id, ModelMap model) {
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        model.addAttribute("imagenNombre", imagen.getNombre());
+        model.addAttribute("id", id);
+
+        return "imagen_eliminarDescarga.html";
+    }
+    
+    @GetMapping("/eliminaDescarga/{id}")
+    public String eliminaDescarga(@PathVariable Long id, HttpSession session, ModelMap modelo) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        imagenServicio.eliminarImagenDescarga(id);
+        
+        String nombreMayuscula = logueado.getUsuario().toUpperCase();
+
+        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("chofer", logueado);
+            modelo.put("exito", "Ticket de Descarga ELIMINADA con éxito");
+
+            return "index_chofer.html";
+
+        } else {
+
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("id", logueado.getId());
+            modelo.put("exito", "Ticket de Descarga ELIMINADA con éxito");
+
+            return "index_admin.html";
+        }
+    }
+    
+    @GetMapping("/verCombustible/{id}")
     public String verCombustible(@PathVariable Long id, Model model, HttpSession session) {
 
         Combustible carga = combustibleServicio.buscarCombustible(id);
@@ -533,7 +657,7 @@ public class ImagenControlador {
                 
                 model.addAttribute("imagenNombre", imagen.getNombre());
                 model.addAttribute("id", idImagen);
-                model.addAttribute("idUsuario", carga.getUsuario().getId());
+                model.addAttribute("idCamion", carga.getCamion().getId());
 
                 return "imagen_mostrarCombustiblePdfAdmin.html";
                 
@@ -544,7 +668,7 @@ public class ImagenControlador {
                 model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
                 model.addAttribute("imagenNombre", imagen.getNombre());
                 model.addAttribute("id", idImagen);
-                model.addAttribute("idUsuario", carga.getUsuario().getId());
+                model.addAttribute("idCamion", carga.getCamion().getId());
 
                 return "imagen_mostrarCombustibleAdmin.html";
 
@@ -593,7 +717,7 @@ public class ImagenControlador {
         Combustible carga = combustibleServicio.buscarCombustibleIdImagen(id);
 
         Imagen imagen = new Imagen();
-        imagen.setNombre("Carga de Diesel " + carga.getId());
+        imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
         imagen.setTipo(file.getContentType()); 
         if(file.getContentType().equals("application/pdf")){
         imagen.setDatos(file.getBytes());
@@ -610,6 +734,46 @@ public class ImagenControlador {
             return "combustible_modificado.html";
 
     }
+    
+    @GetMapping("/eliminarCombustible/{id}")
+    public String eliminarCombustible(@PathVariable Long id, ModelMap model) {
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        model.addAttribute("imagenNombre", imagen.getNombre());
+        model.addAttribute("id", id);
+        model.put("carga", combustibleServicio.buscarCombustibleIdImagen(id));
+
+        return "imagen_eliminarCombustible.html";
+    }
+    
+    @GetMapping("/eliminaCombustible/{id}")
+    public String eliminaCombustible(@PathVariable Long id, HttpSession session, ModelMap modelo) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        imagenServicio.eliminarImagenCombustible(id);
+        
+        String nombreMayuscula = logueado.getUsuario().toUpperCase();
+
+        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("chofer", logueado);
+            modelo.put("exito", "Imagen de Combustible ELIMINADA con éxito");
+
+            return "index_chofer.html";
+
+        } else {
+
+            modelo.put("usuario", nombreMayuscula);
+            modelo.put("id", logueado.getId());
+            modelo.put("exito", "Imagen de Combustible ELIMINADA con éxito");
+
+            return "index_admin.html";
+        }
+    }
+    
+    
     
     public byte[] optimizeImage(MultipartFile file) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

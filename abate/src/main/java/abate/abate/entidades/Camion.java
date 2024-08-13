@@ -12,6 +12,7 @@ public class Camion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idOrg;
     private String marca;
     private String modelo;
     private String dominio;
@@ -19,8 +20,9 @@ public class Camion {
     public Camion() {
     }
 
-    public Camion(Long id, String marca, String modelo, String dominio) {
+    public Camion(Long id, Long idOrg, String marca, String modelo, String dominio) {
         this.id = id;
+        this.idOrg = idOrg;
         this.marca = marca;
         this.modelo = modelo;
         this.dominio = dominio;
@@ -32,6 +34,14 @@ public class Camion {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public String getMarca() {
@@ -57,8 +67,6 @@ public class Camion {
     public void setDominio(String dominio) {
         this.dominio = dominio;
     }
-    
-    
     
     
 }

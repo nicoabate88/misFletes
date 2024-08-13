@@ -49,7 +49,7 @@ public class TransaccionServicio {
         transaccion.setCliente(recibo.getCliente());
         transaccion.setFecha(recibo.getFecha());
         transaccion.setConcepto("RECIBO");
-        transaccion.setObservacion("RECIBO ID " + recibo.getId());
+        transaccion.setObservacion("RECIBO ID" + recibo.getIdRecibo());
         transaccion.setImporte(recibo.getImporte() * -1);
         transaccion.setRecibo(recibo);
 
@@ -111,7 +111,7 @@ public class TransaccionServicio {
         transaccion.setChofer(entrega.getChofer());
         transaccion.setFecha(entrega.getFecha());
         transaccion.setConcepto("ENTREGA");
-        transaccion.setObservacion("ENTREGA ID " + entrega.getId());
+        transaccion.setObservacion("ENTREGA ID" + entrega.getIdEntrega());
         transaccion.setImporte(entrega.getImporte() * -1);
         transaccion.setEntrega(entrega);
 
@@ -173,7 +173,7 @@ public class TransaccionServicio {
         transaccion.setChofer(flete.getChofer());
         transaccion.setFecha(flete.getFechaFlete());
         transaccion.setConcepto("FLETE");
-        transaccion.setObservacion("FLETE ID " + flete.getId());
+        transaccion.setObservacion("FLETE ID" + flete.getIdFlete());
         transaccion.setImporte(flete.getPorcentajeChofer());
         transaccion.setFlete(flete);
 
@@ -197,7 +197,7 @@ public class TransaccionServicio {
         transaccion.setCliente(flete.getCliente());
         transaccion.setFecha(flete.getFechaFlete());
         transaccion.setConcepto("FLETE");
-        transaccion.setObservacion("FLETE ID " + flete.getId());
+        transaccion.setObservacion("FLETE ID" + flete.getIdFlete());
         transaccion.setImporte(flete.getTotal());
         transaccion.setFlete(flete);
 

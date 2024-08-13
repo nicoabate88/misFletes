@@ -15,6 +15,8 @@ public class Entrega {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idEntrega;
+    private Long idOrg;
     @OneToOne
     private Usuario chofer;
     @Temporal(TemporalType.DATE)
@@ -27,8 +29,10 @@ public class Entrega {
     public Entrega() {
     }
 
-    public Entrega(Long id, Usuario chofer, Date fecha, Double importe, String observacion, Usuario usuario) {
+    public Entrega(Long id, Long idEntrega, Long idOrg, Usuario chofer, Date fecha, Double importe, String observacion, Usuario usuario) {
         this.id = id;
+        this.idEntrega = idEntrega;
+        this.idOrg = idOrg;
         this.chofer = chofer;
         this.fecha = fecha;
         this.importe = importe;
@@ -42,6 +46,22 @@ public class Entrega {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdEntrega() {
+        return idEntrega;
+    }
+
+    public void setIdEntrega(Long idEntrega) {
+        this.idEntrega = idEntrega;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public Usuario getChofer() {
@@ -83,5 +103,9 @@ public class Entrega {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    
+    
+   
 
+    
 }

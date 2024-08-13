@@ -30,7 +30,7 @@ public class ReciboServicio {
     private TransaccionServicio transaccionServicio;
 
     @Transactional
-    public void crearRecibo(Long idCliente, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException {
+    public void crearRecibo(Long idOrg, Long idCliente, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException {
 
         Cliente cliente = new Cliente();
         Optional<Cliente> cte = clienteRepositorio.findById(idCliente);
@@ -46,14 +46,17 @@ public class ReciboServicio {
 
         String obsMayusculas = observacion.toUpperCase();
         Date f = convertirFecha(fecha);
+        Long idRecibo = buscarUltimoIdOrg(idOrg);
 
         Recibo recibo = new Recibo();
 
+        recibo.setIdOrg(idOrg);
         recibo.setCliente(cliente);
         recibo.setFecha(f);
         recibo.setObservacion(obsMayusculas);
         recibo.setImporte(importe);
         recibo.setUsuario(usuario);
+        recibo.setIdRecibo(idRecibo+1);
 
         reciboRepositorio.save(recibo);
 
@@ -127,13 +130,33 @@ public class ReciboServicio {
 
     }
 
-    public ArrayList<Recibo> buscarRecibos() {
+    public ArrayList<Recibo> buscarRecibos(Long idOrg) {
 
-        ArrayList<Recibo> lista = reciboRepositorio.buscarRecibos();
+        ArrayList<Recibo> lista = reciboRepositorio.buscarRecibos(idOrg);
 
         Collections.sort(lista, ReciboComparador.ordenarFechaDesc); //ordena por nombre alfabetico los nombres de clientes
 
         return lista;
+
+    }
+    
+      public Long buscarUltimoIdOrg(Long idOrg) {
+        
+        Recibo recibo = new Recibo();
+        Optional<Recibo> rbo = reciboRepositorio.findTopByIdOrgAndObservacionNotOrderByIdDesc(idOrg, "ELIMINADO");
+        if (rbo.isPresent()) {
+            recibo = rbo.get();
+            
+            return recibo.getIdRecibo();
+            
+        } else {
+            
+            int ultimo = 0;
+            Long primero = Long.valueOf(ultimo);
+
+            return primero;
+            
+        }
 
     }
 

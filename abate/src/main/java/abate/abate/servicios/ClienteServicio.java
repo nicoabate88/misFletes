@@ -24,9 +24,9 @@ public class ClienteServicio {
     private CuentaServicio cuentaServicio;
 
     @Transactional
-    public void crearCliente(String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) throws MiException {
+    public void crearCliente(Long idOrg, String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) throws MiException {
 
-        validarDatos(nombre);
+        validarDatos(idOrg, nombre, cuit);
 
         Cliente cliente = new Cliente();
 
@@ -34,6 +34,7 @@ public class ClienteServicio {
         String localidadMayusculas = localidad.toUpperCase();
         String direccionMayusculas = direccion.toUpperCase();
 
+        cliente.setIdOrg(idOrg);
         cliente.setNombre(nombreMayusculas);
         cliente.setCuit(cuit);
         cliente.setLocalidad(localidadMayusculas);
@@ -48,7 +49,7 @@ public class ClienteServicio {
     }
 
     @Transactional
-    public void modificarCliente(Long id, String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) {
+    public void modificarCliente(Long id, String nombre, Long cuit, String localidad, String direccion, Long telefono, String email) throws MiException {
 
         Cliente cliente = new Cliente();
 
@@ -56,7 +57,8 @@ public class ClienteServicio {
         if (cte.isPresent()) {
             cliente = cte.get();
         }
-
+        validarDatosModificar(cliente, nombre, cuit);
+        
         String nombreMayusculas = nombre.toUpperCase();
         String localidadMayusculas = localidad.toUpperCase();
         String direccionMayusculas = direccion.toUpperCase();
@@ -97,9 +99,9 @@ public class ClienteServicio {
         return clienteRepositorio.getById(id);
     }
 
-    public ArrayList<Cliente> buscarClientesNombreAsc() {
-
-        ArrayList<Cliente> lista = (ArrayList<Cliente>) clienteRepositorio.findAll();
+    public ArrayList<Cliente> buscarClientesNombreAsc(Long idOrg) {
+        
+        ArrayList<Cliente> lista = clienteRepositorio.buscarClientes(idOrg);
 
         Collections.sort(lista, ClienteComparador.ordenarNombreAsc); //ordena por nombre alfabetico los nombres de clientes
 
@@ -113,15 +115,39 @@ public class ClienteServicio {
 
     }
 
-    public void validarDatos(String nombre) throws MiException {
+    public void validarDatos(Long idOrg, String nombre, Long cuit) throws MiException {
 
-        ArrayList<Cliente> lista = (ArrayList<Cliente>) clienteRepositorio.findAll();
+        ArrayList<Cliente> lista = clienteRepositorio.buscarClientes(idOrg);
 
         for (Cliente c : lista) {
             if (c.getNombre().equalsIgnoreCase(nombre)) {
                 throw new MiException("El NOMBRE de Cliente ya está registrado");
             }
+            if (c.getCuit().equals(cuit)) {
+                throw new MiException("El CUIT de Cliente ya está registrado");
+            }
         }
+    }
+    public void validarDatosModificar(Cliente cliente, String nombre, Long cuit) throws MiException {
+
+        ArrayList<Cliente> lista = clienteRepositorio.buscarClientes(cliente.getIdOrg());
+
+        if (!cliente.getNombre().equalsIgnoreCase(nombre)) {
+            for (Cliente c : lista) {
+                if (c.getNombre().equalsIgnoreCase(nombre)) {
+                    throw new MiException("El NOMBRE de Cliente ya está registrado");
+                }
+            }
+        }
+        
+        if (!cliente.getCuit().equals(cuit)) {
+            for (Cliente c : lista) {
+                if (c.getCuit().equals(cuit)) {
+                    throw new MiException("El CUIT de Cliente ya está registrado");
+                }
+            }
+        }
+
     }
 
 }

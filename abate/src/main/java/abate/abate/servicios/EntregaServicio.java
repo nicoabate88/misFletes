@@ -26,7 +26,7 @@ public class EntregaServicio {
     private TransaccionServicio transaccionServicio;
 
     @Transactional
-    public void crearEntrega(Long idChofer, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException {
+    public void crearEntrega(Long idOrg, Long idChofer, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException {
 
         Usuario chofer = new Usuario();
         Optional<Usuario> chof = usuarioRepositorio.findById(idChofer);
@@ -42,14 +42,17 @@ public class EntregaServicio {
 
         String obsMayusculas = observacion.toUpperCase();
         Date f = convertirFecha(fecha);
+        Long idEntrega = buscarUltimoIdOrg(idOrg);
 
         Entrega entrega = new Entrega();
-
+        
+        entrega.setIdOrg(idOrg);
         entrega.setChofer(chofer);
         entrega.setFecha(f);
         entrega.setObservacion(obsMayusculas);
         entrega.setImporte(importe);
         entrega.setUsuario(usuario);
+        entrega.setIdEntrega(idEntrega+1);
 
         entregaRepositorio.save(entrega);
 
@@ -112,6 +115,26 @@ public class EntregaServicio {
         entregaRepositorio.save(entrega);
 
     }
+    
+     public Long buscarUltimoIdOrg(Long idOrg) {
+        
+        Entrega entrega = new Entrega();
+        Optional<Entrega> etga = entregaRepositorio.findTopByIdOrgAndObservacionNotOrderByIdDesc(idOrg, "ELIMINADO");
+        if (etga.isPresent()) {
+            entrega = etga.get();
+            
+            return entrega.getIdEntrega();
+            
+        } else {
+            
+            int ultimo = 0;
+            Long primero = Long.valueOf(ultimo);
+
+            return primero;
+            
+        }
+
+    }
 
     public Long buscarUltimo() {
 
@@ -123,9 +146,9 @@ public class EntregaServicio {
         return entregaRepositorio.getById(id);
     }
 
-    public ArrayList<Entrega> buscarEntregas() {
+    public ArrayList<Entrega> buscarEntregas(Long idOrg) {
 
-        ArrayList<Entrega> lista = entregaRepositorio.buscarEntregas();
+        ArrayList<Entrega> lista = entregaRepositorio.buscarEntregas(idOrg);
 
         Collections.sort(lista, EntregaComparador.ordenarFechaDesc);
 

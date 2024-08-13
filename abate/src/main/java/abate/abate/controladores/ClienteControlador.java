@@ -3,6 +3,8 @@ package abate.abate.controladores;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.servicios.ClienteServicio;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +33,13 @@ public class ClienteControlador {
     @PostMapping("/registro")
     public String registroCliente(@RequestParam String nombre, @RequestParam(required = false) Long cuit,
             @RequestParam(required = false) String localidad, @RequestParam(required = false) String direccion,
-            @RequestParam(required = false) Long telefono, @RequestParam(required = false) String email, ModelMap modelo) {
+            @RequestParam(required = false) Long telefono, @RequestParam(required = false) String email, ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
-            clienteServicio.crearCliente(nombre, cuit, localidad, direccion, telefono, email);
+            clienteServicio.crearCliente(logueado.getIdOrg(), nombre, cuit, localidad, direccion, telefono, email);
             Long id = clienteServicio.buscarUltimo();
             modelo.put("cliente", clienteServicio.buscarCliente(id));
             modelo.put("exito", "Cliente REGISTRADO con éxito");
@@ -57,9 +61,11 @@ public class ClienteControlador {
     }
 
     @GetMapping("/listar")
-    public String listarClientes(ModelMap modelo) {
+    public String listarClientes(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc());
+        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc(logueado.getIdOrg()));
 
         return "cliente_listar.html";
     }
@@ -75,16 +81,25 @@ public class ClienteControlador {
 
     @PostMapping("/modifica/{id}")
     public String modifica(@RequestParam Long id, @RequestParam String nombre, @RequestParam(required = false) Long cuit,
-            @RequestParam(required = false) String localidad, @RequestParam(required = false) String direccion, 
+            @RequestParam(required = false) String localidad, @RequestParam(required = false) String direccion,
             @RequestParam(required = false) Long telefono, @RequestParam(required = false) String email, ModelMap modelo) {
 
-        clienteServicio.modificarCliente(id, nombre, cuit, localidad, direccion, telefono, email);
+        try {
+            clienteServicio.modificarCliente(id, nombre, cuit, localidad, direccion, telefono, email);
 
-        modelo.put("cliente", clienteServicio.buscarCliente(id));
-        modelo.put("exito", "Cliente MODIFICADO con éxito");
+            modelo.put("cliente", clienteServicio.buscarCliente(id));
+            modelo.put("exito", "Cliente MODIFICADO con éxito");
 
-        return "cliente_mostrar.html";
+            return "cliente_mostrar.html";
 
+        } catch (MiException ex) {
+
+            modelo.put("cliente", clienteServicio.buscarCliente(id));
+            modelo.put("error", ex.getMessage());
+
+            return "cliente_modificar.html";
+
+        }
     }
 
     @GetMapping("/eliminar/{id}")

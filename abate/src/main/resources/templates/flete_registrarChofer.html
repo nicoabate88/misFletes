@@ -20,9 +20,7 @@
                                                 </a>   
                                             </div>
                                             <div  class="col-10">
-
                                                 <h4>Registrar Flete</h4>
-
                                             </div>
                                         </div>
                                     </div>
@@ -34,12 +32,12 @@
                                             <input type="text" class="form-control" id="chofer" th:value="${chofer.nombre}" disabled readonly>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="cliente" class="form-floting">Dominio Camión</label>
+                                            <label for="cliente" class="form-floting">Camión</label>
                                             <select class="form-control" id="cliente" name="idCamion" required>
                                                 <option th:if="${chofer.camion} != null" selected th:text="${chofer.camion.dominio}" th:value="${chofer.camion.id}"></option>
                                                 <option th:each="camion : ${camiones}"
                                                         th:value="${camion.id}"
-                                                        th:text="${camion.dominio}"/>
+                                                        th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"/>
                                             </select>
                                         </div>
                                          <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
@@ -78,13 +76,14 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="cereal" class="form-floting">Tipo de Cereal</label>
+                                            <label for="cereal" class="form-floting">Tipo de Carga</label>
                                             <select class="form-control" id="cereal" name="tipoCereal" required>
                                                 <option selected disabled value="">Tipo de Cereal</option>
                                                 <option value="SOJA">SOJA</option>
                                                 <option value="MAIZ">MAIZ</option>
                                                 <option value="TRIGO">TRIGO</option>
                                                 <option value="GIRASOL">GIRASOL</option>
+                                                <option value="ROLLOS">ROLLOS</option>
                                                 <option value="OTRO">OTRO</option>
                                             </select>
                                         </div>
@@ -135,19 +134,23 @@
 
                                                     if (fechaFlete < fechaCarga) {
                                                     alert('Fecha de Flete debe ser igual o mayor que Fecha de Carga');
-                                                    event.preventDefault(); // Evita que el formulario se envíe
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
                                                     if (km <= 0) {
                                                     alert('KM de Flete debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault();
+                                                    return;
                                                 }
                                                  if (tarifa <= 0) {
                                                     alert('Tarifa debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
                                                 if (kg <= 0) {
                                                     alert('KG debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
 
                                                 });

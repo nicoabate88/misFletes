@@ -29,7 +29,7 @@ public class CombustibleServicio {
     private CamionRepositorio camionRepositorio;
 
     @Transactional
-    public void crearPrimerCarga(String fecha, Double km, Long idCamion, Usuario usuario) throws ParseException {
+    public void crearPrimerCarga(Long idOrg, String fecha, Double km, Long idCamion) throws ParseException {
 
         Camion camion = new Camion();
         Optional<Camion> cam = camionRepositorio.findById(idCamion);
@@ -41,9 +41,9 @@ public class CombustibleServicio {
 
         Combustible carga = new Combustible();
 
+        carga.setIdOrg(idOrg);
         carga.setFechaCarga(f);
         carga.setKmCarga(km);
-        carga.setUsuario(usuario);
         carga.setCompleto("SI");
         carga.setEstado("ACEPTADO");
         carga.setConsumoPromedio(0.0);
@@ -54,7 +54,7 @@ public class CombustibleServicio {
     }
 
     @Transactional
-    public void crearCarga(Long idCamion, String fecha, Double kmAnterior, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+    public void crearCarga(Long idOrg, Long idCamion, String fecha, Double kmAnterior, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
 
         Camion camion = new Camion();
         Optional<Camion> cam = camionRepositorio.findById(idCamion);
@@ -69,6 +69,7 @@ public class CombustibleServicio {
 
         Combustible carga = new Combustible();
 
+        carga.setIdOrg(idOrg);
         carga.setFechaCarga(f);
         carga.setLitro(litros);
         carga.setUsuario(usuario);
@@ -91,9 +92,27 @@ public class CombustibleServicio {
         combustibleRepositorio.save(carga);
 
     }
+    
+    @Transactional
+    public void modificarPrimerCarga(Long id, String fecha, Double kmCarga) throws ParseException {
+
+        Combustible carga = new Combustible();
+        Optional<Combustible> cga = combustibleRepositorio.findById(id);
+        if (cga.isPresent()) {
+            carga = cga.get();
+        }
+
+        Date f = convertirFecha(fecha);
+
+        carga.setFechaCarga(f);
+        carga.setKmCarga(kmCarga);
+
+        combustibleRepositorio.save(carga);
+
+    }
 
     @Transactional
-    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo) throws ParseException {
 
         Combustible carga = new Combustible();
         Optional<Combustible> cga = combustibleRepositorio.findById(id);
@@ -112,7 +131,6 @@ public class CombustibleServicio {
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
         carga.setEstado("ACEPTADO");
-        carga.setUsuario(usuario);
 
         if (completo.equalsIgnoreCase("NO")) {
             carga.setCompleto("NO");

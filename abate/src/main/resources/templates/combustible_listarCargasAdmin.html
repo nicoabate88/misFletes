@@ -61,12 +61,12 @@
                                         <div class="row">
                                             <div class="col-9">
                                                 <div class="card-body">
-                                                    <h6 th:text="'Fecha: '+${carga.fechaCarga}"></h6>
-                                                    <p class="mb-1" id="dimgray" th:text="'Km Actual: '+${carga.kmCarga}"></p>
-                                                    <p class="mb-1" id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}"></p>
-                                                    <p class="mb-1" id="darkgray" th:text="'Litros: '+${carga.litro}+' - Lleno: '+${carga.completo}"></p>
-                                                    <h6 class="mb-1" id="dimgray" th:text="'Consumo '+${carga.consumo}+' Lts'"></h6>
-                                                    <p class="mb-0" id="darkgray" th:text="'Chofer: '+${carga.usuario.nombre}"></p>
+                                                    
+                                                    <h6 id="dimgray" th:text="'Fecha '+${carga.fechaCarga}"></h6>
+                                                    <p class="mb-1" id="dimgray" th:text="'Actual '+${carga.kmCarga}+' Km - Recorrido '+${carga.kmRecorrido}+' Km'"></p>
+                                                    <p class="mb-1" id="darkgray" th:text="${carga.litro}+' L - Tanque Lleno '+${carga.completo}"></p>
+                                                    <h6 class="mb-1" th:text="'Consumo '+${carga.consumo}+' L / 100 Km'"></h6>
+                                                    <p class="mb-0" id="darkgray" th:if="${carga.usuario != null}" th:text="'Chofer '+${carga.usuario.nombre}"></p>                                                    
                                                 </div>
                                             </div>
                                             <div class="col-3 text-center card-body">

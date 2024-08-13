@@ -32,9 +32,11 @@ public class ReciboControlador {
     private CuentaServicio cuentaServicio;
 
     @GetMapping("/registrar")
-    public String registrarRecibo(ModelMap modelo) {
+    public String registrarRecibo(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasCliente());
+        modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasCliente(logueado.getIdOrg()));
 
         return "recibo_registrar.html";
     }
@@ -58,7 +60,7 @@ public class ReciboControlador {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        reciboServicio.crearRecibo(idCliente, fecha, importe, observacion, logueado.getId());
+        reciboServicio.crearRecibo(logueado.getIdOrg(), idCliente, fecha, importe, observacion, logueado.getId());
         Long id = reciboServicio.buscarUltimo();
         Recibo recibo = reciboServicio.buscarRecibo(id);
         String total = convertirNumeroMiles(recibo.getImporte());
@@ -73,9 +75,11 @@ public class ReciboControlador {
     }
 
     @GetMapping("/listar")
-    public String listar(ModelMap modelo) {
+    public String listar(ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibos());
+        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg()));
 
         return "recibo_listar.html";
     }
@@ -90,10 +94,12 @@ public class ReciboControlador {
     }
 
     @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable Long id, ModelMap modelo) {
+    public String modificar(@PathVariable Long id, ModelMap modelo, HttpSession session) {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.put("recibo", reciboServicio.buscarRecibo(id));
-        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc());
+        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc(logueado.getIdOrg()));
 
         return "recibo_modificar.html";
 

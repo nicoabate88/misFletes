@@ -2,6 +2,7 @@
 package abate.abate.controladores;
 
 import abate.abate.entidades.Camion;
+import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Usuario;
 import abate.abate.servicios.CamionServicio;
 import abate.abate.servicios.ChoferServicio;
@@ -37,9 +38,8 @@ public class CombustibleControlador {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         
-        
         modelo.put("chofer", choferServicio.buscarChofer(logueado.getId()));
-        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc());
+        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
         
         return "combustible_registrar.html";
     }
@@ -99,7 +99,7 @@ public class CombustibleControlador {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         
-        combustibleServicio.crearPrimerCarga(fecha, km, idCamion, logueado);
+        combustibleServicio.crearPrimerCarga(logueado.getIdOrg(), fecha, km, idCamion);
         
         Long id = combustibleServicio.buscarUltimo();
         
@@ -116,7 +116,7 @@ public class CombustibleControlador {
         
             Usuario logueado = (Usuario) session.getAttribute("usuariosession");
             
-            combustibleServicio.crearCarga(idCamion, fecha, kmAnterior, km, litro, completo, logueado);
+            combustibleServicio.crearCarga(logueado.getIdOrg(), idCamion, fecha, kmAnterior, km, litro, completo, logueado);
             
             Long id = combustibleServicio.buscarUltimo();
             
@@ -202,24 +202,46 @@ public class CombustibleControlador {
     
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
+        
+        Combustible carga = combustibleServicio.buscarCombustible(id);
+        
+        if(carga.getKmAnterior() == null){
+            
+            modelo.put("carga", carga);
+            
+            return "combustible_modificarPrimerCarga.html";
+            
+        } else {
 
-        modelo.put("carga", combustibleServicio.buscarCombustible(id));
+        modelo.put("carga", carga);
 
         return "combustible_modificar.html";
-
+        
+        }
     }
 
     @PostMapping("/modifica/{id}")   
     public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km, 
-            @RequestParam Double litro, @RequestParam String completo, ModelMap modelo, HttpSession session) throws ParseException {
+            @RequestParam Double litro, @RequestParam String completo, ModelMap modelo) throws ParseException {
         
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
-        combustibleServicio.modificarCarga(id, fecha, km, litro, completo, logueado);
+        combustibleServicio.modificarCarga(id, fecha, km, litro, completo);
 
         modelo.put("carga", combustibleServicio.buscarCombustible(id));
         modelo.put("fecha", fecha);
         modelo.put("exito", "Carga de Combustible MODIFICADA con éxito");
+
+        return "combustible_modificado.html";
+    }
+    
+    @PostMapping("/modificaPrimerCarga")   
+    public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km, 
+            ModelMap modelo) throws ParseException {
+        
+        combustibleServicio.modificarPrimerCarga(id, fecha, km);
+
+        modelo.put("carga", combustibleServicio.buscarCombustible(id));
+        modelo.put("fecha", fecha);
+        modelo.put("exito", "KM de Camión MODIFICADO con éxito");
 
         return "combustible_modificado.html";
     }

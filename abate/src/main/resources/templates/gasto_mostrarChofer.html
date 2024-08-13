@@ -31,9 +31,7 @@
                                                 <h6 id="darkblue" th:text="'Importe $'+${gasto.importe}"></h6>
                                                 <h6 id="dimgray" th:text="${gasto.nombre}"></h6>
                                                 <p id="dimgray" th:text="'Fecha '+${gasto.fecha}"></p>
-                                                
                                             </div>
-                                            
                                         </div>
                                         <div class="col-3 text-center card-body">
                                              <div>
@@ -84,7 +82,7 @@
                                                                             <th></th>
                                                                             <td></td>
                                                                             <td></td>
-                                                                            <th id="darkblue">TOTAL:</th>
+                                                                            <th id="darkblue">TOTAL</th>
                                                                             <th id="darkblue" th:text="'$'+${gasto.importe}"></th>
                                                                             <td></td>
                                                                         </tr>
@@ -93,12 +91,8 @@
                                  
                                 </div>
                                 
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-5 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
-                                </div>
-
-                                <div class="col-2 mb-5">
-                                    <a class="btn btn-primary" type="button" onclick="window.history.back();">Volver</a>
                                 </div>
 
                             </div>

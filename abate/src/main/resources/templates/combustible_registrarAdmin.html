@@ -30,7 +30,7 @@
                                         
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
                                             <label for="camion" class="form-floting">Camión</label>
-                                            <input type="text" class="form-control" id="camion" th:value="${camion.dominio}" disabled readonly>
+                                            <input type="text" class="form-control" id="camion" th:value="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}" disabled readonly>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
                                             <label for="kmAnterior" class="form-floting">KM Carga Anterior</label>
@@ -86,14 +86,16 @@
 
             if (kmActual <= kmAnterior) {
                 alert('KM Carga Actual debe ser mayor que KM Carga Anterior: ' + kmAnterior);
-                event.preventDefault(); // Prevenir el envío del formulario
+                event.preventDefault(); 
+                return;
             }
             
             const litros = parseInt(document.getElementById('litro').value);
             
             if (litros <= 0) {
                 alert('Litros debe ser mayor que 0');
-                event.preventDefault(); // Prevenir el envío del formulario
+                event.preventDefault(); 
+                return;
             }
             
         });

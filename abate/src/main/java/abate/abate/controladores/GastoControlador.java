@@ -83,13 +83,22 @@ public class GastoControlador {
         return "gasto_registrar.html";
 
     }
+    
+    @GetMapping("/registrarDesdeFlete/{id}")
+    public String registrarGastoDesdeFlete(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("flete", id);
+
+        return "gasto_registrarDesdeFlete.html";
+
+    }
 
     @PostMapping("/registro")
     public String registro(@RequestParam Long idFlete, HttpSession session, ModelMap modelo) throws ParseException {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        gastoServicio.crearGasto(idFlete, logueado.getId());
+        gastoServicio.crearGasto(logueado.getIdOrg(), idFlete, logueado.getId());
         
         Flete flete = fleteServicio.buscarFlete(idFlete);
 
@@ -119,6 +128,16 @@ public class GastoControlador {
         modelo.addAttribute("detalles", lista);
 
         return "gasto_agregarDetalle.html";
+    }
+    
+    @GetMapping("/cancelar/{flete}")
+    public String cancelar(@PathVariable Long flete, ModelMap modelo){
+        
+        detalleServicio.cancelarDetalle(flete);
+        
+        modelo.put("flete", flete);
+        
+        return "gasto_registrarDesdeCancela.html";
     }
 
     @PostMapping("/borrarDetalle")
@@ -173,7 +192,7 @@ public class GastoControlador {
         modelo.put("total", importe);
         modelo.addAttribute("detalles", lista);
 
-        return "gasto_modificar.html";
+        return "gasto_modificarM.html";
     }
 
     @PostMapping("/borrarDetalleM")
@@ -191,7 +210,7 @@ public class GastoControlador {
         modelo.put("total", importe);
         modelo.addAttribute("detalles", lista);
 
-        return "gasto_modificar.html";
+        return "gasto_modificarM.html";
 
     }
 

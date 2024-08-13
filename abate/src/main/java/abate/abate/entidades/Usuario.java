@@ -12,6 +12,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idOrg;
     private String nombre;
     private String usuario;
     private String password;
@@ -24,8 +25,9 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, Camion camion) {
+    public Usuario(Long id, Long idOrg, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, Camion camion) {
         this.id = id;
+        this.idOrg = idOrg;
         this.nombre = nombre;
         this.usuario = usuario;
         this.password = password;
@@ -41,6 +43,14 @@ public class Usuario {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public String getNombre() {
@@ -98,7 +108,9 @@ public class Usuario {
     public void setCamion(Camion camion) {
         this.camion = camion;
     }
-
+    
+    
+   
     
 
     

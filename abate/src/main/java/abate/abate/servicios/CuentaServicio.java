@@ -40,6 +40,7 @@ public class CuentaServicio {
 
         Cuenta cuenta = new Cuenta();
 
+        cuenta.setIdOrg(cliente.getIdOrg());
         cuenta.setCliente(cliente);
         cuenta.setSaldo(0.0);
 
@@ -58,6 +59,7 @@ public class CuentaServicio {
 
         Cuenta cuenta = new Cuenta();
 
+        cuenta.setIdOrg(chofer.getIdOrg());
         cuenta.setChofer(chofer);
         cuenta.setSaldo(0.0);
 
@@ -112,22 +114,22 @@ public class CuentaServicio {
 
     } 
 
-    public ArrayList<Cuenta> buscarCuentasChofer() {
+    public ArrayList<Cuenta> buscarCuentasChofer(Long idOrg) {
 
         ArrayList<Cuenta> lista = new ArrayList();
 
-        lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasChofer();
+        lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasChofer(idOrg);
 
         Collections.sort(lista, CuentaComparador.ordenarNombreChoferAsc);
 
         return lista;
     }
 
-    public ArrayList<Cuenta> buscarCuentasCliente() {
+    public ArrayList<Cuenta> buscarCuentasCliente(Long idOrg) {
 
         ArrayList<Cuenta> lista = new ArrayList();
 
-        lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasCliente();
+        lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasCliente(idOrg);
 
         Collections.sort(lista, CuentaComparador.ordenarNombreClienteAsc);
 

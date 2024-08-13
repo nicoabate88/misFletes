@@ -26,13 +26,13 @@
             </div>
             
             <div class="card-body">
-                <h6 th:text="'ID Flete: '+${flete.id}"></h6>
+                <h6 th:text="'Flete ID'+${flete.idFlete}"></h6>
                 <p class="card-text" id="dimgray" th:text="${flete.tipoCereal}+' '+${flete.kgFlete}+' KG'"></p>
                 
                 <form class="row g-3" th:action="@{/imagen/cargaDescarga}" method="POST" enctype="multipart/form-data">
                     <input hidden th:value="${flete.id}" name="id"> 
                         <div class="col-12 mb-5">
-                            <label for="file" id="darkblue">Cargar Ticket de Descarga:</label>
+                            <label for="file" id="darkblue">Cargar Ticket de Descarga</label>
                             <input type="file" id="file" name="file" accept="image/*" required>
                         </div>    
                         
@@ -53,12 +53,25 @@
 
             </div>
         
-         <script>
-                                document.getElementById('file').onchange = function () {
+          <script>
+                                document.getElementById('file').onchange = function () {                            
+                                       
+                                    const file = this.files[0];
+                                    const fileType = file.type;                        
+                                    
                                     if (this.files[0].size > 5 * 1024 * 1024) { // 5MB in bytes
                                         alert("La imagen es demasiado grande. El tamaño máximo permitido es 5MB.");
                                         this.value = ''; // Clear the input
+                                        return;
                                     }
+                                    
+                                     // Verifica el tipo de archivo (imágenes o PDF)
+                                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+                                    if (!allowedTypes.includes(fileType)) {
+                                    alert("El archivo debe ser de tipo jpeg, png, gif o pdf");
+                                    this.value = ''; // Limpia el input
+                                    return; // Detiene la ejecución del script
+                                   }
                                 };
                             </script>
 

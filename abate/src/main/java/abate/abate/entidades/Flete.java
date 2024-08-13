@@ -15,6 +15,8 @@ public class Flete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idFlete;
+    private Long idOrg;
     @Temporal(TemporalType.DATE)
     private Date fechaCarga;
     @OneToOne
@@ -54,8 +56,10 @@ public class Flete {
     public Flete() {
     }
 
-    public Flete(Long id, Date fechaCarga, Cliente cliente, String origenFlete, Date fechaFlete, String destinoFlete, Double kmFlete, String tipoCereal, Double tarifa, String cartaPorte, String ctg, Double kgFlete, Usuario chofer, Camion camion, Usuario usuario, Double neto, Double iva, Double total, Double porcientoChofer, Double porcentajeChofer, Double comisionTpte, Double comisionTpteValor, String comisionTpteChofer, String estado, Gasto gasto, Imagen imagenCP, Imagen imagenDescarga) {
+    public Flete(Long id, Long idFlete, Long idOrg, Date fechaCarga, Cliente cliente, String origenFlete, Date fechaFlete, String destinoFlete, Double kmFlete, String tipoCereal, Double tarifa, String cartaPorte, String ctg, Double kgFlete, Usuario chofer, Camion camion, Usuario usuario, Double neto, Double iva, Double total, Double porcientoChofer, Double porcentajeChofer, Double comisionTpte, Double comisionTpteValor, String comisionTpteChofer, String estado, Gasto gasto, Imagen imagenCP, Imagen imagenDescarga) {
         this.id = id;
+        this.idFlete = idFlete;
+        this.idOrg = idOrg;
         this.fechaCarga = fechaCarga;
         this.cliente = cliente;
         this.origenFlete = origenFlete;
@@ -90,6 +94,22 @@ public class Flete {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdFlete() {
+        return idFlete;
+    }
+
+    public void setIdFlete(Long idFlete) {
+        this.idFlete = idFlete;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public Date getFechaCarga() {
@@ -299,10 +319,6 @@ public class Flete {
     public void setImagenDescarga(Imagen imagenDescarga) {
         this.imagenDescarga = imagenDescarga;
     }
-    
-    
-   
-   
-   
 
+    
 }

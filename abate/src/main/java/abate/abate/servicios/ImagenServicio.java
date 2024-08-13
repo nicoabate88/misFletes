@@ -117,9 +117,62 @@ public class ImagenServicio {
 
         img.setTipo(imagen.getTipo());
         img.setDatos(imagen.getDatos());
+        img.setNombre(imagen.getNombre());
 
         imagenRepositorio.save(imagen);
 
+    }
+    
+    @Transactional
+    public void eliminarImagenCombustible(Long id){
+        
+        Combustible carga = combustibleRepositorio.buscarCombustibleIdImagen(id);
+        
+        carga.setImagen(null);
+        
+        combustibleRepositorio.save(carga);
+        
+        imagenRepositorio.deleteById(id);
+        
+    }
+    
+    @Transactional
+    public void eliminarImagenCP(Long id){
+        
+        Flete flete = fleteRepositorio.buscarFleteIdImagenCP(id);
+        
+        flete.setImagenCP(null);
+        
+        fleteRepositorio.save(flete);
+        
+        imagenRepositorio.deleteById(id);
+        
+    }
+    
+    @Transactional
+    public void eliminarImagenDescarga(Long id){
+        
+        Flete flete = fleteRepositorio.buscarFleteIdImagenDescarga(id);
+        
+        flete.setImagenDescarga(null);
+        
+        fleteRepositorio.save(flete);
+        
+        imagenRepositorio.deleteById(id);
+        
+    }
+    
+    @Transactional
+    public void eliminarImagenGasto(Long id){
+        
+        Gasto gasto = gastoRepositorio.buscarGastoIdImagen(id);
+        
+        gasto.setImagen(null);
+        
+        gastoRepositorio.save(gasto);
+        
+        imagenRepositorio.deleteById(id);
+        
     }
 
     public Imagen obtenerImagenPorId(Long id) {

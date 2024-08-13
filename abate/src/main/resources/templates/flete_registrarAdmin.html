@@ -85,13 +85,14 @@
                                             </div>    
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="cereal" class="form-floting">Tipo de Cereal</label>
+                                            <label for="cereal" class="form-floting">Tipo de Carga</label>
                                             <select class="form-control" id="cereal" name="tipoCereal" required>
                                                 <option selected disabled value="">Tipo de Cereal</option>
                                                 <option value="SOJA">SOJA</option>
                                                 <option value="MAIZ">MAIZ</option>
                                                 <option value="TRIGO">TRIGO</option>
                                                 <option value="GIRASOL">GIRASOL</option>
+                                                <option value="ROLLOS">ROLLOS</option>
                                                 <option value="OTRO">OTRO</option>
                                             </select>
                                         </div>
@@ -169,23 +170,28 @@
 
                                                     if (fechaFlete < fechaCarga) {
                                                     alert('Fecha de Flete debe ser igual o mayor que Fecha de Carga');
-                                                    event.preventDefault(); // Evita que el formulario se envíe
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
                                                     if (km <= 0) {
                                                     alert('KM de Flete debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
                                                  if (tarifa <= 0) {
                                                     alert('Tarifa debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault();
+                                                    return;
                                                 }
                                                 if (kg <= 0) {
                                                     alert('KG debe ser mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault(); 
+                                                    return;
                                                 }
                                                 if (comision < 0) {
                                                     alert('Comisión de Tpte debe ser igual o mayor que 0');
-                                                    event.preventDefault(); // Prevenir el envío del formulario
+                                                    event.preventDefault();
+                                                    return;
                                                 }
                                                 });
                                             </script>

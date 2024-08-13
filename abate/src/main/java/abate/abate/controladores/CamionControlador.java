@@ -4,6 +4,8 @@ package abate.abate.controladores;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.servicios.CamionServicio;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +33,13 @@ public class CamionControlador {
     }
     
     @PostMapping("/registro")
-    public String registro(@RequestParam String marca, @RequestParam String modelo, @RequestParam String dominio, ModelMap model){
+    public String registro(@RequestParam String marca, @RequestParam String modelo, @RequestParam String dominio, ModelMap model, HttpSession session){
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
-            camionServicio.crearCamion(marca, modelo, dominio);
+            camionServicio.crearCamion(logueado.getIdOrg(), marca, modelo, dominio);
             
             Long id = camionServicio.buscarUltimo();
             
@@ -56,9 +60,11 @@ public class CamionControlador {
     }
     
     @GetMapping("/listar")
-    public String listar(ModelMap modelo){
+    public String listar(ModelMap modelo, HttpSession session){
         
-        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc());
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
         
         return "camion_listar.html";
         
@@ -76,12 +82,21 @@ public class CamionControlador {
     @PostMapping("/modifica")
     public String modifica(@RequestParam Long id, @RequestParam String marca, @RequestParam String modelo, @RequestParam String dominio, ModelMap model) {
 
-        camionServicio.modificarCamion(id, marca, modelo, dominio);
+        try {
+            camionServicio.modificarCamion(id, marca, modelo, dominio);
 
-        model.put("camion", camionServicio.buscarCamion(id));
-        model.put("exito", "Camión MODIFICADO con éxito");
+            model.put("camion", camionServicio.buscarCamion(id));
+            model.put("exito", "Camión MODIFICADO con éxito");
 
-        return "camion_mostrar.html";
+            return "camion_mostrar.html";
+
+        } catch (MiException ex) {
+
+            model.put("camion", camionServicio.buscarCamion(id));
+            model.put("error", ex.getMessage());
+
+            return "camion_modificar.html";
+        }
 
     }
     

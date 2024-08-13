@@ -30,7 +30,7 @@
                                         <div class="row">
                                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                                 <div class="card-body">
-                                                     <h6 th:text="'Fecha '+${fecha}+' - ID '+${flete.id}"></h6>
+                                                     <h6 th:text="'Fecha '+${fecha}+' - ID'+${flete.idFlete}"></h6>
                                                     <p id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}+' ' +${flete.kmFlete} +' KM'"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFlete}+ ' KG - Tarifa $'+${flete.tarifa}"></h6>
@@ -39,16 +39,16 @@
                                                      <h6 id="dimgray" th:text="'TOTAL $' +${flete.total}"></h6>
                                                     <p class="card-text" id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
                                                     <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}"></h6>
-                                                    <p th:if="${flete.comisionTpte} != 0.0" class="mb-1" id="dimgray" th:text="'Descuento Comisión Tpte: '+${flete.comisionTpteChofer}"></p>
+                                                    <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}+' - '+${flete.camion.marca}+' '+${flete.camion.modelo}"></h6>
+                                                    <p th:if="${flete.comisionTpte} != 0.0" class="mb-1" id="dimgray" th:text="'Descuento Comisión Tpte '+${flete.comisionTpteChofer}"></p>
                                                     <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
-                                                    <p id="dimgray" th:text="'Gasto: $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
+                                                    <p id="dimgray" th:text="'Gasto $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>    
 
-                                    <div th:if="${exito != null}" class="card-body mb-4 col-md-5 text-center" id="mensaje">                        
+                                    <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                         <h6 id="white" th:text="${exito}"></h6>                                                                             
                                     </div>
     

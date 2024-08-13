@@ -16,6 +16,8 @@ public class Combustible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idCarga;
+    private Long idOrg;
     @Temporal(TemporalType.DATE)
     private Date fechaCarga;
     private Double kmCarga;
@@ -36,8 +38,10 @@ public class Combustible {
     public Combustible() {
     }
 
-    public Combustible(Long id, Date fechaCarga, Double kmCarga, Double kmAnterior, Double kmRecorrido, Double litro, Double consumo, Double consumoPromedio, String completo, String estado, Camion camion, Imagen imagen, Usuario usuario) {
+    public Combustible(Long id, Long idCarga, Long idOrg, Date fechaCarga, Double kmCarga, Double kmAnterior, Double kmRecorrido, Double litro, Double consumo, Double consumoPromedio, String completo, String estado, Camion camion, Imagen imagen, Usuario usuario) {
         this.id = id;
+        this.idCarga = idCarga;
+        this.idOrg = idOrg;
         this.fechaCarga = fechaCarga;
         this.kmCarga = kmCarga;
         this.kmAnterior = kmAnterior;
@@ -58,6 +62,22 @@ public class Combustible {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdCarga() {
+        return idCarga;
+    }
+
+    public void setIdCarga(Long idCarga) {
+        this.idCarga = idCarga;
+    }
+
+    public Long getIdOrg() {
+        return idOrg;
+    }
+
+    public void setIdOrg(Long idOrg) {
+        this.idOrg = idOrg;
     }
 
     public Date getFechaCarga() {
@@ -155,7 +175,7 @@ public class Combustible {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
     
-
+    
+   
 }

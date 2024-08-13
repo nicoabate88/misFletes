@@ -33,13 +33,13 @@
                                     <form class="row g-3" id="miFormulario" method="POST">
                                         
                                          <div class="col-6 col-md-6 col-lg-4 col-xl-4  mb-2">
-                                            <label for="opciones" class="form-floting">Dominio Camión</label>
+                                            <label for="opciones" class="form-floting">Camión</label>
                                             <select class="form-control" id="opciones" name="opciones" required>
                                                 <option value="" selected disabled>Seleccione Camión</option>
-                                                <option th:if="${chofer.camion} != null" th:text="${chofer.camion.dominio}" th:value="${chofer.camion.id}"></option>
+                                                <option th:if="${chofer.camion} != null" th:text="${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:value="${chofer.camion.id}"></option>
                                                 <option th:each="camion : ${camiones}"
                                                         th:value="${camion.id}"
-                                                        th:text="${camion.dominio}"/>
+                                                        th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"/>
                                             </select>
                                         </div>
                                         <div class="col-6 col-md-6 col-lg-4 col-xl-4 mb-2">
