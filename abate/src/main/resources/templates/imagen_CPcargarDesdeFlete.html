@@ -34,7 +34,13 @@
                                             <div class="col-12 mb-5">
                                                 <label id="darkblue" for="file">Cargar CP</label>
                                                 <input type="file" id="file" name="file" accept="image/*" required>
-                                            </div>    
+                                            </div> 
+                                            
+                                            <div class="container">
+                                            <div th:if="${error != null}" class="card-body mb-5 text-center" id="mensaje">                        
+                                                <h6 id="white" th:text="${error}"></h6>                                                                             
+                                            </div>
+                                        </div>
 
                                             <div class="row text-center">
                                                 <div class="col-8 col-md-8">

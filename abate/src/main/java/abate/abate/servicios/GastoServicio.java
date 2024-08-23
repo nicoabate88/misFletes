@@ -51,7 +51,7 @@ public class GastoServicio {
             importe = importe + d.getTotal();
         }
 
-        String nombre = "GASTO FTE ID" + idFlete;
+        String nombre = "GASTO FTE ID" + flete.getIdFlete();
         Gasto gasto = new Gasto();
 
         gasto.setIdOrg(idOrg);

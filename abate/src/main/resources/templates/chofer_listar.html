@@ -43,7 +43,7 @@
                                                     <h6 id="dimgray" th:text="'Nombre de Usuario: '+${chofer.usuario}" ></h6>
                                                     <p class='mb-1' id="dimgray" th:text="'CUIL '+${chofer.cuil}"></p>
                                                     <p class="mb-0" id="dimgray" th:text="'Porcentaje '+${chofer.porcentaje}+'%'"></p>
-                                                    <p id="dimgray" th:text="'Camión '+${chofer.camion.dominio}" th:if="${chofer.camion} != null"></p>
+                                                    <p id="dimgray" th:text="'Camión '+${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:if="${chofer.camion} != null"></p>
                                                 </div>
                                             </div>
                                             <div class="col-4 text-center">

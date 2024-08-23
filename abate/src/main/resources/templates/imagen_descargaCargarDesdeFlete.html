@@ -34,7 +34,12 @@
                                             <div class="col-12 mb-5">
                                                 <label for="file" id="darkblue">Cargar Ticket de Descarga</label>
                                                 <input type="file" id="file" name="file" accept="image/*" required>
-                                            </div>    
+                                            </div> 
+                                            <div class="container">
+                                                <div th:if="${error != null}" class="card-body mb-5 text-center" id="mensaje">                        
+                                                    <h6 id="white" th:text="${error}"></h6>                                                                             
+                                                </div>
+                                            </div>
 
                                             <div class="row text-center">
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">

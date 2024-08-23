@@ -636,7 +636,7 @@ public class FleteControlador {
         sb.append("<table>");
         sb.append("<thead><tr>"
                 + "<th>Fecha Carga</th>"
-                + "<th>Fecha Descarga</th>"
+                + "<th>Fecha Flete</th>"
                 + "<th>Cliente</th>"
                 + "<th>Lugar de Carga</th>"
                 + "<th>Destino de Carga</th>"
@@ -681,7 +681,7 @@ public class FleteControlador {
         sb.append("<table>");
         sb.append("<thead><tr>"
                 + "<th>Fecha Carga</th>"
-                + "<th>Fecha Descarga</th>"
+                + "<th>Fecha Flete</th>"
                 + "<th>Cliente</th>"
                 + "<th>Lugar de Carga</th>"
                 + "<th>Destino de Carga</th>"

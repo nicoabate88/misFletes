@@ -137,6 +137,13 @@ public class ChoferServicio {
 
         return lista;
     } 
+    
+    public ArrayList<Usuario> bucarTodosUsuarios() {
+
+        ArrayList<Usuario> lista = (ArrayList<Usuario>) usuarioRepositorio.findAll();
+
+        return lista;
+    } 
 
     public Long buscarUltimo() {
 
@@ -145,10 +152,10 @@ public class ChoferServicio {
 
     public void validarDatos(Long idOrg, String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {
 
-        ArrayList<Usuario> lista = bucarUsuarios(idOrg);
+        ArrayList<Usuario> lista = bucarTodosUsuarios();
         for (Usuario u : lista) {
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El nombre de Usuario ya se encuentra registrado");
+                throw new MiException("El nombre de Usuario no está disponible, ingrese otro");
             }
         }
 
@@ -170,12 +177,12 @@ public class ChoferServicio {
     
      public void validarDatosModificar(Usuario user, String nombre, String nombreUsuario, Long cuil) throws MiException {
 
-        ArrayList<Usuario> lista = bucarUsuarios(user.getIdOrg());
+        ArrayList<Usuario> lista = bucarTodosUsuarios();
         
         if(!user.getUsuario().equalsIgnoreCase(nombreUsuario)){
         for(Usuario u: lista){    
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El nombre de Usuario ya se encuentra registrado");
+                throw new MiException("El nombre de Usuario no está disponible, ingrese otro");
             }
         }
         }

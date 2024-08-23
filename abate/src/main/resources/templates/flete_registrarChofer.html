@@ -34,7 +34,7 @@
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
                                             <label for="cliente" class="form-floting">Camión</label>
                                             <select class="form-control" id="cliente" name="idCamion" required>
-                                                <option th:if="${chofer.camion} != null" selected th:text="${chofer.camion.dominio}" th:value="${chofer.camion.id}"></option>
+                                                <option th:if="${chofer.camion} != null" selected th:text="${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:value="${chofer.camion.id}"></option>
                                                 <option th:each="camion : ${camiones}"
                                                         th:value="${camion.id}"
                                                         th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"/>

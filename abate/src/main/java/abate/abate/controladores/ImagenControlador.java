@@ -59,6 +59,8 @@ public class ImagenControlador {
     public String crearImagen(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
         Flete flete = fleteServicio.buscarFlete(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Gasto Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -77,6 +79,12 @@ public class ImagenControlador {
         modelo.put("exito", "Imagen de Gasto CARGADA con éxito");
 
         return "gasto_registradoImg.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("flete", flete);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_gastoCargar.html"; 
+        }
 
     }
     
@@ -93,6 +101,8 @@ public class ImagenControlador {
         
         Combustible carga = combustibleServicio.buscarCombustible(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
         imagen.setTipo(file.getContentType()); 
@@ -109,7 +119,12 @@ public class ImagenControlador {
         modelo.put("exito", "Imagen de Diesel CARGADA con éxito");
 
         return "combustible_registrado.html";
-
+        
+        } catch (Exception e) {
+            modelo.addAttribute("carga", carga);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_combustibleCargar.html"; 
+        }
     }
 
     @GetMapping("/cargarCPdesdeFlete/{id}") //llega id de Flete
@@ -126,6 +141,8 @@ public class ImagenControlador {
     public String cargarImagenCPdesdeFlete(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
         Flete flete = fleteServicio.buscarFlete(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -140,6 +157,12 @@ public class ImagenControlador {
         modelo.put("flete", flete);
 
         return "imagen_descargaCargarDesdeFlete.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("flete", flete);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_CPcargarDesdeFlete.html"; 
+        }
 
     }
 
@@ -148,6 +171,8 @@ public class ImagenControlador {
               
         Flete flete = fleteServicio.buscarFlete(id);
         
+        try {
+            
         Imagen imagen = new Imagen();
         imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -178,6 +203,12 @@ public class ImagenControlador {
             return "flete_modificadoAdmin.html";
             
         }
+
+        } catch (Exception e) {
+            modelo.addAttribute("flete", flete);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_CPcargar.html"; 
+        }
         
     }
 
@@ -185,6 +216,8 @@ public class ImagenControlador {
     public String cargarImagenDescarga(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo, HttpSession session) throws IOException {
         Flete flete = fleteServicio.buscarFlete(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -215,6 +248,12 @@ public class ImagenControlador {
             return "flete_modificadoAdmin.html";
             
         }
+        
+        } catch (Exception e) {
+            modelo.addAttribute("flete", flete);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_descargaCargar.html"; 
+        }
 
     }
 
@@ -222,6 +261,8 @@ public class ImagenControlador {
     public String cargarImagenDescargaDesdeFlete(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
         Flete flete = fleteServicio.buscarFlete(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -237,6 +278,12 @@ public class ImagenControlador {
         modelo.put("exito", "CP y Ticket de Descarga CARGADO con éxito");
 
         return "flete_agregarGasto.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("flete", flete);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_descargaCargarDesdeFlete.html"; 
+        }
 
     }
 
@@ -303,6 +350,8 @@ public class ImagenControlador {
         Gasto gasto = gastoServicio.buscarGastoIdImagen(id);
         Flete flete = fleteServicio.buscarFleteIdGasto(gasto.getId());
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -319,6 +368,12 @@ public class ImagenControlador {
         modelo.put("exito", "Imagen de Gasto MODIFICADO con éxito");
 
         return "gasto_registradoImg.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("id", id);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_gastoModificar.html"; 
+        }
 
     }
     
@@ -361,7 +416,7 @@ public class ImagenControlador {
     }
 
     @GetMapping("/verCP/{id}")
-    public String ver(@PathVariable Long id, Model model) {
+    public String verCP(@PathVariable Long id, Model model) {
 
         Flete flete = fleteServicio.buscarFlete(id);
 
@@ -395,19 +450,146 @@ public class ImagenControlador {
         }
     }
     
-    @GetMapping("/ver-pdf/{id}")
-    public ResponseEntity<byte[]> verPdf(@PathVariable Long id) {
-    Imagen pdf = imagenServicio.obtenerImagenPorId(id);
+    @GetMapping("/verCPPendiente/{id}")
+    public String verCPdesdePendiente(@PathVariable Long id, Model model) {
 
-    return ResponseEntity.ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getNombre() + "\"")
-        .header("X-Frame-Options", "ALLOWALL")  // Permite que el contenido se cargue en un iframe
-        .contentType(MediaType.APPLICATION_PDF)
-        .body(pdf.getDatos());
-}
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenCP() != null) {
+
+            Long idImagen = flete.getImagenCP().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCPpdfPendiente.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCP.html";
+            }
+
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_CPcargar.html";
+
+        }
+    }
     
- 
+    @GetMapping("/verCPChofer/{id}")
+    public String verCPdesdeChofer(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenCP() != null) {
+
+            Long idImagen = flete.getImagenCP().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCPpdfChofer.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCP.html";
+            }
+
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_CPcargar.html";
+
+        }
+    }
     
+    @GetMapping("/verCPCliente/{id}")
+    public String verCPdesdeCliente(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenCP() != null) {
+
+            Long idImagen = flete.getImagenCP().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCPpdfCliente.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCP.html";
+            }
+
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_CPcargar.html";
+
+        }
+    }
+    
+    @GetMapping("/verCPFiltrado/{id}")
+    public String verCPdesdeFiltrado(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenCP() != null) {
+
+            Long idImagen = flete.getImagenCP().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCPpdfFiltrado.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarCP.html";
+            }
+
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_CPcargar.html";
+
+        }
+    }
+
     @GetMapping("/descargarCPpdf/{id}")
     public String descargarCPpdf(@PathVariable Long id, ModelMap modelo){
         
@@ -418,6 +600,58 @@ public class ImagenControlador {
         modelo.addAttribute("id", id);
         
         return "imagen_descargarCPpdf.html";
+    }
+    
+    @GetMapping("/descargarCPpdfPendiente/{id}")
+    public String descargarCPpdfPendiente(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenCP(id));
+        
+        return "imagen_descargarCPpdfPendiente.html";
+    }
+    
+    @GetMapping("/descargarCPpdfChofer/{id}")
+    public String descargarCPpdfChofer(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenCP(id));
+        
+        return "imagen_descargarCPpdfChofer.html";
+    }
+    
+    @GetMapping("/descargarCPpdfCliente/{id}")
+    public String descargarCPpdfCliente(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenCP(id));
+        
+        return "imagen_descargarCPpdfCliente.html";
+    }
+    
+    @GetMapping("/descargarCPpdfFiltrado/{id}")
+    public String descargarCPpdfFiltrado(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenCP(id));
+        
+        return "imagen_descargarCPpdfFiltrado.html";
     }
 
     @GetMapping("/modificarCP/{id}") //llega id de Imagen
@@ -433,6 +667,8 @@ public class ImagenControlador {
 
         Flete flete = fleteServicio.buscarFleteIdImagenCP(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("CP Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -463,7 +699,13 @@ public class ImagenControlador {
             return "flete_modificadoAdmin.html";
             
         }
-
+        
+        } catch (Exception e) {
+            modelo.addAttribute("id", id);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_CPmodificar.html"; 
+        }
+ 
     }
     
     @GetMapping("/eliminarCP/{id}")
@@ -538,6 +780,146 @@ public class ImagenControlador {
         }
     }
     
+    @GetMapping("/verDescargaPendiente/{id}")
+    public String verDescargaPendiente(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenDescarga() != null) {
+
+            Long idImagen = flete.getImagenDescarga().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescargaPdfPendiente.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescarga.html";
+                
+            }
+        
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_descargaCargar.html";
+        }
+    }
+    
+    @GetMapping("/verDescargaChofer/{id}")
+    public String verDescargaChofer(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenDescarga() != null) {
+
+            Long idImagen = flete.getImagenDescarga().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescargaPdfChofer.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescarga.html";
+                
+            }
+        
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_descargaCargar.html";
+        }
+    }
+    
+    @GetMapping("/verDescargaCliente/{id}")
+    public String verDescargaCliente(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenDescarga() != null) {
+
+            Long idImagen = flete.getImagenDescarga().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescargaPdfCliente.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescarga.html";
+                
+            }
+        
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_descargaCargar.html";
+        }
+    }
+    
+    @GetMapping("/verDescargaFiltrado/{id}")
+    public String verDescargaFiltrado(@PathVariable Long id, Model model) {
+
+        Flete flete = fleteServicio.buscarFlete(id);
+
+        if (flete.getImagenDescarga() != null) {
+
+            Long idImagen = flete.getImagenDescarga().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescargaPdfFiltrado.html";
+
+            } else {
+
+                model.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                model.addAttribute("imagenNombre", imagen.getNombre());
+                model.addAttribute("id", idImagen);
+
+                return "imagen_mostrarDescarga.html";
+                
+            }
+        
+        } else {
+
+            model.addAttribute("flete", flete);
+
+            return "imagen_descargaCargar.html";
+        }
+    }
+    
     @GetMapping("/descargarDescargaPdf/{id}")
     public String descargarDescargaPdf(@PathVariable Long id, ModelMap modelo){
         
@@ -548,6 +930,58 @@ public class ImagenControlador {
         modelo.addAttribute("id", id);
         
         return "imagen_descargarDescargaPdf.html";
+    }
+    
+    @GetMapping("/descargarDescargaPdfPendiente/{id}")
+    public String descargarDescargaPdfPendiente(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenDescarga(id));
+        
+        return "imagen_descargarDescargaPdfPendiente.html";
+    }
+    
+    @GetMapping("/descargarDescargaPdfChofer/{id}")
+    public String descargarDescargaPdfChofer(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenDescarga(id));
+        
+        return "imagen_descargarDescargaPdfChofer.html";
+    }
+    
+    @GetMapping("/descargarDescargaPdfCliente/{id}")
+    public String descargarDescargaPdfCliente(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenDescarga(id));
+        
+        return "imagen_descargarDescargaPdfCliente.html";
+    }
+    
+     @GetMapping("/descargarDescargaPdfFiltrado/{id}")
+    public String descargarDescargaPdfFiltrado(@PathVariable Long id, ModelMap modelo){
+        
+        Imagen imagen = imagenServicio.obtenerImagenPorId(id);
+        
+        modelo.addAttribute("imagenUrl", "/imagen/pdf/" + id);
+        modelo.addAttribute("imagenNombre", imagen.getNombre());
+        modelo.addAttribute("id", id);
+        modelo.addAttribute("flete", fleteServicio.buscarFleteIdImagenDescarga(id));
+        
+        return "imagen_descargarDescargaPdfFiltrado.html";
     }
 
     @GetMapping("/modificarDescarga/{id}") //llega id de Imagen
@@ -563,6 +997,8 @@ public class ImagenControlador {
 
         Flete flete = fleteServicio.buscarFleteIdImagenDescarga(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Descarga Flete ID" + flete.getIdFlete());
         imagen.setTipo(file.getContentType()); 
@@ -592,6 +1028,12 @@ public class ImagenControlador {
             
             return "flete_registradoAdmin.html";
             
+        }
+        
+        } catch (Exception e) {
+            modelo.addAttribute("id", id);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_descargaModificar.html"; 
         }
 
     }
@@ -716,6 +1158,8 @@ public class ImagenControlador {
 
         Combustible carga = combustibleServicio.buscarCombustibleIdImagen(id);
 
+        try {
+        
         Imagen imagen = new Imagen();
         imagen.setNombre("Carga de Diesel " + carga.getFechaCarga());
         imagen.setTipo(file.getContentType()); 
@@ -732,6 +1176,12 @@ public class ImagenControlador {
             modelo.put("exito", "Imagen de Diesel MODIFICADO con éxito");
             
             return "combustible_modificado.html";
+            
+            } catch (Exception e) {
+            modelo.addAttribute("id", id);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_combustibleModificar.html"; 
+        }
 
     }
     
@@ -772,8 +1222,6 @@ public class ImagenControlador {
             return "index_admin.html";
         }
     }
-    
-    
     
     public byte[] optimizeImage(MultipartFile file) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
