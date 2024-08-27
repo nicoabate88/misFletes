@@ -36,7 +36,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="card-body">
-                                            <h6 th:text="'Usuario: '+${usuario.nombre}"></h6>
+                                            <h6 th:text="${usuario.nombre}"></h6>
                                             <h6 class="mb-0" id="dimgray" th:text="'Nombre de Usuario: '+${usuario.usuario}"></h6>
                                         </div>
                                     </div>
@@ -52,7 +52,7 @@
                                 </div>
                                 </div>
                                 
-                                <div th:if="${exito != null}" class="card-body mb-4 col-md-5 text-center" id="mensaje">                        
+                                <div th:if="${exito != null}" class="card-body mb-4 col-sm-12 col-md-12 col-xl-10 col-lg-10 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${exito}"></h6>                                                                             
                                 </div>
                             </div>

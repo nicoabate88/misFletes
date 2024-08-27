@@ -63,6 +63,21 @@ public class UsuarioServicio implements UserDetailsService {
         usuarioRepositorio.save(user);
 
     }
+    
+    @Transactional
+    public void modificarPswUsuario(Long id, String password) {
+        
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(id);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+        
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        
+        usuarioRepositorio.save(user);
+        
+    }
 
     public Usuario buscarUsuario(Long idUsuario) {
 
@@ -76,6 +91,14 @@ public class UsuarioServicio implements UserDetailsService {
         return lista;
 
     }
+    
+    public ArrayList<Usuario> buscarTodosUsuarios() {
+
+        ArrayList<Usuario> lista = (ArrayList<Usuario>) usuarioRepositorio.findAll();
+
+        return lista;
+
+    }
 
     public Long buscarUltimoUsuario() {
 
@@ -83,43 +106,42 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     public void validarDatos(Long idOrg, String nombre, String nombreUsuario, String password, String password2) throws MiException {
-
-        if (!password.equals(password2)) {
-            throw new MiException("Las contraseñas ingresadas deben ser iguales");
-        }
-
-        ArrayList<Usuario> lista = usuarioRepositorio.buscarUsuarios(idOrg);
-        for (Usuario u : lista) {
-            if (u.getUsuario().equals(nombreUsuario)) {
-                throw new MiException("El Usuario ya está registrado");
-            }
-        }
         
         ArrayList<Usuario> listaAdmin = usuarioRepositorio.buscarUsuariosAdmin(idOrg);
         for(Usuario u : listaAdmin){
             if (u.getNombre().equalsIgnoreCase(nombre)) {
-                throw new MiException("El Nombre ya está registrado");
+                throw new MiException("Apellido y Nombre ya está registrado");
             }
+        }
+        
+        ArrayList<Usuario> lista = buscarTodosUsuarios();
+        for (Usuario u : lista) {
+            if (u.getUsuario().equals(nombreUsuario)) {
+                throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
+            }
+        }
+        
+        if (!password.equals(password2)) {
+            throw new MiException("Las Contraseñas ingresadas deben ser iguales");
         }
     }
     
     public void validarDatosModifica(Usuario user, String nombre, String nombreUsuario) throws MiException {
 
-        ArrayList<Usuario> lista = buscarUsuarios(user.getIdOrg());
-
-        if (!user.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-            for (Usuario u : lista) {
-                if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                    throw new MiException("El Usuario ya está registrado");
-                }
-            }
-        }
-
         ArrayList<Usuario> listaAdmin = usuarioRepositorio.buscarUsuariosAdmin(user.getIdOrg());
         if (!user.getNombre().equalsIgnoreCase(nombre)) {
             for (Usuario u : listaAdmin) {
                 if (u.getNombre().equals(nombre)) {
-                    throw new MiException("El Nombre ya está registrado");
+                    throw new MiException("Apellido y Nombre ya está registrado");
+                }
+            }
+        }
+        
+        ArrayList<Usuario> lista = buscarTodosUsuarios();
+        if (!user.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+            for (Usuario u : lista) {
+                if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+                    throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
                 }
             }
         }

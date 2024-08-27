@@ -35,11 +35,12 @@ public class ChoferServicio {
     @Transactional
     public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
 
-        validarDatos(idOrg, nombre, nombreUsuario, cuil, password, password2);
+        String nombreUsuarioMin = nombreUsuario.toLowerCase();
         String nombreM = nombre.toUpperCase();
         
-        Usuario user = new Usuario();
+        validarDatos(idOrg, nombreM, nombreUsuarioMin, cuil, password, password2);
         
+        Usuario user = new Usuario();
         if(idCamion != null){
         Camion camion = new Camion();
         Optional<Camion> cam = camionRepositorio.findById(idCamion);
@@ -52,7 +53,7 @@ public class ChoferServicio {
         user.setIdOrg(idOrg);
         user.setNombre(nombreM);
         user.setCuil(cuil);
-        user.setUsuario(nombreUsuario);
+        user.setUsuario(nombreUsuarioMin);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRol("CHOFER");
         user.setPorcentaje(porcentaje);
@@ -67,6 +68,7 @@ public class ChoferServicio {
     public void modificarChofer(Long id, String nombre, Long cuil, Long  idCamion, String nombreUsuario, Double porcentaje) throws MiException {
 
         String nombreM = nombre.toUpperCase();
+        String nombreUsuarioMin = nombreUsuario.toLowerCase();
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(id);
@@ -74,7 +76,7 @@ public class ChoferServicio {
             user = u.get();
         }
         
-        validarDatosModificar(user, nombre, nombreUsuario, cuil);
+        validarDatosModificar(user, nombreM, nombreUsuarioMin, cuil);
         
         if(idCamion != 0){
         Camion camion = new Camion();
@@ -94,6 +96,21 @@ public class ChoferServicio {
 
         usuarioRepositorio.save(user);
 
+    }
+    
+    @Transactional
+    public void modificarPswChofer(Long id, String password) {
+        
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(id);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+        
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        
+        usuarioRepositorio.save(user);
+        
     }
 
     @Transactional
@@ -155,57 +172,53 @@ public class ChoferServicio {
         ArrayList<Usuario> lista = bucarTodosUsuarios();
         for (Usuario u : lista) {
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El nombre de Usuario no está disponible, ingrese otro");
+                throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
             }
         }
-
+        
         ArrayList<Usuario> listaChoferes = usuarioRepositorio.buscarUsuariosChofer(idOrg);
+        
         for (Usuario u : listaChoferes) {
             if (u.getNombre().equalsIgnoreCase(nombre)) {
-                throw new MiException("El nombre de Chofer ya se encuentra registrado");
+                throw new MiException("Apellido y Nombre ya está registrado");
             }
             if (u.getCuil().equals(cuil)) {
-                throw new MiException("El CUIL de Chofer ya se encuentra registrado");
+                throw new MiException("El CUIL ya está registrado");
             }
         }
-
         if (!password.equals(password2)) {
-            throw new MiException("Las contraseñas ingresadas deben ser iguales");
+            throw new MiException("Las Contraseñas ingresadas deben ser iguales");
         }
 
     }
     
      public void validarDatosModificar(Usuario user, String nombre, String nombreUsuario, Long cuil) throws MiException {
 
-        ArrayList<Usuario> lista = bucarTodosUsuarios();
-        
-        if(!user.getUsuario().equalsIgnoreCase(nombreUsuario)){
-        for(Usuario u: lista){    
-            if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El nombre de Usuario no está disponible, ingrese otro");
-            }
-        }
-        }
-        
         ArrayList<Usuario> listaChoferes = usuarioRepositorio.buscarUsuariosChofer(user.getIdOrg());
         
         if(!user.getNombre().equalsIgnoreCase(nombre)){
         for (Usuario u : listaChoferes) {
             if (u.getNombre().equalsIgnoreCase(nombre)) {
-                throw new MiException("El nombre de Chofer ya se encuentra registrado");
+                throw new MiException("Apellido y Nombre ya está registrado");
             }
         }
         }
-        
         if(!user.getCuil().equals(cuil)){
             for(Usuario u: listaChoferes){
             if (u.getCuil().equals(cuil)) {
-                throw new MiException("El CUIL de Chofer ya se encuentra registrado");
+                throw new MiException("El CUIL ya está registrado");
             }
             }
         }
+        
+        ArrayList<Usuario> lista = bucarTodosUsuarios();
+        if(!user.getUsuario().equalsIgnoreCase(nombreUsuario)){
+        for(Usuario u: lista){    
+            if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+                throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
+            }
         }
-
-    
+        }
+        }
 
 }

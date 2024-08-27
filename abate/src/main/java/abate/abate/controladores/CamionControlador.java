@@ -70,8 +70,9 @@ public class CamionControlador {
     
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
-
+        
         modelo.put("camion", camionServicio.buscarCamion(id));
+        
 
         return "camion_modificar.html";
 

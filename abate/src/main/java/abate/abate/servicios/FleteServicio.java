@@ -72,8 +72,7 @@ public class FleteServicio {
         Double total = neto + iva;
         Double totalR = Math.round(total * 100.0) / 100.0;
         Double por = chofer.getPorcentaje() / 100;
-        Double porcentaje = neto * por;
-        Double porR = Math.round(porcentaje * 100.0) / 100.0;
+        Double porcentaje = (double) Math.round(neto * por);
         
         flete.setIdOrg(idOrg);
         flete.setFechaCarga(carga);
@@ -91,7 +90,7 @@ public class FleteServicio {
         flete.setIva(ivaR);
         flete.setTotal(totalR);
         flete.setPorcientoChofer(chofer.getPorcentaje());
-        flete.setPorcentajeChofer(porR);
+        flete.setPorcentajeChofer(porcentaje);
         flete.setChofer(chofer);
         flete.setUsuario(chofer);
         flete.setEstado("PENDIENTE");
@@ -141,17 +140,16 @@ public class FleteServicio {
         Date carga = convertirFecha(fechaCarga);
         Date viaje = convertirFecha(fechaViaje);
         Double neto = (kg / 1000) * tarifa;
-        Double netoR = Math.round(neto * 100.0) / 100.0;
-        Double porcientoChofer = chofer.getPorcentaje() / 100;
-        Double porcentajeChofer = neto * porcientoChofer;
-        Double porcentajeChoferR = Math.round(porcentajeChofer * 100.0) / 100.0;
+        Double netoR = Math.round(neto * 100.0) / 100.0;        
+        Double por = chofer.getPorcentaje() / 100;
+        Double porcentaje = (double) Math.round(neto * por);
         
         if (comisionTpte == 0.0) {
             flete.setNeto(netoR);
             flete.setComisionTpte(0.0);
             flete.setComisionTpteValor(0.0);
             flete.setComisionTpteChofer("NO");
-            flete.setPorcentajeChofer(porcentajeChoferR);
+            flete.setPorcentajeChofer(porcentaje);
             if (ivaN.equalsIgnoreCase("SI")) {
                 Double iva = neto * 0.21;
                 Double ivaR = Math.round(iva * 100.0) / 100.0;
@@ -181,11 +179,12 @@ public class FleteServicio {
                 flete.setTotal(netoFlete);
             }
             if (comisionTpteChofer.equalsIgnoreCase("NO")) {
-                flete.setPorcentajeChofer(porcentajeChoferR);
+                flete.setPorcentajeChofer(porcentaje);
                 flete.setComisionTpteChofer("NO");
             } else {
-                Double comisionChofer = ((comisionTpte / 100) * porcentajeChoferR);
-                Double comisionChoferR = Math.round((porcentajeChoferR - comisionChofer) * 100.0) / 100.0;                
+                Double comisionChofer = ((comisionTpte / 100) * porcentaje);
+                Double comisionChoferR = (double) Math.round(porcentaje - comisionChofer);    
+                
                 flete.setPorcentajeChofer(comisionChoferR);
                 flete.setComisionTpteChofer("SI");
             }
@@ -405,9 +404,9 @@ public class FleteServicio {
 
         return fleteRepositorio.buscarFleteIdGasto(id);
     }
-
+/*
     @Transactional
-    public void modificarFlete(Long idFlete, Long idChofer, Long idCamion, String fechaCarga, Long idCliente, String origen, String fechaViaje, String destino, Double km,
+    public void modificarFleteChofer(Long idFlete, Long idChofer, Long idCamion, String fechaCarga, Long idCliente, String origen, String fechaViaje, String destino, Double km,
             String tipoCereal, Double tarifa, String cPorte, String ctg, Double kg, Double ivaM, Double porciento, 
             Double comisionTpte, String comisionTpteChofer, Long idUsuario) throws ParseException { 
 
@@ -502,6 +501,174 @@ public class FleteServicio {
         flete.setTotal(totalR);
         flete.setPorcientoChofer(porciento);
         flete.setPorcentajeChofer(porR);
+        flete.setChofer(chofer);
+        flete.setUsuario(usuario);
+        flete.setCamion(camion);
+
+        fleteRepositorio.save(flete);
+
+        if (flete.getEstado().equalsIgnoreCase("ACEPTADO")) {
+            transaccionServicio.modificarTransaccionFlete(idFlete);
+        }
+
+    }
+  */  
+    @Transactional
+    public void modificarFleteChofer(Long idFlete, Long idCamion, String fechaCarga, Long idCliente, String origen, String fechaViaje, String destino, Double km,
+            String tipoCereal, Double tarifa, String cPorte, String ctg, Double kg) throws ParseException { 
+
+        Flete flete = new Flete();
+        Optional<Flete> fte = fleteRepositorio.findById(idFlete);
+        if (fte.isPresent()) {
+            flete = fte.get();
+        }
+
+        Cliente cliente = new Cliente();
+        Optional<Cliente> cte = clienteRepositorio.findById(idCliente);
+        if (cte.isPresent()) {
+            cliente = cte.get();
+        }
+        
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+
+        String origenM = origen.toUpperCase();
+        String destinoM = destino.toUpperCase();
+        Date carga = convertirFecha(fechaCarga);
+        Date viaje = convertirFecha(fechaViaje);
+        Double neto = (kg / 1000) * tarifa;
+        Double iva = neto * 0.21;
+        
+        Double netoR = Math.round(neto * 100.0) / 100.0;
+        Double por = flete.getPorcientoChofer() / 100;
+        Double porcentaje = (double) Math.round(netoR * por);
+        
+        Double ivaR = Math.round(iva * 100.0) / 100.0;
+        
+        Double total = neto + iva;
+        Double totalR = Math.round(total * 100.0) / 100.0;
+
+        flete.setFechaCarga(carga);
+        flete.setCliente(cliente);
+        flete.setOrigenFlete(origenM);
+        flete.setFechaFlete(viaje);
+        flete.setDestinoFlete(destinoM);
+        flete.setKmFlete(km);
+        flete.setTipoCereal(tipoCereal);
+        flete.setTarifa(tarifa);
+        flete.setCartaPorte(cPorte);
+        flete.setCtg(ctg);
+        flete.setKgFlete(kg);
+        flete.setNeto(netoR);
+        flete.setIva(ivaR);
+        flete.setTotal(totalR);
+        flete.setPorcentajeChofer(porcentaje);
+        flete.setCamion(camion);
+
+        fleteRepositorio.save(flete);
+
+    }
+    
+    @Transactional
+    public void modificarFleteAdmin(Long idFlete, Long idChofer, Long idCamion, String fechaCarga, Long idCliente, String origen, String fechaViaje, String destino, Double km,
+            String tipoCereal, Double tarifa, String cPorte, String ctg, Double kg, Double ivaM, Double porciento, Double porcentajeChofer,
+            Double comisionTpte, String comisionTpteChofer, Long idUsuario) throws ParseException { 
+
+        Flete flete = new Flete();
+        Optional<Flete> fte = fleteRepositorio.findById(idFlete);
+        if (fte.isPresent()) {
+            flete = fte.get();
+        }
+
+        Usuario chofer = new Usuario();
+        Optional<Usuario> chof = usuarioRepositorio.findById(idChofer);
+        if (chof.isPresent()) {
+            chofer = chof.get();
+        }
+
+        Cliente cliente = new Cliente();
+        Optional<Cliente> cte = clienteRepositorio.findById(idCliente);
+        if (cte.isPresent()) {
+            cliente = cte.get();
+        }
+
+        Usuario usuario = new Usuario();
+        Optional<Usuario> user = usuarioRepositorio.findById(idUsuario);
+        if (user.isPresent()) {
+            usuario = user.get();
+        }
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+
+        String origenM = origen.toUpperCase();
+        String destinoM = destino.toUpperCase();
+        Date carga = convertirFecha(fechaCarga);
+        Date viaje = convertirFecha(fechaViaje);
+        Double neto = (kg / 1000) * tarifa;
+        Double iva;
+        
+        if(ivaM == 0.0){
+        iva = ivaM;
+        } else {
+            iva = neto * 0.21;
+        }
+        
+        if(comisionTpte != 0.0){
+            Double tpte = ((comisionTpte/100)*neto);
+            neto = neto - tpte;
+            flete.setComisionTpte(comisionTpte);
+            flete.setComisionTpteValor(tpte);
+            if(ivaM != 0.0){
+            iva = neto * 0.21;
+            }
+        } else {
+            flete.setComisionTpte(0.0);
+            flete.setComisionTpteValor(0.0);
+        }
+        
+        Double netoR = Math.round(neto * 100.0) / 100.0;
+        Double ivaR = Math.round(iva * 100.0) / 100.0;
+        
+        Double total = neto + iva;
+        Double totalR = Math.round(total * 100.0) / 100.0;
+        
+        if(porciento != 0){
+            
+        porcentajeChofer = (double) Math.round(neto * (porciento / 100));
+        
+        if(comisionTpteChofer.equalsIgnoreCase("SI")){
+            
+            porcentajeChofer = (double) Math.round(netoR * (porciento / 100));
+            flete.setComisionTpteChofer("SI");
+            
+        } else {
+            porcentajeChofer = (double) Math.round(((kg * tarifa) / 1000) * (porciento / 100));
+            flete.setComisionTpteChofer("NO");
+        }
+        } 
+
+        flete.setFechaCarga(carga);
+        flete.setCliente(cliente);
+        flete.setOrigenFlete(origenM);
+        flete.setFechaFlete(viaje);
+        flete.setDestinoFlete(destinoM);
+        flete.setKmFlete(km);
+        flete.setTipoCereal(tipoCereal);
+        flete.setTarifa(tarifa);
+        flete.setCartaPorte(cPorte);
+        flete.setCtg(ctg);
+        flete.setKgFlete(kg);
+        flete.setNeto(netoR);
+        flete.setIva(ivaR);
+        flete.setTotal(totalR);
+        flete.setPorcientoChofer(porciento);
+        flete.setPorcentajeChofer(porcentajeChofer);
         flete.setChofer(chofer);
         flete.setUsuario(usuario);
         flete.setCamion(camion);

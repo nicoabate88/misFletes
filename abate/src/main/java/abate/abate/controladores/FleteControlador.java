@@ -299,6 +299,7 @@ public class FleteControlador {
         if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
 
             modelo.put("flete", fleteServicio.buscarFlete(id));
+            modelo.put("idUsuario", logueado.getId());
 
             return "flete_mostrarChofer.html";
 
@@ -407,31 +408,38 @@ public class FleteControlador {
             return "flete_modificarAdmin.html";
         }
     }
-
-    @PostMapping("/modifica/{id}")
-    public String modifica(@RequestParam Long id, @RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, 
+    
+    @PostMapping("/modificaChofer/{id}")
+    public String modificaChofer(@RequestParam Long id, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, 
             @RequestParam String fechaFlete, @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal,
-            @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, @RequestParam Double comisionTpte, 
-            @RequestParam String comisionTpteChofer, @RequestParam Double iva, @RequestParam Double porcentaje, ModelMap modelo, HttpSession session) throws ParseException {
+            @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, ModelMap modelo) throws ParseException {
 
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         Flete flete = fleteServicio.buscarFlete(id);
-        
-        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
 
-            fleteServicio.modificarFlete(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
-                    kg, iva, porcentaje, comisionTpte, comisionTpteChofer, logueado.getId());
+            fleteServicio.modificarFleteChofer(id, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg);
 
             modelo.put("flete", flete);
             modelo.put("fecha", fechaFlete);
             modelo.put("exito", "Flete MODIFICADO con éxito");
 
             return "flete_modificadoChofer.html";
+        
+    }
 
-        } if (logueado.getRol().equalsIgnoreCase("ADMIN") && flete.getEstado().equalsIgnoreCase("PENDIENTE")){
+    @PostMapping("/modificaAdmin/{id}")
+    public String modificaAdmin(@RequestParam Long id, @RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, 
+            @RequestParam String fechaFlete, @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal,
+            @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, @RequestParam Double comisionTpte, 
+            @RequestParam String comisionTpteChofer, @RequestParam Double iva, @RequestParam Double porcentaje, @RequestParam Double porcentajeChofer,
+            ModelMap modelo, HttpSession session) throws ParseException {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        Flete flete = fleteServicio.buscarFlete(id);
+        
+        if (flete.getEstado().equalsIgnoreCase("PENDIENTE")){
             
-            fleteServicio.modificarFlete(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
-                    kg, iva, porcentaje, comisionTpte, comisionTpteChofer, logueado.getId());
+            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
+                    kg, iva, porcentaje, porcentajeChofer, comisionTpte, comisionTpteChofer, logueado.getId());
 
             modelo.put("flete", flete);
             modelo.put("fecha", fechaFlete);
@@ -443,8 +451,8 @@ public class FleteControlador {
         
         else {
 
-            fleteServicio.modificarFlete(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
-                    kg, iva, porcentaje, comisionTpte, comisionTpteChofer, logueado.getId());
+            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
+                    kg, iva, porcentaje, porcentajeChofer, comisionTpte, comisionTpteChofer, logueado.getId());
 
             modelo.put("flete", flete);
             modelo.put("fecha", fechaFlete);
@@ -614,7 +622,7 @@ public class FleteControlador {
     public String exportarFletes(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id,
             ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta));
+            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(id, desde, hasta));
             modelo.put("desde", desde);
             modelo.put("hasta", hasta);
             modelo.put("id", id);
@@ -625,7 +633,7 @@ public class FleteControlador {
     @PostMapping("/exportaChofer")
     public void exportToExcel(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id, HttpServletResponse response) throws IOException, ParseException {
 
-        ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta);
+        ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdChoferFechaAsc(id, desde, hasta);
         String htmlContent = generateHtmlFromObjectsChofer(myObjects);
         excelServicio.exportHtmlToExcel(htmlContent, response);
 

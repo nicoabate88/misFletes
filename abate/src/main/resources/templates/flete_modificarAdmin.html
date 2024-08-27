@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
 
-                                    <form class="row g-3" id="form" th:action="@{/flete/modifica/__${flete.id}__}" method="POST">
+                                    <form class="row g-3" id="form" th:action="@{/flete/modificaAdmin/__${flete.id}__}" method="POST">
 
                                         <input hidden th:value="${flete.id}" name="id">
                                             
@@ -166,14 +166,14 @@
                                             <label for="porcentaje" class="form-label">Porcentaje Chofer</label>
                                             <div class="input-group">
                                             <span class="input-group-text">%</span>
-                                            <input type="number" step="0.01" class="form-control" id="porcentaje" th:value="${flete.chofer.porcentaje}" name="porcentaje" required>
+                                            <input type="number" step="0.01" class="form-control" id="porcentaje" th:value="${flete.porcientoChofer}" name="porcentaje" required>
                                             </div>    
                                         </div>  
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5">
                                             <label for="validationDefault02" class="form-label">Porcentaje Chofer</label>
                                             <div class="input-group">
                                             <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control" id="validationDefault02" th:value="${flete.porcentajeChofer}" readonly>
+                                            <input type="number" class="form-control" id="validationDefault02" th:value="${flete.porcentajeChofer}" name="porcentajeChofer" required>
                                             </div>    
                                         </div>   
                                          

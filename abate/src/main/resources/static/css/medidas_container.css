@@ -108,6 +108,17 @@ label {
     font-size: 12px;
 }
 
+#eliminar {
+    
+    background : whitesmoke;  
+}
+
+#modificarpsw {
+
+    color : darkblue;
+    font-size: 12px;
+}
+
 #pdf{
 
     color : #ff3333;

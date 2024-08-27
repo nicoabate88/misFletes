@@ -34,10 +34,9 @@
                                         </div>
                                     </div>
 
-                                    <form class="row g-3" id="form" th:action="@{/flete/modifica/__${flete.id}__}" method="POST">
+                                    <form class="row g-3" id="form" th:action="@{/flete/modificaChofer/__${flete.id}__}" method="POST">
 
-                                        <input hidden th:value="${flete.id}" name="id">
-                                        <input hidden th:value="${flete.chofer.id}" name="idChofer">    
+                                        <input hidden th:value="${flete.id}" name="id"> 
                                             
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
                                             <label for="chofer" class="form-floting">Chofer</label>
@@ -122,10 +121,7 @@
                                             <input type="number" step="0.01" class="form-control" id="kg" th:value="${flete.kgFlete}" name="kg" required>
                                             </div>    
                                         </div>   
-                                        <input hidden th:value="${flete.comisionTpte}" name="comisionTpte"> 
-                                        <input hidden th:value="${flete.comisionTpteChofer}" name="comisionTpteChofer"> 
-                                        <input hidden th:value="${flete.iva}" name="iva">    
-                                        <input hidden th:value="${flete.chofer.porcentaje}" name="porcentaje">      
+                                             
                                         <div class="d-none d-sm-block col-lg-6 col-xl-6">
                                         </div>    
 

@@ -44,7 +44,7 @@ public class UsuarioControlador {
             modelo.put("usuario", usuarioServicio.buscarUsuario(id));
             modelo.put("exito", "Usuario REGISTRADO con éxito");
 
-            return "usuario_mostrar.html";
+            return "usuario_registrado.html";
 
         } catch (MiException ex) {
 
@@ -98,12 +98,13 @@ public class UsuarioControlador {
     public String modifica(@RequestParam Long id, @RequestParam String nombre, @RequestParam String nombreUsuario, ModelMap modelo) {
 
         try {
+            
             usuarioServicio.modificarUsuario(id, nombre, nombreUsuario);
         
             modelo.put("usuario", usuarioServicio.buscarUsuario(id));
             modelo.put("exito", "Usuario MODIFICADO con éxito");
 
-            return "usuario_mostrar.html";
+            return "usuario_registrado.html";
         
         } catch (MiException ex) {
             
@@ -113,6 +114,29 @@ public class UsuarioControlador {
             return "usuario_modificar.html";
             
         }
+
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/modificarPsw/{id}")
+    public String modificarPsw(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("usuario", usuarioServicio.buscarUsuario(id));
+
+        return "usuario_modificarPsw.html";
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PostMapping("/modificaPsw/{id}")
+    public String modificaPsw(@RequestParam Long id, @RequestParam String password, ModelMap modelo, HttpSession session) {
+            
+            usuarioServicio.modificarPswUsuario(id, password);
+
+            modelo.put("usuario", usuarioServicio.buscarUsuario(id));
+            modelo.put("exito", "Contraseña de Usuario MODIFICADA con éxito");
+
+            return "usuario_registrado.html";
 
     }
     

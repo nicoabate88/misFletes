@@ -123,7 +123,8 @@ public class CamionServicio {
                 throw new MiException("El DOMINIO de Camión ya está registrado");
             }
         }
-    } 
+    }    
+    
     
     public void validarDatosModificar(Camion camion, String dominio) throws MiException {
 
@@ -137,4 +138,7 @@ public class CamionServicio {
         }
     } 
     }
+    
+
+ 
 }

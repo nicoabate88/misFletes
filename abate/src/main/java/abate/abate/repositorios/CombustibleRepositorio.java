@@ -40,5 +40,7 @@ public interface CombustibleRepositorio extends JpaRepository<Combustible, Long>
     @Query("SELECT c FROM Combustible c WHERE imagen_id = :id")
     public Combustible buscarCombustibleIdImagen(@Param("id") Long id);
     
+
+    
 }   
                      

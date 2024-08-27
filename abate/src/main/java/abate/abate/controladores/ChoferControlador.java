@@ -77,10 +77,12 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
     @GetMapping("/mostrar/{id}")
     public String mostrar(@PathVariable Long id, ModelMap modelo) {
+            
+            modelo.put("chofer", choferServicio.buscarChofer(id));
 
-        modelo.put("chofer", choferServicio.buscarChofer(id));
-
-        return "chofer_mostrar.html";
+            return "chofer_mostrar.html";
+            
+        
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -120,6 +122,52 @@ public class ChoferControlador {
             return "chofer_modificar.html";
 
         }
+
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @GetMapping("/modificarPsw/{id}")
+    public String modificarPsw(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+
+        return "chofer_modificarPsw.html";
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @PostMapping("/modificaPsw/{id}")
+    public String modificaPsw(@RequestParam Long id, @RequestParam String password, ModelMap modelo, HttpSession session) {
+            
+            choferServicio.modificarPswChofer(id, password);
+
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.put("exito", "Contraseña de Chofer MODIFICADA con éxito");
+
+            return "chofer_registrado.html";
+
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @GetMapping("/modificarPswChofer/{id}")
+    public String modificarPswChofer(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+
+        return "chofer_modificarPswChofer.html";
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @PostMapping("/modificaPswChofer/{id}")
+    public String modificaPswChofer(@RequestParam Long id, @RequestParam String password, ModelMap modelo) {
+            
+            choferServicio.modificarPswChofer(id, password);
+
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.put("exito", "Contraseña MODIFICADA con éxito");
+
+            return "chofer_modificadoPsw.html";
 
     }
 
