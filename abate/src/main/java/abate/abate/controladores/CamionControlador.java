@@ -1,9 +1,21 @@
 
 package abate.abate.controladores;
 
+import abate.abate.entidades.Camion;
+import abate.abate.entidades.CamionEstadistica;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.servicios.CamionServicio;
+import abate.abate.servicios.ExcelServicio;
+import abate.abate.util.CamionEstadisticaComparador;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +34,8 @@ public class CamionControlador {
     
     @Autowired
     private CamionServicio camionServicio;
+    @Autowired
+    private ExcelServicio excelServicio;
     
     @GetMapping("/registrar")
     public String registrar(ModelMap modelo) {
@@ -68,12 +82,39 @@ public class CamionControlador {
         
     }
     
+    @GetMapping("/mostrarEstadistica/{id}")
+    public String buscarEstadistica(@PathVariable Long id, ModelMap modelo) throws ParseException{
+        
+        String desde = obtenerFechaDesde();
+        String hasta = obtenerFechaHasta();
+        ArrayList<CamionEstadistica> lista = camionServicio.estadisticaCamion(desde, hasta, id);
+            
+            for(CamionEstadistica e : lista){
+                e.setConsumo((double) Math.round((100 * e.getLitro())/ e.getKmRecorrido()));
+                if(e.getKmRecorrido() != 0.0){
+                e.setRentabilidad((double) Math.round(e.getNeto()/e.getKmRecorrido()));
+                } else {
+                    e.setRentabilidad(0.0);
+                }
+                String neto = convertirNumeroMiles(e.getNeto());
+                e.setNetoS(neto);
+            }
+            
+        Collections.sort(lista, CamionEstadisticaComparador.ordenarMes);      
+        
+        modelo.put("camion", camionServicio.buscarCamion(id));
+        modelo.addAttribute("estadistica", lista);
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        
+        return "camion_estadistica.html";
+    }
+
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
         
         modelo.put("camion", camionServicio.buscarCamion(id));
         
-
         return "camion_modificar.html";
 
     }
@@ -130,6 +171,118 @@ public class CamionControlador {
 
             return "camion_eliminar.html";
         }
+    }
+    
+     public String obtenerFechaDesde() {
+
+        LocalDate now = LocalDate.now();
+
+        LocalDate firstDayOfYear = now.withDayOfYear(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedDate = firstDayOfYear.format(formatter);
+
+        return formattedDate;
+
+    }
+
+    public String obtenerFechaHasta() {
+
+        LocalDate now = LocalDate.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedToday = now.format(formatter);
+
+        return formattedToday;
+
+    }
+    
+    @PostMapping("/estadisticaExportar")
+    public String estadisticaExportar(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id, ModelMap modelo) throws ParseException {
+
+         ArrayList<CamionEstadistica> lista = camionServicio.estadisticaCamion(desde, hasta, id);
+            
+            for(CamionEstadistica e : lista){
+                e.setConsumo((double) Math.round((100 * e.getLitro())/ e.getKmRecorrido()));
+                if(e.getKmRecorrido() != 0.0){
+                e.setRentabilidad((double) Math.round(e.getNeto()/e.getKmRecorrido()));
+                } else {
+                    e.setRentabilidad(0.0);
+                }
+                String neto = convertirNumeroMiles(e.getNeto());
+                e.setNetoS(neto);
+            }
+            
+        Collections.sort(lista, CamionEstadisticaComparador.ordenarMes);
+        
+        modelo.addAttribute("estadistica", lista);
+        modelo.put("id", id);
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+
+        return "camion_estadisticaExportar.html";
+        
+        }
+    
+    @PostMapping("/estadisticaExporta")
+    public void exportToExcel(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id, HttpServletResponse response) throws IOException, ParseException {
+        
+        Camion camion = camionServicio.buscarCamion(id);
+        ArrayList<CamionEstadistica> myObjects = camionServicio.estadisticaCamion(desde, hasta, id);
+            for(CamionEstadistica e : myObjects){
+                e.setConsumo((double) Math.round((100 * e.getLitro())/ e.getKmRecorrido()));
+                if(e.getKmRecorrido() != 0.0){
+                e.setRentabilidad((double) Math.round(e.getNeto()/e.getKmRecorrido()));
+                } else {
+                    e.setRentabilidad(0.0);
+                }
+            }
+            
+        Collections.sort(myObjects, CamionEstadisticaComparador.ordenarMes);
+        
+        String htmlContent = generateHtmlFromObjects(myObjects);
+        excelServicio.exportHtmlToExcelEstadistica(htmlContent, response, camion);
+
+    }
+    
+       private String generateHtmlFromObjects(ArrayList<CamionEstadistica> objects) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<table>");
+        sb.append("<thead><tr>"
+                + "<th>Año</th>"
+                + "<th>Mes</th>"
+                + "<th>Km</th>"
+                + "<th>Litros</th>"
+                + "<th>Consumo</th>"
+                + "<th>Fletes</th>"
+                + "<th>Neto</th>"
+                + "<th>Rentabilidad</th>"
+                + "</tr></thead>");
+        sb.append("<tbody>");
+        for (CamionEstadistica e : objects) {
+            sb.append("<tr><td>").append(e.getYear()).append("</td>"
+                    + "<td>").append(e.getMonth()).append("</td>"
+                    + "<td>").append(e.getKmRecorrido()).append("</td>"
+                    + "<td>").append(e.getLitro()).append("</td>"
+                    + "<td>").append(e.getConsumo()).append("</td>"
+                    + "<td>").append(e.getFlete()).append("</td>"        
+                    + "<td>").append(e.getNeto()).append("</td>"        
+                    + "<td>").append(e.getRentabilidad()).append("</td>"                           
+                    + "</tr>");    
+        }
+        sb.append("</tbody></table>");
+        return sb.toString();
+    }
+       
+       public String convertirNumeroMiles(Double num) {  
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00");
+        String numeroFormateado = formato.format(num);
+
+        return numeroFormateado;
+
     }
     
 }

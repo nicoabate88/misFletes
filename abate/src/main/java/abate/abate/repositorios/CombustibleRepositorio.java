@@ -23,6 +23,8 @@ public interface CombustibleRepositorio extends JpaRepository<Combustible, Long>
     Combustible findTopByUsuarioOrderByIdDesc(Usuario chofer); //devuelve ultimo Combustible registrado de chofer especifico
     
     Combustible findTopByCamionOrderByIdDesc(Camion camion); //devuelve ultimo Combustible registrado de camion especifico
+    
+    ArrayList<Combustible> findTop2ByCamionOrderByIdDesc(Camion camion); //devuelve ultimos 2 Combustible registrado de camion especifico
                 
     ArrayList<Combustible> findAllByOrderByIdDesc();  //devuelve la lista de combustibles de forma descendente
     
@@ -40,7 +42,5 @@ public interface CombustibleRepositorio extends JpaRepository<Combustible, Long>
     @Query("SELECT c FROM Combustible c WHERE imagen_id = :id")
     public Combustible buscarCombustibleIdImagen(@Param("id") Long id);
     
-
-    
 }   
-                     
+                

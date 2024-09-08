@@ -44,9 +44,13 @@ public interface FleteRepositorio extends JpaRepository<Flete, Long> {
     ArrayList<Flete> findByFechaFleteBetweenAndEstadoNotAndIdOrg(Date desde, Date hasta, String estado, Long idOrg);  
 
     ArrayList<Flete> findByFechaFleteBetweenAndChoferAndEstadoNot(Date desde, Date hasta, Usuario chofer, String estado);
+    
+    ArrayList<Flete> findByFechaFleteBetweenAndCamionAndEstadoNot(Date desde, Date hasta, Camion camion, String estado);
                  
     ArrayList<Flete> findByFechaFleteBetweenAndClienteAndEstadoNot(Date desde, Date hasta, Cliente cliente, String estado);
     
-    Flete findTopByCamionOrderByIdDesc(Camion camion);
+    Flete findTopByCamionAndEstadoNotOrderByIdDesc(Camion camion, String estado);
+    
+    Flete findTopByChoferAndEstadoNotOrderByIdDesc(Usuario chofer, String estado);
 
 }

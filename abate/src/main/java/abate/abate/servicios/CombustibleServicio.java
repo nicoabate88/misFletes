@@ -6,7 +6,6 @@ import abate.abate.entidades.Usuario;
 import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
-import abate.abate.util.ChoferComparador;
 import abate.abate.util.CombustibleComparador;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +28,7 @@ public class CombustibleServicio {
     private CamionRepositorio camionRepositorio;
 
     @Transactional
-    public void crearPrimerCarga(Long idOrg, String fecha, Double km, Long idCamion) throws ParseException {
+    public void crearPrimerCarga(Long idOrg, String fecha, Double km, Long idCamion, Usuario usuario) throws ParseException {
 
         Camion camion = new Camion();
         Optional<Camion> cam = camionRepositorio.findById(idCamion);
@@ -44,10 +43,13 @@ public class CombustibleServicio {
         carga.setIdOrg(idOrg);
         carga.setFechaCarga(f);
         carga.setKmCarga(km);
+        carga.setKmRecorrido(0.0);
+        carga.setLitro(0.0);
         carga.setCompleto("SI");
         carga.setEstado("ACEPTADO");
         carga.setConsumoPromedio(0.0);
         carga.setCamion(camion);
+        carga.setUsuario(usuario);
 
         combustibleRepositorio.save(carga);
 
@@ -112,7 +114,7 @@ public class CombustibleServicio {
     }
 
     @Transactional
-    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo) throws ParseException {
+    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
 
         Combustible carga = new Combustible();
         Optional<Combustible> cga = combustibleRepositorio.findById(id);
@@ -131,6 +133,7 @@ public class CombustibleServicio {
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
         carga.setEstado("ACEPTADO");
+        carga.setUsuario(usuario);
 
         if (completo.equalsIgnoreCase("NO")) {
             carga.setCompleto("NO");
@@ -354,12 +357,21 @@ public class CombustibleServicio {
         return combustibleRepositorio.getById(id);
     }
 
-    public Double kmAnterior(Camion camion) {
+    public Combustible cargaAnterior(Camion camion) {
 
-        Combustible ultimaCarga = combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
+        return combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
 
-        return ultimaCarga.getKmCarga();
+    }
+    
+    public Combustible cargaAnteultimo(Camion camion) {
 
+        ArrayList<Combustible> ultimosRegistros = combustibleRepositorio.findTop2ByCamionOrderByIdDesc(camion);
+
+        if (ultimosRegistros.size() >= 2) {
+            return ultimosRegistros.get(1); 
+        } else {
+            return ultimosRegistros.get(0); 
+        }
     }
 
     public boolean kmIniciales(Camion camion) {

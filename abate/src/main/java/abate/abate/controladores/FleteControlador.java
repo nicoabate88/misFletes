@@ -643,12 +643,14 @@ public class FleteControlador {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
         sb.append("<thead><tr>"
+                + "<th>ID Flete</th>"
                 + "<th>Fecha Carga</th>"
                 + "<th>Fecha Flete</th>"
                 + "<th>Cliente</th>"
                 + "<th>Lugar de Carga</th>"
                 + "<th>Destino de Carga</th>"
                 + "<th>Chofer</th>"
+                + "<th>Porcentaje</th>"
                 + "<th>Camión</th>"
                 + "<th>KM</th>"
                 + "<th>Tipo Carga</th>"
@@ -662,12 +664,14 @@ public class FleteControlador {
                 + "</tr></thead>");
         sb.append("<tbody>");
         for (Flete flete : objects) {
-            sb.append("<tr><td>").append(flete.getFechaCarga()).append("</td>"
+            sb.append("<tr><td>").append(flete.getIdFlete()).append("</td>"
+                    + "<td>").append(flete.getFechaCarga()).append("</td>"
                     + "<td>").append(flete.getFechaFlete()).append("</td>"
                     + "<td>").append(flete.getCliente().getNombre()).append("</td>"
                     + "<td>").append(flete.getOrigenFlete()).append("</td>"
                     + "<td>").append(flete.getDestinoFlete()).append("</td>"
-                    + "<td>").append(flete.getChofer().getNombre()).append("</td>"        
+                    + "<td>").append(flete.getChofer().getNombre()).append("</td>" 
+                    + "<td>").append(flete.getPorcentajeChofer()).append("</td>"        
                     + "<td>").append(flete.getCamion().getDominio()).append("</td>"        
                     + "<td>").append(flete.getKmFlete()).append("</td>"
                     + "<td>").append(flete.getTipoCereal()).append("</td>"
@@ -688,6 +692,7 @@ public class FleteControlador {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
         sb.append("<thead><tr>"
+                + "<th>ID Flete</th>"
                 + "<th>Fecha Carga</th>"
                 + "<th>Fecha Flete</th>"
                 + "<th>Cliente</th>"
@@ -704,7 +709,8 @@ public class FleteControlador {
                 + "</tr></thead>");
         sb.append("<tbody>");
         for (Flete flete : objects) {
-            sb.append("<tr><td>").append(flete.getFechaCarga()).append("</td>"
+            sb.append("<tr><td>").append(flete.getIdFlete()).append("</td>"
+                    + "<td>").append(flete.getFechaCarga()).append("</td>"
                     + "<td>").append(flete.getFechaFlete()).append("</td>"
                     + "<td>").append(flete.getCliente().getNombre()).append("</td>"
                     + "<td>").append(flete.getOrigenFlete()).append("</td>"

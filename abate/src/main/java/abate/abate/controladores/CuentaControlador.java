@@ -47,6 +47,8 @@ public class CuentaControlador {
         ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasChofer(logueado.getIdOrg());
         for (Cuenta c : cuentas) {
             total = total + c.getSaldo();
+            String saldoN = convertirNumeroMiles(c.getSaldo());
+            c.setSaldoN(saldoN);
         }
 
         String saldo = convertirNumeroMiles(total);
@@ -95,6 +97,8 @@ public class CuentaControlador {
         ArrayList<Cuenta> cuentas = cuentaServicio.buscarCuentasCliente(logueado.getIdOrg());
         for (Cuenta c : cuentas) {
             total = total + c.getSaldo();
+            String saldoN = convertirNumeroMiles(c.getSaldo());
+            c.setSaldoN(saldoN);
         }
 
         String saldo = convertirNumeroMiles(total);

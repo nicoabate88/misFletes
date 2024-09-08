@@ -2,12 +2,14 @@ package abate.abate.servicios;
 
 import abate.abate.entidades.Camion;
 import abate.abate.entidades.Combustible;
-import abate.abate.entidades.Transaccion;
+import abate.abate.entidades.Entrega;
+import abate.abate.entidades.Flete;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
-import abate.abate.repositorios.TransaccionRepositorio;
+import abate.abate.repositorios.EntregaRepositorio;
+import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.ChoferComparador;
 import java.util.ArrayList;
@@ -26,11 +28,13 @@ public class ChoferServicio {
     @Autowired
     private CuentaServicio cuentaServicio;
     @Autowired
-    private TransaccionRepositorio transaccionRepositorio;
-    @Autowired
     private CamionRepositorio camionRepositorio;
     @Autowired
     private CombustibleRepositorio combustibleRepositorio;
+    @Autowired
+    private FleteRepositorio fleteRepositorio;
+    @Autowired
+    private EntregaRepositorio entregaRepositorio;
 
     @Transactional
     public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
@@ -118,10 +122,11 @@ public class ChoferServicio {
 
         Usuario chofer = usuarioRepositorio.getById(id);
         
-        Transaccion transaccion = transaccionRepositorio.findTopByChoferOrderByIdDesc(chofer);
+        Flete flete = fleteRepositorio.findTopByChoferAndEstadoNotOrderByIdDesc(chofer, "ELIMINADO");
+        Entrega entrega = entregaRepositorio.findTopByChoferAndObservacionNotOrderByIdDesc(chofer, "ELIMINADO");
         Combustible combustible = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
         
-        if (transaccion == null && combustible == null) {
+        if (flete == null && entrega == null && combustible == null) {
       
             usuarioRepositorio.deleteById(id);
             cuentaServicio.eliminarCuentaChofer(id);

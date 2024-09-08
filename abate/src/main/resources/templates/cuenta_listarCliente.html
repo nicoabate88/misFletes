@@ -30,8 +30,8 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-9">
-                                                    <h6 th:text="'Cliente '+${cuenta.cliente.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="'Saldo $'+${cuenta.saldo}"></h6>
+                                                    <h6 th:text="${cuenta.cliente.nombre}"></h6>
+                                                    <h6 id="dimgray" th:text="'Saldo $'+${cuenta.saldoN}"></h6>
                                                 </div>
                                                 <div class="col-3">
                                                     <div class="text-center">

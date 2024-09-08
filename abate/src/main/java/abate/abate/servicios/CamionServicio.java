@@ -2,6 +2,7 @@
 package abate.abate.servicios;
 
 import abate.abate.entidades.Camion;
+import abate.abate.entidades.CamionEstadistica;
 import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Flete;
 import abate.abate.entidades.Usuario;
@@ -17,6 +18,12 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class CamionServicio {
@@ -79,7 +86,7 @@ public class CamionServicio {
         Camion camion = camionRepositorio.getById(id);
         
         Combustible combustible = combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
-        Flete flete = fleteRepositorio.findTopByCamionOrderByIdDesc(camion);
+        Flete flete = fleteRepositorio.findTopByCamionAndEstadoNotOrderByIdDesc(camion, "ELIMINADO");
         Usuario usuario = usuarioRepositorio.findTopByCamionOrderByIdDesc(camion);
 
         if (combustible == null && flete == null && usuario == null) {
@@ -112,8 +119,63 @@ public class CamionServicio {
 
         return camionRepositorio.ultimoCamion();
 
-    } 
-     
+    }
+    
+    public ArrayList<CamionEstadistica> estadisticaCamion(String desde, String hasta, Long idCamion) throws ParseException{
+        
+        Camion camion = camionRepositorio.getById(idCamion);
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
+        
+        ArrayList<Flete> fletes = fleteRepositorio.findByFechaFleteBetweenAndCamionAndEstadoNot(d, h, camion, "ELIMINADO");
+        ArrayList<Combustible> cargas = combustibleRepositorio.findByFechaCargaBetweenAndCamion(d, h, camion);
+        
+        // Paso 1: Procesar los fletes
+        Map<String, CamionEstadistica> resumenMap = new HashMap<>();
+        for (Flete flete : fletes) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(flete.getFechaFlete());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+
+            String key = year + "-" + month;
+
+            if (resumenMap.containsKey(key)) {
+                CamionEstadistica resumen = resumenMap.get(key);
+                resumen.setFlete(resumen.getFlete() + 1);
+                resumen.setNeto(resumen.getNeto() + flete.getNeto());
+            } else {
+                CamionEstadistica nuevoResumen = new CamionEstadistica(year, month, 1, flete.getNeto());
+                resumenMap.put(key, nuevoResumen);
+            }
+        }
+
+        // Paso 2: Procesar los combustibles y actualizar ResumenFletesMensual
+        for (Combustible combustible : cargas) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(combustible.getFechaCarga());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+
+            String key = year + "-" + month;
+
+            if (resumenMap.containsKey(key)) {
+                CamionEstadistica resumen = resumenMap.get(key);
+                resumen.setKmRecorrido(resumen.getKmRecorrido() + combustible.getKmRecorrido());
+                resumen.setLitro(resumen.getLitro() + combustible.getLitro());
+            } else {
+                // Si no existe un resumen para ese mes y año, lo creamos (aunque esto no debería ocurrir si los fletes y combustibles coinciden en fechas)
+                CamionEstadistica nuevoResumen = new CamionEstadistica(year, month, 0, 0.0);
+                nuevoResumen.setKmRecorrido(combustible.getKmRecorrido());
+                nuevoResumen.setLitro(combustible.getLitro());
+                resumenMap.put(key, nuevoResumen);
+            }
+        }
+
+        return new ArrayList<>(resumenMap.values());
+        
+    }
+
     public void validarDatos(Long idOrg, String dominio) throws MiException {
 
         ArrayList<Camion> lista = camionRepositorio.buscarCamiones(idOrg);
@@ -137,6 +199,11 @@ public class CamionServicio {
             }
         }
     } 
+    }
+    
+    public Date convertirFecha(String fecha) throws ParseException { //convierte fecha String a fecha Date
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        return formato.parse(fecha);
     }
     
 

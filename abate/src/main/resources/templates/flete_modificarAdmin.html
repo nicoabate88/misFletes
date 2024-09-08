@@ -10,6 +10,18 @@
                           display: none; /* Ocultar el botón por defecto */
                         }
                         </style>
+                        <script>
+                            window.onload = function () {
+                                var fechaActual = new Date();
+                                var dia = String(fechaActual.getDate()).padStart(2, '0');
+                                var mes = String(fechaActual.getMonth() + 1).padStart(2, '0'); 
+                                var anio = fechaActual.getFullYear();
+                                var fechaFormateada = anio + '-' + mes + '-' + dia;
+
+                                document.getElementById('fc').max = fechaFormateada;
+                                document.getElementById('ff').max = fechaFormateada;
+                            };
+                        </script>
                         </head>
 
                         <body>
@@ -106,7 +118,8 @@
                                                 <option value="SOJA">SOJA</option>
                                                 <option value="MAIZ">MAIZ</option>
                                                 <option value="TRIGO">TRIGO</option>
-                                                <option value="GIRASOL">GIRASOL</option>
+                                                <option value="ARENA">ARENA</option>
+                                                <option value="PIEDRA">PIEDRA</option>
                                                 <option value="ROLLOS">ROLLOS</option>
                                                 <option value="OTRO">OTRO</option>
                                             </select>
@@ -249,8 +262,8 @@
                                                     event.preventDefault(); // Prevenir el envío del formulario
                                                     return;
                                                 }
-                                                if (comision < 0) {
-                                                    alert('Comisión de Tpte debe ser igual o mayor que 0');
+                                                if (comision < 0 || comision > 100) {
+                                                    alert('Comisión de Tpte debe ser igual o mayor que 0 y menor que 100');
                                                     event.preventDefault(); // Prevenir el envío del formulario
                                                     return;
                                                 }
@@ -259,8 +272,8 @@
                                                     event.preventDefault(); // Prevenir el envío del formulario
                                                     return;
                                                 }
-                                                if (porcentaje < 0) {
-                                                    alert('Porcentaje Chofer debe ser igual o mayor que 0');
+                                                if (porcentaje < 0 || porcentaje > 100) {
+                                                    alert('Porcentaje Chofer debe ser igual o mayor que 0 y menor que 100');
                                                     event.preventDefault(); // Prevenir el envío del formulario
                                                     return;
                                                 }

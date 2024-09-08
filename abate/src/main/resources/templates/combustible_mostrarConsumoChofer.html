@@ -40,7 +40,7 @@
                                 <div class="card-body">
 
                                     <div class="mb-3">
-                                        <h6 th:text="'Camión '+${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
+                                        <h6 th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
                                         <h6 id="dimgray" th:text="'Consumo '+${consumo}+' L / 100 Km'"></h6>
                                     </div>
 
