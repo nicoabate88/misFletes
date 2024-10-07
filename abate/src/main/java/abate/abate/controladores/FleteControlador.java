@@ -181,7 +181,7 @@ public class FleteControlador {
         }
 
         modelo.addAttribute("fletes", fletes);
-        modelo.put("flag", flag);;
+        modelo.put("flag", flag);
         modelo.put("cliente", clienteServicio.buscarCliente(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);

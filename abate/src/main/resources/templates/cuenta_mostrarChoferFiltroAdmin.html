@@ -1,10 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Cuenta Cliente</title>
+        <title>Cuenta Mostrar</title>
         <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
                     <link rel="stylesheet" href="/css/medidas_container.css">  
+                        
                         <style>
 
                             /* Estilo para pantallas md */
@@ -20,29 +21,66 @@
                                 }
                             }
                         </style>
+                        
                         </head>
                         <body>
-                            <div class="container">                           
+                            <div class="container mb-4">                           
                                 <div class="card-header mb-2">
                                     <div class="row">
                                         <div class="col-2">   
-                                            <a title="Volver" onclick="window.history.back();"  type="button">
+                                            <a title="Volver" th:href= "@{/cuenta/listarChofer}" type="button">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                                                     <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                                                 </svg> 
                                             </a>   
                                         </div>
                                         <div  class="col-7">
-                                            <h4>Cuenta de Cliente</h4>
+                                            <h4>Cuenta de Chofer</h4>
+                                        </div>
+                                        <div class="col-3 text-center" th:if="${flag == true}">
+                                            <form class="row g-3" th:action="@{/cuenta/exportarFiltroAdmin}" method="POST">   
+                                                   <input hidden th:value="${cuenta.id}" name="id">  
+                                                   <input hidden th:value="${desde}" name="desde"> 
+                                                   <input hidden th:value="${hasta}" name="hasta">     
+                                                       <button class="btn btn-light" type="submit">
+                                                           <h6 id="icono">Exportar</h6> 
+                                                       </button>
+                                            </form>
                                         </div>
                                     </div>
-                                  
                                 </div>
-                                <div class="card-body mb-4">
+                                <div class="card-body">
                                     <div class="mb-3">
-                                        <h6 th:text="'Cliente '+${cuenta.cliente.nombre}"></h6>
+                                        <h6 th:text="'Chofer '+${cuenta.chofer.nombre}"></h6>
                                         <h6 id="dimgray" th:text="'Saldo $'+${saldo}"></h6>
                                     </div>
+                                    
+                                    <div class="card-header" id="bgWhite">
+                                    <form class="row g-3" th:action="@{/cuenta/mostrarChoferFiltroAdmin}" method="POST">
+                                        <input hidden th:value="${cuenta.id}" name="id">  
+                                        <div class="row">    
+                                            <div class="col-5">
+                                                <label for="desde" class="form-label">Desde</label>
+                                                <input type="date" class="form-control" id="desde" th:value="${desde}" name="desde" required>
+                                                    
+                                            </div>
+                                            <div class="col-5">
+                                                 <label for="hasta" class="form-label">Hasta</label>
+                                                <input type="date" class="form-control" id="hasta" th:value="${hasta}" name="hasta" required>                                                                                          
+                                                   
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <label for="ver" class="form-label">Ver</label>
+                                                    <button id="ver"  class="btn btn-primary" type="submit">
+                                                        <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                                        </svg>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    </form>   
+                                </div> 
+                                    
                                     <table class="table table-borderless table-sm" id="dimgray">
                                         <thead>
                                             <tr class="row">
@@ -58,10 +96,11 @@
                                                 <td class="col-4" th:text="${transaccion.observacion}"></td>
                                                 <td class="col-3" th:text="'$'+${transaccion.importe}"></td>
                                                 <td id="darkgray" class="col-2" th:text="'$'+${transaccion.saldoAcumulado}"></td>
-                                            </tr>
+                                            </tr>     
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
                             </div>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>

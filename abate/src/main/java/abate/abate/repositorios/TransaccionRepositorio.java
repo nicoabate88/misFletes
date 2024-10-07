@@ -4,6 +4,7 @@ import abate.abate.entidades.Cliente;
 import abate.abate.entidades.Transaccion;
 import abate.abate.entidades.Usuario;
 import java.util.ArrayList;
+import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,5 +41,16 @@ public interface TransaccionRepositorio extends JpaRepository<Transaccion, Long>
     Transaccion findTopByChoferOrderByIdDesc(Usuario chofer);
     
     Transaccion findTopByClienteOrderByIdDesc(Cliente cliente);
+    
+    @Query(value = "SELECT * FROM transaccion t "
+            + "INNER JOIN cuenta_transaccion ct ON t.id = ct.transaccion_id "
+            + "INNER JOIN cuenta c ON ct.cuenta_id = c.id "
+            + "WHERE c.id = :id AND t.concepto != 'ELIMINADO' "
+            + "AND t.fecha BETWEEN :fechaDesde AND :fechaHasta", 
+       nativeQuery = true)
+    public ArrayList<Transaccion> buscarTransaccionCuentaPorRangoFechas(
+        @Param("id") Long id, 
+        @Param("fechaDesde") Date fechaDesde, 
+        @Param("fechaHasta") Date fechaHasta);
     
 }

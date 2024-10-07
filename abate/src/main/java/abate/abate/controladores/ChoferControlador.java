@@ -81,8 +81,7 @@ public class ChoferControlador {
             modelo.put("chofer", choferServicio.buscarChofer(id));
 
             return "chofer_mostrar.html";
-            
-        
+                    
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")

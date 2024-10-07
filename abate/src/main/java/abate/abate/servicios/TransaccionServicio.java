@@ -16,8 +16,11 @@ import abate.abate.repositorios.EntregaRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.GastoRepositorio;
 import abate.abate.util.TransaccionComparador;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class TransaccionServicio {
@@ -359,5 +362,34 @@ public class TransaccionServicio {
 
         return lista;
     }
+    
+    public ArrayList<Transaccion> buscarTransaccionIdCuentaFecha(Long idCuenta, String desde, String hasta) throws ParseException {
+        
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
+        
+        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCuentaPorRangoFechas(idCuenta, d, h);
+        
+        Collections.sort(lista, TransaccionComparador.ordenarFechaAcs);
+
+        Double saldoAcumulado = 0.0;
+
+        for (Transaccion t : lista) {                 //for para obtener el saldo acumulado
+            saldoAcumulado = saldoAcumulado + t.getImporte();
+            saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
+            t.setSaldoAcumulado(saldoAcumulado);
+        }
+
+        Collections.reverse(lista);
+        
+        return lista;
+    }
+    
+      public Date convertirFecha(String fecha) throws ParseException {
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        return formato.parse(fecha);
+    }
+    
+    
 
 }
