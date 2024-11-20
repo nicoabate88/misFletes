@@ -18,14 +18,14 @@
                                             </a>   
                                         </div>
                                         <div  class="col-10">
-                                            <h4>Eliminar Carga de Diesel</h4>
+                                            <h4>Eliminar Carga Diesel</h4>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="card mb-4" id="color-card">
                                         <div class="card-body">
-                                        <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
+                                        <h6 th:text="${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
                                         <h6 id="dimgray" th:text="'Fecha: '+${carga.fechaCarga}"></h6>
                                         <p class="mb-1" id="dimgray" th:text="'KM Anterior: '+${carga.kmAnterior}+' - Actual: '+${carga.kmCarga}"></p>
                                         <h6 id="dimgray" th:text="'Km Recorrido: '+${carga.kmRecorrido}+' - Litros: '+${carga.litro}"></h6>
@@ -35,7 +35,7 @@
                                         </div>
 
                                 <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
-                                    <h6 id="white">¿Seguro desea ELIMINAR esta Carga de Combustible?</h6>
+                                    <h6 id="white">¿Seguro desea ELIMINAR esta Carga Diesel?</h6>
                                 </div>
 
                                 <div class="row text-center">

@@ -1,11 +1,14 @@
 package abate.abate.servicios;
 
+import abate.abate.entidades.Caja;
 import abate.abate.entidades.Cuenta;
 import abate.abate.entidades.Entrega;
 import abate.abate.entidades.Flete;
 import abate.abate.entidades.Gasto;
+import abate.abate.entidades.Ingreso;
 import abate.abate.entidades.Recibo;
 import abate.abate.entidades.Transaccion;
+import abate.abate.entidades.Usuario;
 import abate.abate.repositorios.ReciboRepositorio;
 import abate.abate.repositorios.TransaccionRepositorio;
 import java.util.Optional;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import abate.abate.repositorios.EntregaRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.GastoRepositorio;
+import abate.abate.repositorios.IngresoRepositorio;
 import abate.abate.util.TransaccionComparador;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,11 +36,18 @@ public class TransaccionServicio {
     @Autowired
     private EntregaRepositorio entregaRepositorio;
     @Autowired
+    private IngresoRepositorio ingresoRepositorio;
+    @Autowired
     private FleteRepositorio fleteRepositorio;
     @Autowired
     private CuentaServicio cuentaServicio;
     @Autowired
+    private CajaServicio cajaServicio;
+    @Autowired
     private GastoRepositorio gastoRepositorio;
+    @Autowired
+    private ChoferServicio choferServicio;
+    
 
     @Transactional
     public void crearTransaccionRecibo(Long idRecibo) {
@@ -101,13 +112,7 @@ public class TransaccionServicio {
     }
 
     @Transactional
-    public void crearTransaccionEntrega(Long idEntrega) {
-
-        Entrega entrega = new Entrega();
-        Optional<Entrega> ent = entregaRepositorio.findById(idEntrega);
-        if (ent.isPresent()) {
-            entrega = ent.get();
-        }
+    public void crearTransaccionEntrega(Entrega entrega) {
 
         Transaccion transaccion = new Transaccion();
 
@@ -120,26 +125,20 @@ public class TransaccionServicio {
 
         transaccionRepositorio.save(transaccion);
 
-        cuentaServicio.agregarTransaccionCuentaChofer(buscarUltimo());
+        cuentaServicio.agregarTransaccionCuentaChofer(transaccion);
 
     }
 
     @Transactional
-    public void modificarTransaccionEntrega(Long idEntrega) {
+    public void modificarTransaccionEntrega(Entrega entrega) {
 
-        Entrega entrega = new Entrega();
-        Optional<Entrega> ent = entregaRepositorio.findById(idEntrega);
-        if (ent.isPresent()) {
-            entrega = ent.get();
-        }
-
-        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdEntrega(idEntrega);
+        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdEntrega(entrega.getIdEntrega());
 
         if (!entrega.getChofer().getNombre().equalsIgnoreCase(transaccion.getChofer().getNombre())) {    //si lo que se modifico en la transacion es chofer, entra en este if
 
             cuentaServicio.eliminarTransaccionCuentaChofer(transaccion); //elimina transaccion en cuenta cliente modificado
 
-            crearTransaccionEntrega(idEntrega);   //agrega transaccion en cuenta cliente modificado
+            crearTransaccionEntrega(entrega);   //agrega transaccion en cuenta cliente modificado
 
         } else {
 
@@ -159,6 +158,60 @@ public class TransaccionServicio {
         Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdEntrega(idEntrega);
 
         cuentaServicio.eliminarTransaccionCuentaChofer(transaccion);
+
+    }
+    
+    @Transactional
+    public void crearTransaccionIngreso(Long idIngreso) {
+
+        Ingreso ingreso = new Ingreso();
+        Optional<Ingreso> ing = ingresoRepositorio.findById(idIngreso);
+        if (ing.isPresent()) {
+            ingreso = ing.get();
+        }
+
+        Transaccion transaccion = new Transaccion();
+
+        transaccion.setChofer(ingreso.getChofer());
+        transaccion.setFecha(ingreso.getFecha());
+        transaccion.setConcepto("INGRESO");
+        transaccion.setObservacion("INGRESO ID" + ingreso.getIdIngreso());
+        transaccion.setImporte(ingreso.getImporte());
+        transaccion.setIngreso(ingreso);
+
+        transaccionRepositorio.save(transaccion);
+
+        cajaServicio.agregarTransaccionCajaChofer(buscarUltimo());
+
+    }
+    
+    @Transactional
+    public void modificarTransaccionIngreso(Long idIngreso) {
+
+        Ingreso ingreso = ingresoRepositorio.getById(idIngreso);
+        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdIngreso(idIngreso);
+        
+        boolean flag = false;
+        if(ingreso.getImporte() != transaccion.getImporte()){
+            flag = true;
+        }
+
+        transaccion.setFecha(ingreso.getFecha());
+        transaccion.setImporte(ingreso.getImporte());
+
+        transaccionRepositorio.save(transaccion);
+
+        if (flag == true) {
+            cajaServicio.modificarTransaccionCajaChofer(transaccion);
+        }
+    }
+    
+    @Transactional
+    public void eliminarTransaccionIngreso(Long idIngreso) {
+
+        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdIngreso(idIngreso);
+
+        cajaServicio.eliminarTransaccionCajaChofer(transaccion);
 
     }
 
@@ -182,7 +235,7 @@ public class TransaccionServicio {
 
         transaccionRepositorio.save(transaccion);
 
-        cuentaServicio.agregarTransaccionCuentaChofer(buscarUltimo());
+        cuentaServicio.agregarTransaccionCuentaChofer(transaccion);
 
     }
 
@@ -290,20 +343,31 @@ public class TransaccionServicio {
         if (gto.isPresent()) {
             gasto = gto.get();
         }
-
+        
+        Usuario chofer = choferServicio.buscarChofer(gasto.getChofer().getId());
+        
         Transaccion transaccion = new Transaccion();
-
         transaccion.setChofer(gasto.getChofer());
         transaccion.setFecha(gasto.getFecha());
         transaccion.setConcepto("GASTO");
         transaccion.setObservacion(gasto.getNombre());
-        transaccion.setImporte(gasto.getImporte());
-        transaccion.setGasto(gasto);
+      
+        if (chofer.getCaja().equalsIgnoreCase("NO")) {
+            transaccion.setImporte(gasto.getImporte());
+            transaccion.setGasto(gasto);
 
-        transaccionRepositorio.save(transaccion);
+            transaccionRepositorio.save(transaccion);
+            
+            cuentaServicio.agregarTransaccionCuentaChofer(transaccion);
+        
+        } else {
+            transaccion.setImporte(gasto.getImporte() * -1);
+            transaccion.setGasto(gasto);
 
-        cuentaServicio.agregarTransaccionCuentaChofer(buscarUltimo());
-
+            transaccionRepositorio.save(transaccion);
+            
+            cajaServicio.agregarTransaccionCajaChofer(buscarUltimo());
+        }      
     }
 
     @Transactional
@@ -314,23 +378,51 @@ public class TransaccionServicio {
         if (gto.isPresent()) {
             gasto = gto.get();
         }
+        
+        Usuario chofer = choferServicio.buscarChofer(gasto.getChofer().getId());
 
         Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdGasto(idGasto);
 
+        if(chofer.getCaja().equalsIgnoreCase("NO")){
+        
         transaccion.setImporte(gasto.getImporte());
 
         transaccionRepositorio.save(transaccion);
 
         cuentaServicio.modificarTransaccionCuentaChofer(transaccion);
+        
+        } else {
+            
+        transaccion.setImporte(gasto.getImporte() * -1);
 
+        transaccionRepositorio.save(transaccion);
+
+        cajaServicio.modificarTransaccionCajaChofer(transaccion);    
+            
+        }
     }
 
     @Transactional
     public void eliminarTransaccionGasto(Long idGasto) {
+        
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+        
+        Usuario chofer = choferServicio.buscarChofer(gasto.getChofer().getId());
 
         Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdGasto(idGasto);
 
+        if(chofer.getCaja().equalsIgnoreCase("NO")){
+        
         cuentaServicio.eliminarTransaccionCuentaChofer(transaccion);
+        
+        } else {
+            
+            cajaServicio.eliminarTransaccionCajaChofer(transaccion);
+        }
 
     }
 
@@ -363,12 +455,81 @@ public class TransaccionServicio {
         return lista;
     }
     
-    public ArrayList<Transaccion> buscarTransaccionIdCuentaFecha(Long idCuenta, String desde, String hasta) throws ParseException {
+      public ArrayList<Transaccion> buscarTransaccionIdCuentaFecha(Long idCuenta, String desde, String hasta) throws ParseException {
         
-        Date d = convertirFecha(desde);
-        Date h = convertirFecha(hasta);
+        java.sql.Date fd = (java.sql.Date) convertirStringASqlDate(desde);
+        java.sql.Date fh = (java.sql.Date) convertirStringASqlDate(hasta);
+        Cuenta cuenta = cuentaServicio.buscarCuenta(idCuenta);
+        Double saldoAcumulado = cuenta.getSaldo();
         
-        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCuentaPorRangoFechas(idCuenta, d, h);
+        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCuentaPorRangoFechas(idCuenta, fd, fh);
+
+        if (!lista.isEmpty()) {
+          Collections.sort(lista, TransaccionComparador.ordenarFechaDesc);  
+          lista.get(0).setSaldoAcumulado(saldoAcumulado);
+        }
+
+        for (int i = 1; i < lista.size(); i++) {                 //for para obtener el saldo acumulado
+            saldoAcumulado = saldoAcumulado - lista.get(i-1).getImporte(); 
+            saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
+            lista.get(i).setSaldoAcumulado(saldoAcumulado);
+        }
+        
+        return lista;
+    }
+    
+      public ArrayList<Transaccion> buscarTransaccionIdCuentaFechaFiltro(Long idCuenta, String desde, String hasta) throws ParseException {
+        
+        java.sql.Date fd = (java.sql.Date) convertirStringASqlDate(desde);
+        java.sql.Date fh = (java.sql.Date) convertirStringASqlDate(hasta);
+        
+        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCuentaPorRangoFechas(idCuenta, fd, fh);
+        
+        Collections.sort(lista, TransaccionComparador.ordenarFechaAcs);
+
+        Double saldoAcumulado = 0.0;
+
+        for (Transaccion t : lista) {                 //for para obtener el saldo acumulado
+            saldoAcumulado = saldoAcumulado + t.getImporte();
+            saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
+            t.setSaldoAcumulado(saldoAcumulado);
+        }
+
+        Collections.reverse(lista);
+        
+        return lista;
+    }
+
+    public ArrayList<Transaccion> buscarTransaccionIdCajaFecha(Long idCaja, String desde, String hasta) throws ParseException {
+
+        java.sql.Date fd = (java.sql.Date) convertirStringASqlDate(desde);
+        java.sql.Date fh = (java.sql.Date) convertirStringASqlDate(hasta);
+
+        Caja caja = cajaServicio.buscarCaja(idCaja);
+        Double saldoAcumulado = caja.getSaldo();
+
+        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCajaPorRangoFechas(idCaja, fd, fh);
+
+        if (!lista.isEmpty()) {
+            Collections.sort(lista, TransaccionComparador.ordenarFechaDesc);
+            lista.get(0).setSaldoAcumulado(saldoAcumulado);
+        }
+
+        for (int i = 1; i < lista.size(); i++) {                 //for para obtener el saldo acumulado
+            saldoAcumulado = saldoAcumulado - lista.get(i - 1).getImporte();
+            saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
+            lista.get(i).setSaldoAcumulado(saldoAcumulado);
+        }
+
+        return lista;
+    }
+    
+     public ArrayList<Transaccion> buscarTransaccionIdCajaFechaFiltro(Long idCaja, String desde, String hasta) throws ParseException {
+        
+        java.sql.Date fd = (java.sql.Date) convertirStringASqlDate(desde);
+        java.sql.Date fh = (java.sql.Date) convertirStringASqlDate(hasta);
+        
+        ArrayList<Transaccion> lista = transaccionRepositorio.buscarTransaccionCajaPorRangoFechas(idCaja, fd, fh);
         
         Collections.sort(lista, TransaccionComparador.ordenarFechaAcs);
 
@@ -385,10 +546,22 @@ public class TransaccionServicio {
         return lista;
     }
     
-      public Date convertirFecha(String fecha) throws ParseException {
+    public Date convertirFecha(String fecha) throws ParseException {
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         return formato.parse(fecha);
     }
+
+    public Date convertirStringASqlDate(String fecha) throws ParseException {
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date utilDate = formato.parse(fecha);
+        return new java.sql.Date(utilDate.getTime()); // Conversión a java.sql.Date
+}
+
+    public ArrayList<Transaccion> buscarTransaccionIdCajaFecha(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+  
     
     
 

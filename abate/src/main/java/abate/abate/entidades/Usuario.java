@@ -19,13 +19,14 @@ public class Usuario {
     private String rol;
     private Long cuil;
     private Double porcentaje;
+    private String caja;
     @OneToOne
     private Camion camion;
 
     public Usuario() {
     }
 
-    public Usuario(Long id, Long idOrg, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, Camion camion) {
+    public Usuario(Long id, Long idOrg, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, String caja, Camion camion) {
         this.id = id;
         this.idOrg = idOrg;
         this.nombre = nombre;
@@ -34,6 +35,7 @@ public class Usuario {
         this.rol = rol;
         this.cuil = cuil;
         this.porcentaje = porcentaje;
+        this.caja = caja;
         this.camion = camion;
     }
 
@@ -101,6 +103,14 @@ public class Usuario {
         this.porcentaje = porcentaje;
     }
 
+    public String getCaja() {
+        return caja;
+    }
+
+    public void setCaja(String caja) {
+        this.caja = caja;
+    }
+
     public Camion getCamion() {
         return camion;
     }
@@ -108,9 +118,8 @@ public class Usuario {
     public void setCamion(Camion camion) {
         this.camion = camion;
     }
+
     
-    
-   
     
 
     

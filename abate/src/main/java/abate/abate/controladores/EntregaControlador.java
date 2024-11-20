@@ -8,6 +8,8 @@ import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.EntregaServicio;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/entrega")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
 public class EntregaControlador {
 
     @Autowired
@@ -63,46 +66,104 @@ public class EntregaControlador {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         entregaServicio.crearEntrega(logueado.getIdOrg(), idChofer, fecha, importe, observacion, logueado.getId());
-        Long id = entregaServicio.buscarUltimo();
-        Entrega entrega = entregaServicio.buscarEntrega(id);
-        String total = convertirNumeroMiles(entrega.getImporte());
 
-        modelo.put("entrega", entrega);
-        modelo.put("importe", total);
-        modelo.put("fecha", fecha);
-        modelo.put("exito", "Entrega REGISTRADA con éxito");
-
-        return "entrega_registrado.html";
+        return "redirect:/entrega/registrado";
 
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/registrado")
+    public String entregaRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = entregaServicio.buscarUltimo(logueado.getIdOrg());
+        Entrega entrega = entregaServicio.buscarEntrega(id);
+        String total = convertirNumeroMiles(entrega.getImporte());  
+        
+        modelo.put("entrega", entrega);
+        modelo.put("importe", total);
+        modelo.put("exito", "Entrega REGISTRADA con éxito");
+        
+        return "entrega_registrado.html";
+    }
+    
     @GetMapping("/listar")
-    public String listar(ModelMap modelo, HttpSession session) {
+    public String listar(ModelMap modelo, HttpSession session) throws ParseException {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        String desde = obtenerFechaDesde();
+        String hasta = obtenerFechaHasta();
 
-        modelo.addAttribute("entregas", entregaServicio.buscarEntregas(logueado.getIdOrg()));
+        modelo.addAttribute("entregas", entregaServicio.buscarEntregas(logueado.getIdOrg(), desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", logueado.getIdOrg());
+
+        return "entrega_listar.html";
+    }
+    
+    @PostMapping("/listarFiltro")
+    public String listarFiltro(Long id, String desde, String hasta, ModelMap modelo, HttpSession session) throws ParseException {
+
+        modelo.addAttribute("entregas", entregaServicio.buscarEntregas(id, desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", id);
 
         return "entrega_listar.html";
     }
 
     @GetMapping("/listarIdChofer/{id}")
-    public String listarIdChofer(@PathVariable Long id, HttpSession session, ModelMap modelo) {
+    public String listarIdChofer(@PathVariable Long id, HttpSession session, ModelMap modelo) throws ParseException {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        String desde = obtenerFechaDesde();
+        String hasta = obtenerFechaHasta();
 
         if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
 
-            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id));
+            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id, desde, hasta));
             modelo.put("id", id);
+            modelo.put("desde", desde);
+            modelo.put("hasta", hasta);
 
             return "entrega_listarIdChofer.html";
             
         } else {
 
-            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id));
+            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id, desde, hasta));
             modelo.put("chofer", choferServicio.buscarChofer(id));
             modelo.put("id", id);
+            modelo.put("desde", desde);
+            modelo.put("hasta", hasta);
+
+            return "entrega_listarIdChoferAdmin.html";
+
+        }
+    }
+    
+    @PostMapping("/listarIdChoferFiltro")
+    public String listarIdChoferFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, HttpSession session, ModelMap modelo) throws ParseException {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
+
+            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id, desde, hasta));
+            modelo.put("id", id);
+            modelo.put("desde", desde);
+            modelo.put("hasta", hasta);
+
+            return "entrega_listarIdChofer.html";
+            
+        } else {
+
+            modelo.addAttribute("entregas", entregaServicio.buscarEntregasIdChofer(id, desde, hasta));
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.put("id", id);
+            modelo.put("desde", desde);
+            modelo.put("hasta", hasta);
 
             return "entrega_listarIdChoferAdmin.html";
 
@@ -174,6 +235,32 @@ public class EntregaControlador {
         String numeroFormateado = formato.format(num);
 
         return numeroFormateado;
+
+    }
+    
+    public String obtenerFechaDesde() {
+
+        LocalDate now = LocalDate.now();
+
+        LocalDate firstDayOfMonth = now.withDayOfMonth(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedDate = firstDayOfMonth.format(formatter);
+
+        return formattedDate;
+
+    }
+
+    public String obtenerFechaHasta() {
+
+        LocalDate now = LocalDate.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedToday = now.format(formatter);
+
+        return formattedToday;
 
     }
 

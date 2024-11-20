@@ -26,7 +26,7 @@
                                 <div class="card mb-4" id="color-card">
                                     <div class="card-body">
                                         <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
-                                        <h6 id="dimgray" th:text="'Fecha '+${fecha}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha '+${carga.fechaCarga}"></h6>
                                         <p class="mb-1" id="dimgray" th:text="${carga.kmCarga}+' Km'"></p>
                                     </div>
                                 </div>

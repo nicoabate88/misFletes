@@ -29,7 +29,7 @@
                                     <div class="card mb-4" id="color-card">
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                    <h6 th:text="'Fecha '+${fecha}+' - ID'+${flete.idFlete}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p class="mb-0" id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
                                                     <p class="mb-0" id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
                                                     <p id="dimgray" th:text="'KM '+${flete.kmFlete}"></p>

@@ -14,7 +14,7 @@
                                     <div class="card-header mb-2">
                                         <div class="row">
                                             <div class="col-2">   
-                                                <a title="Volver" onclick="window.history.back();"  type="button">
+                                                <a title="Volver" th:href="@{/cuenta/mostrarIdCliente/__${flete.cliente.id}__}"  type="button">
                                                     <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                                                         <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                                                     </svg> 
@@ -26,30 +26,27 @@
                                         </div>
                                     </div>
 
-                                    <div class="card mb-4">
-                                        <div class="row">
-                                            <div class="col-sm-1 col-md-10 col-lg-10 col-xl-10">
-                                                <div class="card-body">
-                                                     <h6 th:text="'Flete N° '+${flete.id}+ ' - Fecha '+${flete.fechaFlete}"></h6>
-                                                    <p class="card-text" id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}
-                                                       +' - ' +${flete.kmFlete} +' KM'"></p>
-                                                    <h6 id="dimgray" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
-                                                    <h6 class="card-text" id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFlete}+ ' KG - Tarifa $'+${flete.tarifa}"></h6>
-                                                     <h6 class="card-text" id="dimgray" th:text="'Neto $' +${flete.neto} +' + IVA $' +${flete.iva}+' = TOTAL $' +${flete.total}"></h6>
-                                                    <p class="card-text" id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
-                                                    <h6 id="dimgray" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
-                                                    <h6 class="card-text" id="dimgray" th:text="${flete.chofer.porcentaje}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
-                                                    <p class="card-text" id="dimgray" th:text="'Gasto: $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
-                                                </div>
-                                            </div>
+                                    <div class="card mb-4" id="color-card">
+                                        <div class="card-body" >
+                                            <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
+                                            <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
+                                            <p class='mb-0' id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
+                                            <p class='mb-0' id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
+                                            <p class='mb-1' id="dimgray" th:text="'KM '+${flete.kmFlete}"></p>
+                                            <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
+                                            <h6 id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFlete}+ ' KG - Tarifa $'+${flete.tarifa}"></h6>
+                                            <h6 id="azul" th:text="'Comisión Tpte: '+${flete.comisionTpte}+'% - $'+${flete.comisionTpteValor}"></h6>
+                                            <h6 id="dimgray" th:text="'Neto $' +${flete.neto} +' + IVA $' +${flete.iva}"></h6>
+                                            <h6 id="dimgray" th:text="'TOTAL $' +${flete.total}"></h6>
+                                            <p id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
+                                            <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
+                                            <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}+' - '+${flete.camion.marca}+' '+${flete.camion.modelo}"></h6>
+                                            <p th:if="${flete.comisionTpte} != 0.0" class="mb-1" id="dimgray" th:text="'Descuento Comisión Tpte '+${flete.comisionTpteChofer}"></p>
+                                            <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
+                                            <p id="dimgray" th:text="'Gasto $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                         </div>
-                                    </div>    
-                                    
-                                    <div class="col-2">
-                                    <a class="btn btn-primary" type="button" onclick="window.history.back();">Aceptar</a>
-                                </div>
-                                    
-                                </div>
+                                    </div>
+                                </div>                                     
                             </section>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>

@@ -14,8 +14,11 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
     @Query("SELECT u FROM Usuario u WHERE u.usuario = :usuario")
     public Usuario buscarUsuarioPorUsuario(@Param("usuario") String usuario);
 
-    @Query("SELECT MAX(id) FROM Usuario")
-    public Long ultimoUsuario();
+    @Query("SELECT MAX(id) FROM Usuario u WHERE u.idOrg = :id")
+    public Long ultimoUsuario(@Param("id") Long id);
+    
+    @Query("SELECT MAX(id) FROM Usuario u WHERE u.rol = 'CEO'")
+    public Long ultimoUsuarioCeo();
     
     @Query("SELECT u FROM Usuario u WHERE u.rol = 'CHOFER' AND u.idOrg = :id")
     public ArrayList<Usuario> buscarUsuariosChofer(@Param("id") Long id);

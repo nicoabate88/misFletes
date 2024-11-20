@@ -22,6 +22,9 @@ public interface TransaccionRepositorio extends JpaRepository<Transaccion, Long>
 
     @Query("SELECT t FROM Transaccion t WHERE entrega_id = :id")
     public Transaccion buscarTransaccionIdEntrega(@Param("id") Long id);
+    
+    @Query("SELECT t FROM Transaccion t WHERE ingreso_id = :id")
+    public Transaccion buscarTransaccionIdIngreso(@Param("id") Long id);
 
     @Query("SELECT t FROM Transaccion t WHERE gasto_id = :id")
     public Transaccion buscarTransaccionIdGasto(@Param("id") Long id);
@@ -37,20 +40,38 @@ public interface TransaccionRepositorio extends JpaRepository<Transaccion, Long>
             + "INNER JOIN cuenta c ON ct.cuenta_id = c.id "
             + "WHERE c.id = :id AND t.concepto != 'ELIMINADO'", nativeQuery = true)
     public ArrayList<Transaccion> buscarTransaccionCuenta(@Param("id") Long id);
+    
+    @Query(value = "SELECT * FROM transaccion t "
+            + "INNER JOIN caja_transaccion ct ON t.id = ct.transaccion_id "
+            + "INNER JOIN caja c ON ct.caja_id = c.id "
+            + "WHERE c.id = :id AND t.concepto != 'ELIMINADO'", nativeQuery = true)
+    public ArrayList<Transaccion> buscarTransaccionCaja(@Param("id") Long id);
 
     Transaccion findTopByChoferOrderByIdDesc(Usuario chofer);
     
     Transaccion findTopByClienteOrderByIdDesc(Cliente cliente);
     
-    @Query(value = "SELECT * FROM transaccion t "
+    @Query(value = "SELECT * FROM transaccion t " 
             + "INNER JOIN cuenta_transaccion ct ON t.id = ct.transaccion_id "
             + "INNER JOIN cuenta c ON ct.cuenta_id = c.id "
             + "WHERE c.id = :id AND t.concepto != 'ELIMINADO' "
-            + "AND t.fecha BETWEEN :fechaDesde AND :fechaHasta", 
-       nativeQuery = true)
-    public ArrayList<Transaccion> buscarTransaccionCuentaPorRangoFechas(
-        @Param("id") Long id, 
-        @Param("fechaDesde") Date fechaDesde, 
-        @Param("fechaHasta") Date fechaHasta);
+            + "AND t.fecha >= :fechaDesde AND t.fecha <= :fechaHasta", nativeQuery = true)
+    public ArrayList<Transaccion> buscarTransaccionCuentaPorRangoFechas(@Param("id") Long id, 
+                                                              @Param("fechaDesde") java.sql.Date fechaDesde, 
+                                                              @Param("fechaHasta") java.sql.Date fechaHasta);
+    
+    @Query(value = "SELECT * FROM transaccion t "
+            + "INNER JOIN caja_transaccion ct ON t.id = ct.transaccion_id "
+            + "INNER JOIN caja c ON ct.caja_id = c.id "
+            + "WHERE c.id = :id AND t.concepto != 'ELIMINADO' "
+            + "AND t.fecha >= :fechaDesde AND t.fecha <= :fechaHasta", nativeQuery = true)
+    public ArrayList<Transaccion> buscarTransaccionCajaPorRangoFechas(@Param("id") Long id, 
+                                                              @Param("fechaDesde") java.sql.Date fechaDesde, 
+                                                              @Param("fechaHasta") java.sql.Date fechaHasta);
+    
+    
+
+    
+    
     
 }

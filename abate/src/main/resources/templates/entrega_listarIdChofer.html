@@ -22,6 +22,29 @@
                                         </div>
                                     </div>
                                 </div> 
+                                <div class="card-header" id="bgWhite">
+                                    <form class="row g-3" th:action="@{/entrega/listarIdChoferFiltro}" method="POST">
+                                        <input hidden th:value="${id}" name="id">  
+                                        <div class="row">    
+                                            <div class="col-5">
+                                                <label for="desde" class="form-label">Desde</label>
+                                                <input type="date" class="form-control" id="desde" th:value="${desde}" name="desde" required>
+                                            </div>
+                                            <div class="col-5">
+                                                <label for="hasta" class="form-label">Hasta</label>
+                                                <input type="date" class="form-control" id="hasta" th:value="${hasta}" name="hasta" required>                                                                                              
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <label for="ver" class="form-label">Ver</label>
+                                                    <button id="ver" class="btn btn-primary" type="submit">
+                                                        <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                                        </svg>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    </form>   
+                                </div>
                                 <div th:each="entrega : ${entregas}">
                                     <div class="card mb-1" id="color-card">
                                                 <div class="card-body">

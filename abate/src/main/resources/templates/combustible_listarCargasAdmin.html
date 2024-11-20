@@ -20,7 +20,7 @@
                                             </a>   
                                         </div>
                                         <div  class="col-7">
-                                            <h4>Cargas de Diesel</h4>
+                                            <h4>Cargas Diesel</h4>
                                         </div>
                                          <div  class="col-3 text-center">
                                                 <a th:href="@{/combustible/registrarAdmin/__${idCamion}__}">
@@ -55,29 +55,23 @@
                                         </div>
                                     </form>   
                                 </div>   
-                                
+                                <div th:if="${!cargas.isEmpty()}">
                                 <div th:each="carga : ${cargas}">
-                                    <div class="card mb-1" id="color-card">
+                                    <div class="card-body mb-1" id="color-card">
                                         <div class="row">
                                             <div class="col-9">
-                                                <div class="card-body">
-                                                    
                                                     <h6 id="dimgray" th:text="'Fecha '+${carga.fechaCarga}"></h6>
-                                                    <p class="mb-1" id="dimgray" th:text="'Actual '+${carga.kmCarga}+' Km - Recorrido '+${carga.kmRecorrido}+' Km'"></p>
-                                                    <p class="mb-1" id="darkgray" th:text="${carga.litro}+' L - Tanque Lleno '+${carga.completo}"></p>
-                                                    <h6 class="mb-1" th:text="'Consumo '+${carga.consumo}+' L / 100 Km'"></h6>
-                                                    <p class="mb-0" id="darkgray" th:if="${carga.usuario != null}" th:text="'Chofer '+${carga.usuario.nombre}"></p>                                                    
-                                                </div>
+                                                    <p class="mb-1" id="dimgray" th:text="'KM Carga '+${carga.kmCarga}"></p>
+                                                    <p class="mb-1" id="dimgray" th:text="'Km Recorrido '+${carga.kmRecorrido}"></p>
+                                                    <p class="mb-1" id="darkgray" th:text="${carga.litro}+' L - Tanque Lleno '+${carga.completo}"></p>                                                    
                                             </div>
-                                            <div class="col-3 text-center card-body">
-                                                <div>
+                                            <div class="col-3 text-center">
                                                     <a th:href="@{/imagen/verCombustible/__${carga.id}__}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
                                                             <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
                                                             <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"/>
                                                         </svg>    <p id="icono2">Imagen</p>
                                                     </a>
-                                             </div>
                                                 <div>
                                                     <a th:href="@{/combustible/modificar/__${carga.id}__}" th:if="${carga.estado == 'ULTIMO'}">
                                                         <svg id="modificar" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
@@ -86,7 +80,18 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                        </div>    
+                                        </div> 
+                                        <div>
+                                            <h6 class="mb-1" th:text="'Consumo '+${carga.consumo}+' L / 100 Km'"></h6>
+                                            <p class="mb-0" id="darkgray" th:if="${carga.usuario != null}" th:text="${carga.usuario.nombre}"></p>                                                    
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                </div>
+                                <div th:if="${cargas.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                        <h6 id="azul">No existen Cargas de Combustible para la fecha seleccionada</h6>
                                     </div>
                                 </div>
                             </div>

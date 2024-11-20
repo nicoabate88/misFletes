@@ -113,10 +113,18 @@ public class CombustibleControlador {
         
         combustibleServicio.crearPrimerCarga(logueado.getIdOrg(), fecha, km, idCamion, logueado);
         
-        Long id = combustibleServicio.buscarUltimo();
+        return "redirect:/combustible/registradoPrimerCarga";
+        
+    }
+    
+    @GetMapping("/registradoPrimerCarga")
+    public String registradoPrimerCarga(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
         
         modelo.put("carga", combustibleServicio.buscarCombustible(id));
-        modelo.put("fecha", fecha);
         modelo.put("exito", "KM de Camión REGISTRADO con éxito");
         
         return "combustible_registradoPrimerCarga";
@@ -130,14 +138,21 @@ public class CombustibleControlador {
             
             combustibleServicio.crearCarga(logueado.getIdOrg(), idCamion, fecha, kmAnterior, km, litro, completo, logueado);
             
-            Long id = combustibleServicio.buscarUltimo();
+            return "redirect:/combustible/registrado";
+    
+    }
+    
+    @GetMapping("/registrado")
+    public String registrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
             
             modelo.put("carga", combustibleServicio.buscarCombustible(id));
-            modelo.put("fecha", fecha);
             modelo.put("exito", "Carga de Combustible REGISTRADA con éxito");
 
             return "combustible_registrado.html";
-    
     }
     
     @GetMapping("/listarChofer/{id}")

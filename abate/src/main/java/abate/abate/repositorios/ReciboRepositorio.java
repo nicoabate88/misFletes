@@ -2,6 +2,7 @@ package abate.abate.repositorios;
 
 import abate.abate.entidades.Recibo;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReciboRepositorio extends JpaRepository<Recibo, Long> {
 
-    @Query("SELECT MAX(id) FROM Recibo")
-    public Long ultimoRecibo();
+    @Query("SELECT MAX(id) FROM Recibo WHERE idOrg = :id")
+    public Long ultimoRecibo(@Param("id") Long id);
     
     Optional<Recibo> findTopByIdOrgAndObservacionNotOrderByIdDesc(Long idOrg, String estado);
 
@@ -21,5 +22,9 @@ public interface ReciboRepositorio extends JpaRepository<Recibo, Long> {
 
     @Query("SELECT r FROM Recibo r WHERE r.observacion != 'ELIMINADO' AND r.idOrg = :id")
     public ArrayList<Recibo> buscarRecibos(@Param("id") Long id);
+    
+    ArrayList<Recibo> findByFechaBetweenAndObservacionNotAndIdOrg(Date desde, Date hasta, String observacion, Long idOrg); 
+    
+    ArrayList<Recibo> findByFechaBetweenAndObservacionNotAndClienteId(Date desde, Date hasta, String observacion, Long idCliente); 
 
 }

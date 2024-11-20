@@ -44,7 +44,7 @@ public class ClienteServicio {
 
         clienteRepositorio.save(cliente);
 
-        cuentaServicio.crearCuentaCliente(buscarUltimo());
+        cuentaServicio.crearCuentaCliente(buscarUltimo(idOrg));
 
     }
 
@@ -109,9 +109,9 @@ public class ClienteServicio {
 
     }
 
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return clienteRepositorio.ultimoCliente();
+        return clienteRepositorio.ultimoCliente(idOrg);
 
     }
 

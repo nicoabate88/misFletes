@@ -341,9 +341,9 @@ public class CombustibleServicio {
         return consumo;
     }
 
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return combustibleRepositorio.ultimaCarga();
+        return combustibleRepositorio.ultimaCarga(idOrg);
 
     }
 

@@ -52,5 +52,8 @@ public interface FleteRepositorio extends JpaRepository<Flete, Long> {
     Flete findTopByCamionAndEstadoNotOrderByIdDesc(Camion camion, String estado);
     
     Flete findTopByChoferAndEstadoNotOrderByIdDesc(Usuario chofer, String estado);
+    
+    @Query("SELECT f.id FROM Flete f WHERE gasto_id = :idGasto")
+    Long findFleteIdByIdGasto(@Param("idGasto") Long idGasto);      
 
 }

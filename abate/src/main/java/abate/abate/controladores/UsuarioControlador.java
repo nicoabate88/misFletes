@@ -39,12 +39,7 @@ public class UsuarioControlador {
 
             usuarioServicio.crearUsuario(logueado.getIdOrg(), nombre, nombreUsuario, logueado.getCuil(), password, password2);
 
-            Long id = usuarioServicio.buscarUltimoUsuario();
-
-            modelo.put("usuario", usuarioServicio.buscarUsuario(id));
-            modelo.put("exito", "Usuario REGISTRADO con éxito");
-
-            return "usuario_registrado.html";
+            return "redirect:/usuario/registrado";
 
         } catch (MiException ex) {
 
@@ -54,6 +49,20 @@ public class UsuarioControlador {
 
             return "usuario_registrar.html";
         }
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CEO')")
+    @GetMapping("/registrado")
+    public String usuarioRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = usuarioServicio.buscarUltimoUsuario(logueado.getIdOrg());
+
+            modelo.put("usuario", usuarioServicio.buscarUsuario(id));
+            modelo.put("exito", "Usuario REGISTRADO con éxito");
+
+            return "usuario_registrado.html";
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CEO')")
@@ -85,6 +94,7 @@ public class UsuarioControlador {
         return "usuario_mostrarChofer.html";
     }
     
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CEO')")
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
 
@@ -94,6 +104,7 @@ public class UsuarioControlador {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CEO')")
     @PostMapping("/modifica")
     public String modifica(@RequestParam Long id, @RequestParam String nombre, @RequestParam String nombreUsuario, ModelMap modelo) {
 
@@ -155,7 +166,7 @@ public class UsuarioControlador {
 
             usuarioServicio.crearUsuarioCeo(nombre, nombreUsuario, password, password2);
 
-            Long id = usuarioServicio.buscarUltimoUsuario();
+            Long id = usuarioServicio.buscarUltimoUsuarioCeo();
 
             modelo.put("usuario", usuarioServicio.buscarUsuario(id));
             modelo.put("exito", "Usuario REGISTRADO con éxito");
@@ -180,7 +191,7 @@ public class UsuarioControlador {
 
             usuarioServicio.crearUsuario(idOrg, nombre, nombreUsuario, cuil, password, password2);
 
-            Long id = usuarioServicio.buscarUltimoUsuario();
+            Long id = usuarioServicio.buscarUltimoUsuario(idOrg);
 
             modelo.put("usuario", usuarioServicio.buscarUsuario(id));
             modelo.put("exito", "Usuario REGISTRADO con éxito");

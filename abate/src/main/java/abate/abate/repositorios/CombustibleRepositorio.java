@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CombustibleRepositorio extends JpaRepository<Combustible, Long> {
     
-    @Query("SELECT MAX(id) FROM Combustible")
-    public Long ultimaCarga();       //devuelve id de ultimo combustible registrado
+    @Query("SELECT MAX(id) FROM Combustible c WHERE c.idOrg = :id")
+    public Long ultimaCarga(@Param("id") Long id);      
     
     Optional<Combustible> findFirstByCamionOrderByIdAsc(Camion camion);  //devuelve primer registro buscado por camion
     

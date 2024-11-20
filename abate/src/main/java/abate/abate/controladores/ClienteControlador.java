@@ -38,11 +38,8 @@ public class ClienteControlador {
         try {
 
             clienteServicio.crearCliente(logueado.getIdOrg(), nombre, cuit, localidad, direccion, telefono, email);
-            Long id = clienteServicio.buscarUltimo();
-            modelo.put("cliente", clienteServicio.buscarCliente(id));
-            modelo.put("exito", "Cliente REGISTRADO con éxito");
-
-            return "cliente_mostrar.html";
+            
+            return "redirect:/cliente/registrado";
 
         } catch (MiException ex) {
 
@@ -56,6 +53,18 @@ public class ClienteControlador {
 
             return "cliente_registrar.html";
         }
+    }
+    
+    @GetMapping("/registrado")
+    public String clienteRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = clienteServicio.buscarUltimo(logueado.getIdOrg());
+            modelo.put("cliente", clienteServicio.buscarCliente(id));
+            modelo.put("exito", "Cliente REGISTRADO con éxito");
+
+            return "cliente_mostrar.html";
     }
 
     @GetMapping("/listar")

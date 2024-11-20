@@ -2,6 +2,7 @@ package abate.abate.repositorios;
 
 import abate.abate.entidades.Gasto;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,9 @@ public interface GastoRepositorio extends JpaRepository<Gasto, Long> {
     @Query("SELECT g FROM Gasto g WHERE imagen_id = :id")
     public Gasto buscarGastoIdImagen(@Param("id") Long id);
 
-    @Query("SELECT MAX(id) FROM Gasto")
-    public Long ultimoGasto();
+    @Query("SELECT MAX(id) FROM Gasto g WHERE g.idOrg = :id")
+    public Long ultimoGasto(@Param("id") Long id);
+    
+    Optional<Gasto> findTopByIdOrgAndNombreNotOrderByIdGastoDesc(Long idOrg, String estado);
 
 }

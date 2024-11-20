@@ -38,30 +38,41 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre, @RequestParam Long cuil, @RequestParam(required = false) Long idCamion,
-            @RequestParam Double porcentaje, @RequestParam String nombreUsuario, @RequestParam String password,
+            @RequestParam String caja, @RequestParam Double porcentaje, @RequestParam String nombreUsuario, @RequestParam String password,
             @RequestParam String password2, ModelMap modelo, HttpSession session) {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
-            choferServicio.crearChofer(logueado.getIdOrg(), nombre, cuil, idCamion, nombreUsuario, porcentaje, password, password2);
-            Long id = choferServicio.buscarUltimo();
-            modelo.put("chofer", choferServicio.buscarChofer(id));
-            modelo.put("exito", "Chofer REGISTRADO con éxito");
-
-            return "chofer_registrado.html";
+            choferServicio.crearChofer(logueado.getIdOrg(), nombre, cuil, idCamion, caja, nombreUsuario, porcentaje, password, password2);
+            
+            return "redirect:/chofer/registrado";
 
         } catch (MiException ex) {
 
             modelo.put("nombre", nombre);
             modelo.put("cuil", cuil);
+            modelo.put("caja", caja);
             modelo.put("nombreUsuario", nombreUsuario);
             modelo.put("porcentaje", porcentaje);
             modelo.put("error", ex.getMessage());
 
             return "chofer_registrar.html";
         }
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/registrado")
+    public String choferRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = choferServicio.buscarUltimo(logueado.getIdOrg());
+            modelo.put("chofer", choferServicio.buscarChofer(id));
+            modelo.put("exito", "Chofer REGISTRADO con éxito");
+
+            return "chofer_registrado.html";
     }
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -124,7 +135,7 @@ public class ChoferControlador {
 
     }
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificarPsw/{id}")
     public String modificarPsw(@PathVariable Long id, ModelMap modelo) {
 
@@ -134,7 +145,7 @@ public class ChoferControlador {
 
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/modificaPsw/{id}")
     public String modificaPsw(@RequestParam Long id, @RequestParam String password, ModelMap modelo, HttpSession session) {
             

@@ -26,7 +26,7 @@
                                     </div>
 
                                     <form class="row g-3" th:action="@{/chofer/registro}" method="POST">
-                                        <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
+                                        <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="nombre" class="form-label">Apellido y Nombre de Chofer</label>
                                             <input type="text" class="form-control" id="nombre" placeholder="Ingrese Apellido y Nombre" name="nombre" th:value="${nombre}" required>
                                         </div>
@@ -45,6 +45,14 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
+                                            <label for="caja" class="form-floting">Habilitar Caja</label>
+                                            <select class="form-control" id="caja" name="caja" required>
+                                                <option selected disabled value="">Seleccione Opción</option>
+                                                <option value="SI">SI</option>
+                                                <option value="NO">NO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="porcentaje" class="form-label">Porcentaje de Chofer</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">%</span>
@@ -55,8 +63,10 @@
                                             <label for="usuario" class="form-label">Nombre de Usuario</label>
                                             <input type="text" class="form-control" id="usuario" placeholder="Ingrese Nombre de Usuario" name="nombreUsuario" th:value="${nombreUsuario}" required>
                                         </div>
-                                        <div class="d-none d-sm-block col-md-6">
+                                        <div class="d-block d-md-none col-6 col-sm-6 col-md-6 mb-2">
                                         </div>
+                                       
+                                        
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
                                             <label for="contra" class="form-label">Contraseña</label>
                                             <input type="password" class="form-control" id="contra" placeholder="Ingrese Contraseña" name="password" required>

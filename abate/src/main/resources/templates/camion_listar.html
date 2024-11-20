@@ -31,11 +31,9 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div th:if="${!camiones.isEmpty()}">
                                 <div th:each="camion : ${camiones}">
-
                                     <div class="card mb-1" id="color-card">
-                                        
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="card-body">
@@ -77,6 +75,15 @@
                                             
                                         </div>
                                     </div>    
+                                </div>
+                                </div>    
+                                <div th:if="${camiones.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                        <h6 class="mb-4" id="azul">No existen Camiones Registrados</h6>
+                                        <div class=" text-center">    
+                                            <a class="btn btn-primary" type="button" th:href="@{/camion/registrar}">Nuevo Camión</a>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>

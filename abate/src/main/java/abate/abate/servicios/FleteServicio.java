@@ -217,7 +217,7 @@ public class FleteServicio {
     }
 
     @Transactional
-    public void aceptarFlete(Long idFlete) {
+    public void aceptarFlete(Long idFlete, Usuario logueado) {
 
         Flete flete = new Flete();
         Optional<Flete> fte = fleteRepositorio.findById(idFlete);
@@ -226,12 +226,14 @@ public class FleteServicio {
         }
 
         flete.setEstado("ACEPTADO");
-
+        flete.setUsuario(logueado);
+        
         fleteRepositorio.save(flete);
 
         transaccionServicio.crearTransaccionFleteChofer(idFlete);
         transaccionServicio.crearTransaccionFleteCliente(idFlete);
         if (flete.getGasto() != null) {
+            gastoServicio.aceptarGastoCaja(flete.getGasto().getId(), logueado);
             transaccionServicio.crearTransaccionGasto(flete.getGasto().getId());
         }
 
@@ -249,7 +251,7 @@ public class FleteServicio {
         transaccionServicio.eliminarTransaccionFlete(idFlete);
 
         if (flete.getGasto() != null) {
-           // gastoServicio.eliminarGasto(idFlete, flete.getGasto().getId(), idUsuario);
+
            transaccionServicio.eliminarTransaccionGasto(flete.getGasto().getId());
         }
 
@@ -282,6 +284,11 @@ public class FleteServicio {
     public Long buscarUltimo(Long idOrg) {
 
         return fleteRepositorio.ultimoFlete(idOrg);
+    }
+    
+    public Long buscarIdFleteIdGasto(Long idGasto){
+        
+        return fleteRepositorio.findFleteIdByIdGasto(idGasto);
     }
 
     public ArrayList<Flete> buscarFletesPendiente(Long idOrg) {

@@ -138,6 +138,19 @@ label {
     color : darkslateblue;
 }
 
+#ingreso {
+    
+    background: dimgrey;
+    border: none;
+    font-size: 12px;
+    color: white;
+}
+
+#enlace {
+    color: dimgray;
+    font-weight: bold;
+}
+
 
 
 

@@ -3,6 +3,7 @@ package abate.abate.repositorios;
 import abate.abate.entidades.Entrega;
 import abate.abate.entidades.Usuario;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EntregaRepositorio extends JpaRepository<Entrega, Long> {
 
-    @Query("SELECT MAX(id) FROM Entrega")
-    public Long ultimoEntrega();
+    @Query("SELECT MAX(id) FROM Entrega e WHERE e.idOrg = :id")
+    public Long ultimoEntrega(@Param("id") Long id);
     
     Optional<Entrega> findTopByIdOrgAndObservacionNotOrderByIdDesc(Long idOrg, String estado);
 
@@ -24,5 +25,9 @@ public interface EntregaRepositorio extends JpaRepository<Entrega, Long> {
     public ArrayList<Entrega> buscarEntregas(@Param("id") Long id);
     
     Entrega findTopByChoferAndObservacionNotOrderByIdDesc(Usuario chofer, String estado);
+    
+    ArrayList<Entrega> findByFechaBetweenAndObservacionNotAndIdOrg(Date desde, Date hasta, String observacion, Long idOrg);  
+    
+    ArrayList<Entrega> findByFechaBetweenAndObservacionNotAndChoferId(Date desde, Date hasta, String observacion, Long idChofer); 
 
 }

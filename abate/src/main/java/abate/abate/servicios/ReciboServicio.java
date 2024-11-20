@@ -60,7 +60,7 @@ public class ReciboServicio {
 
         reciboRepositorio.save(recibo);
 
-        transaccionServicio.crearTransaccionRecibo(buscarUltimo());
+        transaccionServicio.crearTransaccionRecibo(buscarUltimo(idOrg));
 
     }
 
@@ -120,9 +120,12 @@ public class ReciboServicio {
 
     }
 
-    public ArrayList<Recibo> buscarRecibosIdCliente(Long id) {
+    public ArrayList<Recibo> buscarRecibosIdCliente(Long id, String desde, String hasta) throws ParseException {
+        
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
 
-        ArrayList<Recibo> lista = reciboRepositorio.buscarRecibosIdCliente(id);
+        ArrayList<Recibo> lista = reciboRepositorio.findByFechaBetweenAndObservacionNotAndClienteId(d, h, "ELIMINADO", id);
 
         Collections.sort(lista, ReciboComparador.ordenarFechaDesc); //ordena por nombre alfabetico los nombres de clientes
 
@@ -130,9 +133,12 @@ public class ReciboServicio {
 
     }
 
-    public ArrayList<Recibo> buscarRecibos(Long idOrg) {
+    public ArrayList<Recibo> buscarRecibos(Long idOrg, String desde, String hasta) throws ParseException {
+        
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
 
-        ArrayList<Recibo> lista = reciboRepositorio.buscarRecibos(idOrg);
+        ArrayList<Recibo> lista = reciboRepositorio.findByFechaBetweenAndObservacionNotAndIdOrg(d, h, "ELIMINADO", idOrg);
 
         Collections.sort(lista, ReciboComparador.ordenarFechaDesc); //ordena por nombre alfabetico los nombres de clientes
 
@@ -160,9 +166,10 @@ public class ReciboServicio {
 
     }
 
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return reciboRepositorio.ultimoRecibo();
+        return reciboRepositorio.ultimoRecibo(idOrg);
+        
     }
 
     public Recibo buscarRecibo(Long id) {

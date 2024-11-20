@@ -30,7 +30,7 @@
                                         <div class="row">
                                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                                 <div class="card-body">
-                                                     <h6 th:text="'Fecha '+${fecha}+' - ID'+${flete.idFlete}"></h6>
+                                                     <h6 th:text="'Fecha '+${fecha.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
                                                     <p id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}+' ' +${flete.kmFlete} +' KM'"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFlete}+ ' KG - Tarifa $'+${flete.tarifa}"></h6>

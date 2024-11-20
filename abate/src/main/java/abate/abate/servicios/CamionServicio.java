@@ -115,9 +115,9 @@ public class CamionServicio {
         return camionRepositorio.getById(id);
     } 
      
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return camionRepositorio.ultimoCamion();
+        return camionRepositorio.ultimoCamion(idOrg);
 
     }
     

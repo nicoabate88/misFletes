@@ -1,15 +1,19 @@
 package abate.abate.servicios;
 
+import abate.abate.entidades.Caja;
 import abate.abate.entidades.Camion;
 import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Entrega;
 import abate.abate.entidades.Flete;
+import abate.abate.entidades.Ingreso;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
+import abate.abate.repositorios.CajaRepositorio;
 import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.EntregaRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
+import abate.abate.repositorios.IngresoRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.ChoferComparador;
 import java.util.ArrayList;
@@ -28,6 +32,8 @@ public class ChoferServicio {
     @Autowired
     private CuentaServicio cuentaServicio;
     @Autowired
+    private CajaServicio cajaServicio;
+    @Autowired
     private CamionRepositorio camionRepositorio;
     @Autowired
     private CombustibleRepositorio combustibleRepositorio;
@@ -35,9 +41,13 @@ public class ChoferServicio {
     private FleteRepositorio fleteRepositorio;
     @Autowired
     private EntregaRepositorio entregaRepositorio;
+    @Autowired
+    private IngresoRepositorio ingresoRepositorio;
+    @Autowired
+    private CajaRepositorio cajaRepositorio;
 
     @Transactional
-    public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
+    public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String caja, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
 
         String nombreUsuarioMin = nombreUsuario.toLowerCase();
         String nombreM = nombre.toUpperCase();
@@ -60,12 +70,15 @@ public class ChoferServicio {
         user.setUsuario(nombreUsuarioMin);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRol("CHOFER");
+        user.setCaja(caja);
         user.setPorcentaje(porcentaje);
 
         usuarioRepositorio.save(user);
 
-        cuentaServicio.crearCuentaChofer(buscarUltimo());
-
+        Long idUsuario = buscarUltimo(idOrg);
+        cuentaServicio.crearCuentaChofer(idUsuario);
+        cajaServicio.crearCajaChofer(idUsuario);
+        
     }
 
     @Transactional
@@ -103,6 +116,40 @@ public class ChoferServicio {
     }
     
     @Transactional
+    public void habilitarCajaChofer(Long idUsuario){
+        
+        Usuario chofer = new Usuario();
+        Optional<Usuario> user = usuarioRepositorio.findById(idUsuario);
+        if (user.isPresent()) {
+            chofer = user.get();
+        }
+        
+        chofer.setCaja("SI");
+        
+        usuarioRepositorio.save(chofer);
+        
+        cajaServicio.habilitarCaja(idUsuario);
+        
+    }
+    
+    @Transactional
+    public void inhabilitarCajaChofer(Long idUsuario){
+        
+        Usuario chofer = new Usuario();
+        Optional<Usuario> user = usuarioRepositorio.findById(idUsuario);
+        if (user.isPresent()) {
+            chofer = user.get();
+        }
+        
+        chofer.setCaja("NO");
+        
+        usuarioRepositorio.save(chofer);
+        
+        cajaServicio.inhabilitarCaja(idUsuario);
+        
+    }
+   
+    @Transactional
     public void modificarPswChofer(Long id, String password) {
         
         Usuario user = new Usuario();
@@ -125,9 +172,12 @@ public class ChoferServicio {
         Flete flete = fleteRepositorio.findTopByChoferAndEstadoNotOrderByIdDesc(chofer, "ELIMINADO");
         Entrega entrega = entregaRepositorio.findTopByChoferAndObservacionNotOrderByIdDesc(chofer, "ELIMINADO");
         Combustible combustible = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
+        Ingreso ingreso = ingresoRepositorio.findTopByChoferAndObservacionNotOrderByIdDesc(chofer, "ELIMINADO");
+        Caja caja = cajaServicio.buscarCajaChofer(id);
         
-        if (flete == null && entrega == null && combustible == null) {
-      
+        if (flete == null && entrega == null && combustible == null && ingreso == null) {
+            
+            cajaRepositorio.deleteById(caja.getId());
             usuarioRepositorio.deleteById(id);
             cuentaServicio.eliminarCuentaChofer(id);
 
@@ -167,9 +217,9 @@ public class ChoferServicio {
         return lista;
     } 
 
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return usuarioRepositorio.ultimoUsuario();
+        return usuarioRepositorio.ultimoUsuario(idOrg);
     }
 
     public void validarDatos(Long idOrg, String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {

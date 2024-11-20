@@ -28,7 +28,7 @@
                                 <div class="card mb-4" id="color-card">
                                     <div class="card-body">
                                         <h6 th:text="'Importe $'+${recibo.importe}"></h6>
-                                        <h6 id="dimgray" th:text="'Fecha '+${fecha}+' - ID'+${recibo.idRecibo}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha '+${recibo.fecha}+' - ID'+${recibo.idRecibo}"></h6>
                                         <p id="dimgray" class="mb-1" th:text="'Cliente '+${recibo.cliente.nombre}"></p>
                                         <p class="mb-0" id="dimgray" th:text="${recibo.observacion}"></p>
                                     </div>   

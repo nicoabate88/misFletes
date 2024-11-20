@@ -45,6 +45,26 @@ public class ImagenServicio {
         gastoRepositorio.save(gasto);
 
     }
+    
+    @Transactional
+    public void crearImagenGastoCaja(Long id, Imagen imagen) {
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(id);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        imagenRepositorio.save(imagen);
+
+        Long idImg = buscarUltimo();
+
+        Imagen img = imagenRepositorio.getById(idImg);
+
+        gasto.setImagen(img);
+        gastoRepositorio.save(gasto);
+
+    }
 
     @Transactional
     public void crearImagenCP(Long id, Imagen imagen) {

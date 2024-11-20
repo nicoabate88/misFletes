@@ -15,7 +15,9 @@ public class Gasto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idGasto;
     private Long idOrg;
+    private String estado;
     @OneToOne
     private Usuario chofer;
     @OneToOne
@@ -32,9 +34,11 @@ public class Gasto {
     public Gasto() {
     }
 
-    public Gasto(Long id, Long idOrg, Usuario chofer, Usuario usuario, Date fecha, String nombre, Double importe, Camion camion, Imagen imagen) {
+    public Gasto(Long id, Long idGasto, Long idOrg, String estado, Usuario chofer, Usuario usuario, Date fecha, String nombre, Double importe, Camion camion, Imagen imagen) {
         this.id = id;
+        this.idGasto = idGasto;
         this.idOrg = idOrg;
+        this.estado = estado;
         this.chofer = chofer;
         this.usuario = usuario;
         this.fecha = fecha;
@@ -52,12 +56,28 @@ public class Gasto {
         this.id = id;
     }
 
+    public Long getIdGasto() {
+        return idGasto;
+    }
+
+    public void setIdGasto(Long idGasto) {
+        this.idGasto = idGasto;
+    }
+
     public Long getIdOrg() {
         return idOrg;
     }
 
     public void setIdOrg(Long idOrg) {
         this.idOrg = idOrg;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public Usuario getChofer() {
@@ -117,5 +137,4 @@ public class Gasto {
     }
 
     
-
 }

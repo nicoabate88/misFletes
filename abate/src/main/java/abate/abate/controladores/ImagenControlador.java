@@ -2,6 +2,7 @@
 package abate.abate.controladores;
 
 import abate.abate.entidades.Combustible;
+import abate.abate.entidades.Detalle;
 import abate.abate.entidades.Flete;
 import abate.abate.entidades.Gasto;
 import abate.abate.entidades.Imagen;
@@ -13,6 +14,7 @@ import abate.abate.servicios.GastoServicio;
 import abate.abate.servicios.ImagenServicio;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.http.HttpSession;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +89,66 @@ public class ImagenControlador {
         }
 
     }
+    
+    @GetMapping("/cargarGastoCaja/{id}") //llega id de Gasto
+    public String registrarDesdeCaja(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("gasto", gastoServicio.buscarGasto(id));
+
+        return "imagen_gastoCargarCaja.html";
+    }
+    
+    @PostMapping("/cargaGastoCaja")
+    public String crearImagenCaja(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
+        
+        Gasto gasto = gastoServicio.buscarGasto(id);
+
+        try {
+        
+        Imagen imagen = new Imagen();
+        imagen.setNombre("Gasto ID" + gasto.getIdGasto());
+        imagen.setTipo(file.getContentType()); 
+        
+        if(file.getContentType().equals("application/pdf")){
+        imagen.setDatos(file.getBytes());
+        
+        } else {
+            imagen.setDatos(optimizeImage(file));
+        }
+        
+        ArrayList<Detalle> lista = new ArrayList();
+        
+        if(!gasto.getNombre().startsWith("GASTO FTE")){
+            
+            imagenServicio.crearImagenGastoCaja(id, imagen);
+            
+            lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(id);
+            
+        } else {
+            
+            Long idFlete = fleteServicio.buscarIdFleteIdGasto(id);
+            Flete flete = fleteServicio.buscarFlete(idFlete);
+            imagen.setNombre("Gasto Flete ID" + flete.getIdFlete());
+            imagenServicio.crearImagenGasto(idFlete, imagen);
+            
+            lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesFleteIdGasto(id);
+            
+        }
+
+        modelo.put("gasto", gasto);
+        modelo.addAttribute("detalles", lista);
+        modelo.put("exito", "Imagen de Gasto CARGADA con éxito");
+
+        return "gasto_registradoImg.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("gasto", gasto);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_gastoCargarCaja.html"; 
+        }
+
+    }
+    
     
     @GetMapping("/cargarCombustible/{id}") 
     public String registrarCombustible(@PathVariable Long id, ModelMap modelo) {
@@ -324,6 +386,43 @@ public class ImagenControlador {
         }
     }
     
+    @GetMapping("/verGastoCaja/{id}")
+    public String verGastoCaja(@PathVariable Long id, ModelMap modelo) {
+
+        Gasto gasto = gastoServicio.buscarGasto(id);
+
+        if (gasto.getImagen() != null) {
+
+            Long idImagen = gasto.getImagen().getId();
+            Imagen imagen = imagenServicio.obtenerImagenPorId(idImagen);
+
+            if (imagen.getTipo().equalsIgnoreCase("application/pdf")) {
+
+                modelo.addAttribute("imagenNombre", imagen.getNombre());
+                modelo.addAttribute("id", idImagen);
+
+                return "imagen_mostrarGastoPdfCaja.html";
+
+            } else {
+
+                modelo.addAttribute("imagenUrl", "/imagen/img/bytes/" + idImagen);
+                modelo.addAttribute("imagenNombre", imagen.getNombre());
+                modelo.addAttribute("id", idImagen);
+
+                return "imagen_mostrarGastoCaja.html";
+
+            }
+
+        } else {
+            
+            modelo.put("gasto", gastoServicio.buscarGasto(id));
+
+            return "imagen_gastoCargarCaja.html";
+
+        }
+    }
+    
+    
     @GetMapping("/descargarGastoPdf/{id}")
     public String descargarGastoPdf(@PathVariable Long id, ModelMap modelo){
         
@@ -365,6 +464,56 @@ public class ImagenControlador {
 
         modelo.put("gasto", gasto);
         modelo.addAttribute("detalles", detalleServicio.buscarDetallesFlete(flete.getId()));
+        modelo.put("exito", "Imagen de Gasto MODIFICADO con éxito");
+
+        return "gasto_registradoImg.html";
+        
+        } catch (Exception e) {
+            modelo.addAttribute("id", id);
+            modelo.addAttribute("error", "Ocurrió un error al procesar su imagen. Intente nuevamente o ingrese otro archivo");
+            return "imagen_gastoModificar.html"; 
+        }
+
+    }
+    
+    @GetMapping("/modificarGastoCaja/{id}") //llega id de Imagen
+    public String modificarGastoCaja(@PathVariable Long id, ModelMap modelo) {
+
+        modelo.put("id", id);
+
+        return "imagen_gastoModificarCaja.html";
+    }
+
+    @PostMapping("/modificaGastoCaja")
+    public String modificaGastoCaja(@RequestParam Long id, @RequestParam("file") MultipartFile file, ModelMap modelo) throws IOException {
+
+        Gasto gasto = gastoServicio.buscarGastoIdImagen(id);
+
+        try {
+        
+        Imagen imagen = new Imagen();
+        
+        imagen.setTipo(file.getContentType()); 
+        if(file.getContentType().equals("application/pdf")){
+        imagen.setDatos(file.getBytes());
+        } else {
+            imagen.setDatos(optimizeImage(file));
+        }
+        
+        ArrayList<Detalle> lista = new ArrayList();
+        
+        if(!gasto.getNombre().startsWith("GASTO FTE")){
+            imagen.setNombre("GASTO ID" + gasto.getIdGasto());
+            imagenServicio.modificarImagen(id, imagen);
+            lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(gasto.getId());
+        } else {
+            imagen.setNombre(gasto.getNombre());
+            imagenServicio.modificarImagen(id, imagen);
+            lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesFleteIdGasto(gasto.getId());   
+        }
+
+        modelo.put("gasto", gasto);
+        modelo.addAttribute("detalles", lista);
         modelo.put("exito", "Imagen de Gasto MODIFICADO con éxito");
 
         return "gasto_registradoImg.html";

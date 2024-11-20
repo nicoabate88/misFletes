@@ -71,16 +71,26 @@ public class FleteControlador {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         fleteServicio.crearFleteChofer(logueado.getIdOrg(), fechaCarga, idCliente, idCamion, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg, logueado.getId());
+        
+        return "redirect:/flete/registradoChofer";
+
+    }
+    
+    @GetMapping("/registradoChofer")
+    public String registradoChofer(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
         Long id = fleteServicio.buscarUltimo(logueado.getIdOrg());
 
         modelo.put("flete", fleteServicio.buscarFlete(id));
-        modelo.put("fecha", fechaFlete);
         modelo.put("exito", "Flete REGISTRADO con éxito");
 
         return "flete_registradoChofer.html";
-
+        
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/registroAdmin")
     public String registroFleteAdmin(@RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, @RequestParam String fechaFlete,
             @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal, @RequestParam String cPorte, 
@@ -91,14 +101,23 @@ public class FleteControlador {
         
         fleteServicio.crearFleteAdmin(logueado.getIdOrg(), idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg, comisionTpte, comisionTpteChofer, iva, logueado.getId());
         
+        return "redirect:/flete/registradoChofer";
+
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/registradoAdmin")
+    public String registradoAdmin(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
         Long id = fleteServicio.buscarUltimo(logueado.getIdOrg());
 
         modelo.put("flete", fleteServicio.buscarFlete(id));
-        modelo.put("fecha", fechaFlete);
         modelo.put("exito", "Flete REGISTRADO con éxito");
 
         return "flete_registradoAdmin.html";
-
+        
     }
 
     @GetMapping("/listar")
@@ -347,20 +366,32 @@ public class FleteControlador {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/aceptar/{id}")
     public String aceptarFlete(@PathVariable Long id, ModelMap modelo, HttpSession session) {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        fleteServicio.aceptarFlete(id);
+        fleteServicio.aceptarFlete(id, logueado);
 
+        return "redirect:/flete/aceptado";
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/aceptado")
+    public String fleteAceptado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
         modelo.addAttribute("fletes", fleteServicio.buscarFletesPendiente(logueado.getIdOrg()));
         modelo.put("exito", "Flete ACEPTADO con éxito");
 
         return "flete_listarPendiente.html";
-
+        
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/volverPendiente/{id}")
     public String volverPendiente(@PathVariable Long id, ModelMap modelo) {
 
@@ -369,21 +400,32 @@ public class FleteControlador {
         return "flete_volverPendiente.html";
 
     }
-
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/pendiente/{id}")
     public String pendienteFlete(@PathVariable Long id, ModelMap modelo, HttpSession session) {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
         
         fleteServicio.pendienteFlete(id, logueado.getId());
+        
+        return "redirect:/flete/fletePendiente";
+
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/fletePendiente")
+    public String fletePendiente(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        String nombreMayuscula = logueado.getUsuario().toUpperCase();
         
         modelo.put("usuario", nombreMayuscula);
         modelo.put("id", logueado.getId());
         modelo.put("exito", "Flete RETORNADO a Pendiente");
 
         return "index_admin.html";
-
+        
     }
 
     @GetMapping("/modificar/{id}")
@@ -463,7 +505,6 @@ public class FleteControlador {
         }
     }
     
-
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, HttpSession session, ModelMap modelo) {
 
@@ -544,7 +585,7 @@ public class FleteControlador {
   
     }
     
-   @PostMapping("/exportaAdminIdChofer")
+    @PostMapping("/exportaAdminIdChofer")
     public void exporta(@RequestParam Long idChofer, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
   
         ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta);

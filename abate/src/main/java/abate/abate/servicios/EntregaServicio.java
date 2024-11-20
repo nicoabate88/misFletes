@@ -56,7 +56,7 @@ public class EntregaServicio {
 
         entregaRepositorio.save(entrega);
 
-        transaccionServicio.crearTransaccionEntrega(buscarUltimo());
+        transaccionServicio.crearTransaccionEntrega(entrega);
 
     }
 
@@ -92,7 +92,7 @@ public class EntregaServicio {
 
         entregaRepositorio.save(entrega);
 
-        transaccionServicio.modificarTransaccionEntrega(idEntrega);
+        transaccionServicio.modificarTransaccionEntrega(entrega);
 
     }
 
@@ -135,20 +135,24 @@ public class EntregaServicio {
         }
 
     }
+     
+    public Long buscarUltimo(Long idOrg) {
 
-    public Long buscarUltimo() {
-
-        return entregaRepositorio.ultimoEntrega();
+        return entregaRepositorio.ultimoEntrega(idOrg);
+        
     }
-
+     
     public Entrega buscarEntrega(Long id) {
 
         return entregaRepositorio.getById(id);
     }
 
-    public ArrayList<Entrega> buscarEntregas(Long idOrg) {
+    public ArrayList<Entrega> buscarEntregas(Long idOrg, String desde, String hasta) throws ParseException {
+        
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
 
-        ArrayList<Entrega> lista = entregaRepositorio.buscarEntregas(idOrg);
+        ArrayList<Entrega> lista = entregaRepositorio.findByFechaBetweenAndObservacionNotAndIdOrg(d, h, "ELIMINADO", idOrg);
 
         Collections.sort(lista, EntregaComparador.ordenarFechaDesc);
 
@@ -156,9 +160,12 @@ public class EntregaServicio {
 
     }
 
-    public ArrayList<Entrega> buscarEntregasIdChofer(Long id) {
+    public ArrayList<Entrega> buscarEntregasIdChofer(Long id, String desde, String hasta) throws ParseException {
 
-        ArrayList<Entrega> lista = entregaRepositorio.buscarEntregasIdChofer(id);
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
+        
+        ArrayList<Entrega> lista = entregaRepositorio.findByFechaBetweenAndObservacionNotAndChoferId(d, h, "ELIMINADO", id);
 
         Collections.sort(lista, EntregaComparador.ordenarFechaDesc);
 

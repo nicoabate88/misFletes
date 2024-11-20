@@ -42,6 +42,7 @@ public class UsuarioServicio implements UserDetailsService {
         user.setIdOrg(idOrg);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRol("ADMIN");
+        user.setCaja("NO");
 
         usuarioRepositorio.save(user);
 
@@ -100,9 +101,15 @@ public class UsuarioServicio implements UserDetailsService {
 
     }
 
-    public Long buscarUltimoUsuario() {
+    public Long buscarUltimoUsuario(Long idOrg) {
 
-        return usuarioRepositorio.ultimoUsuario();
+        return usuarioRepositorio.ultimoUsuario(idOrg);
+    }
+    
+    public Long buscarUltimoUsuarioCeo() {
+
+        return usuarioRepositorio.ultimoUsuarioCeo();
+        
     }
 
     public void validarDatos(Long idOrg, String nombre, String nombreUsuario, String password, String password2) throws MiException {

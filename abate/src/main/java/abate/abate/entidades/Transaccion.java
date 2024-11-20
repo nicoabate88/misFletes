@@ -33,11 +33,13 @@ public class Transaccion {
     private Entrega entrega;
     @OneToOne
     private Gasto gasto;
+    @OneToOne
+    private Ingreso ingreso;
 
     public Transaccion() {
     }
 
-    public Transaccion(Long id, Cliente cliente, Usuario chofer, Date fecha, String concepto, String observacion, Double importe, Double saldoAcumulado, Flete flete, Recibo recibo, Entrega entrega, Gasto gasto) {
+    public Transaccion(Long id, Cliente cliente, Usuario chofer, Date fecha, String concepto, String observacion, Double importe, Double saldoAcumulado, Flete flete, Recibo recibo, Entrega entrega, Gasto gasto, Ingreso ingreso) {
         this.id = id;
         this.cliente = cliente;
         this.chofer = chofer;
@@ -50,6 +52,7 @@ public class Transaccion {
         this.recibo = recibo;
         this.entrega = entrega;
         this.gasto = gasto;
+        this.ingreso = ingreso;
     }
 
     public Long getId() {
@@ -147,5 +150,15 @@ public class Transaccion {
     public void setGasto(Gasto gasto) {
         this.gasto = gasto;
     }
+
+    public Ingreso getIngreso() {
+        return ingreso;
+    }
+
+    public void setIngreso(Ingreso ingreso) {
+        this.ingreso = ingreso;
+    }
+
+    
 
 }

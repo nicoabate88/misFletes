@@ -61,12 +61,227 @@ public class GastoServicio {
         gasto.setImporte(importe);
         gasto.setUsuario(user);
         gasto.setCamion(flete.getCamion());
+        gasto.setEstado("FLETE");
 
         gastoRepositorio.save(gasto);
 
-        Long idGasto = buscarUltimo();
+        Long idGasto = buscarUltimo(idOrg);
         flete.setGasto(gastoRepositorio.getById(idGasto));
         fleteRepositorio.save(flete);   //persiste Gasto en el flete correspondiente
+
+    }
+    
+    @Transactional
+    public Long crearGastoCaja(Long idOrg, String fecha, Long idUsuario) throws ParseException {
+
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+        Date f = convertirFecha(fecha);
+        Long idGasto = buscarUltimoIdOrg(idOrg);
+        
+        Gasto gasto = new Gasto();
+        
+        gasto.setChofer(user);
+        gasto.setUsuario(user);
+        gasto.setIdOrg(idOrg);
+        if(user.getCamion() != null){
+        gasto.setCamion(user.getCamion());
+        }
+        gasto.setFecha(f);
+        gasto.setIdGasto(idGasto+1);
+        gasto.setEstado("PENDIENTE");
+
+        gastoRepositorio.save(gasto);
+
+        return buscarUltimo(idOrg);
+        
+    }
+    
+    @Transactional
+    public void crearModificarGastoCaja(Long idGasto) throws ParseException {
+
+        Double importe = 0.0;
+        ArrayList<Detalle> lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(idGasto);
+        for (Detalle d : lista) {
+            importe = importe + d.getTotal();
+        }
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setImporte(importe);
+        gasto.setNombre("GASTO ID"+gasto.getIdGasto());
+
+        gastoRepositorio.save(gasto);
+        
+        transaccionServicio.crearTransaccionGasto(idGasto);
+
+    }
+    
+     @Transactional
+    public void modificarGastoCaja(Long idGasto, Long idUsuario) throws ParseException {
+
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+
+        Double importe = 0.0;
+        ArrayList<Detalle> lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(idGasto);
+        for (Detalle d : lista) {
+            importe = importe + d.getTotal();
+        }
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setImporte(importe);
+        gasto.setUsuario(user);
+
+        gastoRepositorio.save(gasto);
+
+        transaccionServicio.modificarTransaccionGasto(idGasto);
+    }
+    
+    @Transactional
+    public void modificarGastoFleteDesdeCaja(Long idFlete, Long idGasto, Long idUsuario) throws ParseException {
+
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+
+        Double importe = 0.0;
+        ArrayList<Detalle> lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesFlete(idFlete);
+        for (Detalle d : lista) {
+            importe = importe + d.getTotal();
+        }
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setImporte(importe);
+        gasto.setUsuario(user);
+
+        gastoRepositorio.save(gasto);
+
+        transaccionServicio.modificarTransaccionGasto(gasto.getId());
+
+    }
+    
+    @Transactional
+    public void aceptarGastoCaja(Long idGasto, Usuario logueado) {
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setEstado("ACEPTADO");
+        gasto.setUsuario(logueado);
+
+        gastoRepositorio.save(gasto);
+
+    }
+    
+    @Transactional
+    public void volverPendienteGasto(Long idGasto, Usuario logueado) {
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+        
+        
+        /*
+        if (!gasto.getNombre().startsWith("GASTO FTE")) {
+            gasto.setEstado("PENDIENTE");
+        } else {
+            gasto.setEstado("FLETE");
+        }
+        */
+        gasto.setEstado("PENDIENTE");
+        gasto.setUsuario(logueado);
+
+        gastoRepositorio.save(gasto);
+
+    }
+    
+    @Transactional
+    public void eliminarGastoCaja(Long idGasto, Long idUsuario) {
+
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+
+        ArrayList<Detalle> lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(idGasto);
+        for (Detalle d : lista) {
+            detalleServicio.eliminarDetalle(d.getId());
+        }
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setNombre("ELIMINADO");
+        gasto.setUsuario(user);
+        gasto.setImporte(0.0);
+        gasto.setIdOrg(null);
+        gasto.setIdGasto(null);
+        
+        gastoRepositorio.save(gasto);
+        
+        transaccionServicio.eliminarTransaccionGasto(idGasto);
+
+    }
+    
+    @Transactional
+    public void crearEliminarGastoCaja(Long idGasto, Long idUsuario) {
+
+        Usuario user = new Usuario();
+        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
+        if (u.isPresent()) {
+            user = u.get();
+        }
+
+        ArrayList<Detalle> lista = (ArrayList<Detalle>) detalleServicio.buscarDetallesGasto(idGasto);
+        for (Detalle d : lista) {
+            detalleServicio.eliminarDetalle(d.getId());
+        }
+
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findById(idGasto);
+        if (gto.isPresent()) {
+            gasto = gto.get();
+        }
+
+        gasto.setNombre("ELIMINADO");
+        gasto.setUsuario(user);
+        gasto.setImporte(0.0);
+        gasto.setIdOrg(null);
+        gasto.setIdGasto(null);
+        
+        gastoRepositorio.save(gasto);
 
     }
 
@@ -152,9 +367,9 @@ public class GastoServicio {
 
     }
 
-    public Long buscarUltimo() {
+    public Long buscarUltimo(Long idOrg) {
 
-        return gastoRepositorio.ultimoGasto();
+        return gastoRepositorio.ultimoGasto(idOrg);
     }
 
     public Gasto buscarGasto(Long id) {
@@ -165,6 +380,26 @@ public class GastoServicio {
     public Gasto buscarGastoIdImagen(Long id) {
 
         return gastoRepositorio.buscarGastoIdImagen(id);
+    }
+    
+     public Long buscarUltimoIdOrg(Long idOrg) {
+        
+        Gasto gasto = new Gasto();
+        Optional<Gasto> gto = gastoRepositorio.findTopByIdOrgAndNombreNotOrderByIdGastoDesc(idOrg, "ELIMINADO");
+        if (gto.isPresent() && gto.get().getIdGasto() != null) {
+            gasto = gto.get();
+            
+            return gasto.getIdGasto();
+            
+        } else {
+            
+            int ultimo = 0;
+            Long primero = Long.valueOf(ultimo);
+
+            return primero;
+            
+        }
+
     }
 
     public Date convertirFecha(String fecha) throws ParseException { 

@@ -167,15 +167,9 @@ public class CuentaServicio {
     }
 
     @Transactional
-    public void agregarTransaccionCuentaChofer(Long idTransaccion) {
+    public void agregarTransaccionCuentaChofer(Transaccion transaccion) {
 
         Double saldo = 0.0;
-
-        Transaccion transaccion = new Transaccion();
-        Optional<Transaccion> tran = transaccionRepositorio.findById(idTransaccion);
-        if (tran.isPresent()) {
-            transaccion = tran.get();
-        }
 
         Long idChofer = transaccion.getChofer().getId();
         Cuenta cuenta = cuentaRepositorio.buscarCuentaIdChofer(idChofer);
@@ -288,6 +282,7 @@ public class CuentaServicio {
         transaccion.setConcepto("ELIMINADO");
         transaccion.setImporte(0.0);
         transaccion.setChofer(null);
+        transaccion.setGasto(null);
         transaccionRepositorio.save(transaccion);
 
         Cuenta cuenta = cuentaRepositorio.buscarCuentaIdChofer(idChofer);

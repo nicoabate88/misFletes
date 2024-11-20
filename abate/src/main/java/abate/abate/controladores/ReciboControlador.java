@@ -8,6 +8,8 @@ import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.ReciboServicio;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,34 +63,77 @@ public class ReciboControlador {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         reciboServicio.crearRecibo(logueado.getIdOrg(), idCliente, fecha, importe, observacion, logueado.getId());
-        Long id = reciboServicio.buscarUltimo();
+  
+        return "redirect:/recibo/registrado";
+        
+    }
+    
+    @GetMapping("/registrado")
+    public String reciboRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = reciboServicio.buscarUltimo(logueado.getIdOrg());
         Recibo recibo = reciboServicio.buscarRecibo(id);
         String total = convertirNumeroMiles(recibo.getImporte());
 
         modelo.put("recibo", recibo);
         modelo.put("importe", total);
-        modelo.put("fecha", fecha);
         modelo.put("exito", "Recibo REGISTRADO con éxito");
 
         return "recibo_registrado.html";
-
+        
     }
 
     @GetMapping("/listar")
-    public String listar(ModelMap modelo, HttpSession session) {
+    public String listar(ModelMap modelo, HttpSession session) throws ParseException {
+        
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        String desde = obtenerFechaDesde();
+        String hasta = obtenerFechaHasta();
+
+        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", logueado.getIdOrg());
+
+        return "recibo_listar.html";
+    }
+    
+    @PostMapping("/listarFiltro")
+    public String listar(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo, HttpSession session) throws ParseException {
         
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg()));
+        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", logueado.getIdOrg());
 
         return "recibo_listar.html";
     }
 
     @GetMapping("/listarIdCliente/{id}")
-    public String listarIdCliente(@PathVariable Long id, ModelMap modelo) {
+    public String listarIdCliente(@PathVariable Long id, ModelMap modelo) throws ParseException {
+        
+        String desde = obtenerFechaDesde();
+        String hasta = obtenerFechaHasta();
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibosIdCliente(id));
+        modelo.addAttribute("recibos", reciboServicio.buscarRecibosIdCliente(id, desde, hasta));
         modelo.put("cliente", clienteServicio.buscarCliente(id));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+
+        return "recibo_listarCliente.html";
+    }
+    
+    @PostMapping("/listarIdClienteFiltro")
+    public String listarIdClienteFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta,  ModelMap modelo) throws ParseException {
+
+        modelo.addAttribute("recibos", reciboServicio.buscarRecibosIdCliente(id, desde, hasta));
+        modelo.put("cliente", clienteServicio.buscarCliente(id));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
 
         return "recibo_listarCliente.html";
     }
@@ -155,6 +200,32 @@ public class ReciboControlador {
         String numeroFormateado = formato.format(num);
 
         return numeroFormateado;
+
+    }
+    
+        public String obtenerFechaDesde() {
+
+        LocalDate now = LocalDate.now();
+
+        LocalDate firstDayOfMonth = now.withDayOfMonth(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedDate = firstDayOfMonth.format(formatter);
+
+        return formattedDate;
+
+    }
+
+    public String obtenerFechaHasta() {
+
+        LocalDate now = LocalDate.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedToday = now.format(formatter);
+
+        return formattedToday;
 
     }
 

@@ -18,7 +18,7 @@
                                             </a>   
                                         </div>
                                         <div  class="col-10">
-                                            <h4>Carga de Diesel</h4>
+                                            <h4>Carga Diesel</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -27,7 +27,7 @@
 
                                     <div class="card-body">
                                         <h6 th:text="'Camión '+${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
-                                        <h6 id="dimgray" th:text="'Fecha '+${fecha}"></h6>
+                                        <h6 id="dimgray" th:text="'Fecha '+${carga.fechaCarga}"></h6>
                                         <p class="mb-1" id="dimgray" th:text="'Anterior '+${carga.kmAnterior}+' Km - Actual '+${carga.kmCarga}+' Km'"></p>
                                         <h6 id="dimgray" th:text="'Recorrido '+${carga.kmRecorrido}+' Km'"></h6>
                                         <p class="mb-1" id="darkgray" th:text="${carga.litro}+' L - Tanque Lleno '+${carga.completo}"></p>

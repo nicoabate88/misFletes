@@ -53,12 +53,7 @@ public class CamionControlador {
 
             camionServicio.crearCamion(logueado.getIdOrg(), marca, modelo, dominio);
             
-            Long id = camionServicio.buscarUltimo();
-            
-            model.put("camion", camionServicio.buscarCamion(id));
-            model.put("exito", "Camión REGISTRADO con éxito");
-
-            return "camion_mostrar.html";
+            return "redirect:/camion/registrado";
 
         } catch (MiException ex) {
 
@@ -69,6 +64,19 @@ public class CamionControlador {
 
             return "camion_registrar.html";
         }
+    }
+    
+    @GetMapping("/registrado")
+    public String camionRegistrado(HttpSession session, ModelMap modelo) {
+    
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        
+        Long id = camionServicio.buscarUltimo(logueado.getIdOrg());
+            
+            modelo.put("camion", camionServicio.buscarCamion(id));
+            modelo.put("exito", "Camión REGISTRADO con éxito");
+
+            return "camion_mostrar.html";
     }
     
     @GetMapping("/listar")

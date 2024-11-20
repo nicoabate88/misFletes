@@ -18,10 +18,11 @@
                                             </a>   
                                         </div>
                                         <div  class="col-10">
-                                            <h4>Cuentas de Choferes</h4>
+                                            <h4>Cuentas Choferes</h4>
                                         </div>
                                     </div>
                                 </div>
+                                <div th:if="${!cuentas.isEmpty()}">
                                 <div class="card-body">
                                     <h6 th:text="'Total Saldo $'+${saldo}"></h6>  
                                 </div>
@@ -44,6 +45,15 @@
                                                 </div>
                                             </div>
                                         </div>    
+                                    </div>
+                                </div>
+                                </div> 
+                                <div th:if="${cuentas.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                        <h6 class="mb-4" id="azul">No existen Choferes Registrados</h6>
+                                        <div class=" text-center">    
+                                            <a class="btn btn-primary" type="button" th:href="@{/chofer/registrar}">Nuevo Chofer</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

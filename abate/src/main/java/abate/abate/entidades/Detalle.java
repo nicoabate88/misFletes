@@ -16,17 +16,19 @@ public class Detalle {
     private Double precio;
     private Double total;
     private Long flete;
+    private Long gasto;
 
     public Detalle() {
     }
 
-    public Detalle(Long id, String concepto, Integer cantidad, Double precio, Double total, Long flete) {
+    public Detalle(Long id, String concepto, Integer cantidad, Double precio, Double total, Long flete, Long gasto) {
         this.id = id;
         this.concepto = concepto;
         this.cantidad = cantidad;
         this.precio = precio;
         this.total = total;
         this.flete = flete;
+        this.gasto = gasto;
     }
 
     public Long getId() {
@@ -76,5 +78,15 @@ public class Detalle {
     public void setFlete(Long flete) {
         this.flete = flete;
     }
+
+    public Long getGasto() {
+        return gasto;
+    }
+
+    public void setGasto(Long gasto) {
+        this.gasto = gasto;
+    }
+
+    
 
 }
