@@ -5,11 +5,13 @@ import abate.abate.entidades.Camion;
 import abate.abate.entidades.CamionEstadistica;
 import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Flete;
+import abate.abate.entidades.Gasto;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
 import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
+import abate.abate.repositorios.GastoRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.CamionComparador;
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class CamionServicio {
     private FleteRepositorio fleteRepositorio;
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
+    @Autowired
+    private GastoRepositorio gastoRepositorio;
     
     
     @Transactional
@@ -87,15 +91,16 @@ public class CamionServicio {
         
         Combustible combustible = combustibleRepositorio.findTopByCamionOrderByIdDesc(camion);
         Flete flete = fleteRepositorio.findTopByCamionAndEstadoNotOrderByIdDesc(camion, "ELIMINADO");
+        Gasto gasto = gastoRepositorio.findTopByCamionAndEstadoNotOrderByIdDesc(camion, "ELIMINADO");
         Usuario usuario = usuarioRepositorio.findTopByCamionOrderByIdDesc(camion);
 
-        if (combustible == null && flete == null && usuario == null) {
+        if (combustible == null && gasto == null && flete == null && usuario == null) {
 
             camionRepositorio.deleteById(id);
 
         } else {
 
-            throw new MiException("El Camión no puede ser eliminado, tiene Flete, Combustible y/o Chofer asociado");
+            throw new MiException("El Camión no puede ser eliminado, tiene Flete / Gasto / Combustible y/o Chofer asociado");
         }
 
     }

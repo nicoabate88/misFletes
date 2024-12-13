@@ -9,11 +9,14 @@ import abate.abate.repositorios.ClienteRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.FleteComparador;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,10 +166,11 @@ public class FleteServicio {
             }
         } else {
             Double comision = ((comisionTpte / 100) * netoR);
-            Double netoFlete = Math.round((netoR - comision) * 100.0) / 100.0;            
+            Double comisionR = Math.round(comision * 100.0) / 100.0;
+            Double netoFlete = (netoR - comisionR);            
             flete.setNeto(netoFlete);
             flete.setComisionTpte(comisionTpte);
-            flete.setComisionTpteValor(comision);
+            flete.setComisionTpteValor(comisionR);
             if (ivaN.equalsIgnoreCase("SI")) {
                 Double iva = netoFlete * 0.21;
                 Double ivaR = Math.round(iva * 100.0) / 100.0;
@@ -393,8 +397,18 @@ public class FleteServicio {
     }
 
     public Flete buscarFlete(Long id) {
+        
+        Flete flete = fleteRepositorio.getById(id);
+        
+        flete.setKgFleteS(convertirNumeroMiles(flete.getKgFlete()));
+        flete.setTarifaS(convertirNumeroMiles(flete.getTarifa()));
+        flete.setComisionS(convertirNumeroMiles(flete.getComisionTpteValor()));
+        flete.setNetoS(convertirNumeroMiles(flete.getNeto()));
+        flete.setIvaS(convertirNumeroMiles(flete.getIva()));
+        flete.setTotalS(convertirNumeroMiles(flete.getTotal()));
+        flete.setGananciaChofer(convertirNumeroMiles(flete.getPorcentajeChofer()));
 
-        return fleteRepositorio.getById(id);
+        return flete;
     }
 
     public Flete buscarFleteIdImagenCP(Long id) {
@@ -520,9 +534,10 @@ public class FleteServicio {
         
         if(comisionTpte != 0.0){
             Double tpte = ((comisionTpte/100)*neto);
-            neto = neto - tpte;
+            Double tpteR = Math.round(tpte * 100.0) / 100.0;
+            neto = neto - tpteR;
             flete.setComisionTpte(comisionTpte);
-            flete.setComisionTpteValor(tpte);
+            flete.setComisionTpteValor(tpteR);
             if(ivaM != 0.0){
             iva = neto * 0.21;
             }
@@ -573,8 +588,13 @@ public class FleteServicio {
         flete.setCamion(camion);
 
         fleteRepositorio.save(flete);
+        
+        if(flete.getGasto() != null){
+            gastoServicio.modificarChoferGasto(flete.getGasto(), chofer);
+        }
 
         if (flete.getEstado().equalsIgnoreCase("ACEPTADO")) {
+            
             transaccionServicio.modificarTransaccionFlete(idFlete);
         }
 
@@ -619,6 +639,18 @@ public class FleteServicio {
     public Date convertirFecha(String fecha) throws ParseException { //convierte fecha String a fecha Date
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         return formato.parse(fecha);
+    }
+    
+    private String convertirNumeroMiles(Double num) {
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
+        String numeroFormateado = formato.format(num);
+
+        return numeroFormateado;
     }
 
 }

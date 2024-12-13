@@ -24,19 +24,20 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="card p-2 bg-light border-light"> 
                                     <form class="row g-3" th:action="@{/chofer/registro}" method="POST">
                                         <div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="nombre" class="form-label">Apellido y Nombre de Chofer</label>
+                                            <label for="nombre" class="form-label text-secondary">Apellido y Nombre de Chofer</label>
                                             <input type="text" class="form-control" id="nombre" placeholder="Ingrese Apellido y Nombre" name="nombre" th:value="${nombre}" required>
                                         </div>
                                        
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="cuil" class="form-label">CUIL de Chofer</label>
-                                            <input type="number" class="form-control" id="cuil" placeholder="Ingrese CUIL" name="cuil" th:value="${cuil}" required>
+                                            <label for="cuil" class="form-label text-secondary">CUIL de Chofer</label>
+                                            <input type="number" class="form-control" id="cuil" min="10000000000" max="99999999999" oninput="checkLength(this)" placeholder="Ingrese CUIL" name="cuil" th:value="${cuil}" required>
+                                            <span id="error-message" style="color: red; display: none;">El CUIL debe tener 11 dígitos.</span>      
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="camion" class="form-floting">Dominio de Camión</label>
+                                            <label for="camion" class="form-floting text-secondary">Dominio de Camión</label>
                                             <select class="form-control" id="camion" name="idCamion">
                                                 <option selected disabled value="">Seleccione Camión</option>
                                                 <option th:each="camion : ${camiones}"
@@ -45,7 +46,7 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="caja" class="form-floting">Habilitar Caja</label>
+                                            <label for="caja" class="form-floting text-secondary">Habilitar Caja de Gastos</label>
                                             <select class="form-control" id="caja" name="caja" required>
                                                 <option selected disabled value="">Seleccione Opción</option>
                                                 <option value="SI">SI</option>
@@ -53,26 +54,27 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="porcentaje" class="form-label">Porcentaje de Chofer</label>
+                                            <label for="porcentaje" class="form-label text-secondary">Porcentaje de Chofer</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">%</span>
                                                 <input type="number" step="0.01" class="form-control" id="porcentaje" placeholder="Ingrese porcentaje" name="porcentaje" th:value="${porcentaje}" required>     
                                             </div>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="usuario" class="form-label">Nombre de Usuario</label>
+                                            <label for="usuario" class="form-label text-secondary">Nombre de Usuario</label>
                                             <input type="text" class="form-control" id="usuario" placeholder="Ingrese Nombre de Usuario" name="nombreUsuario" th:value="${nombreUsuario}" required>
+                                            <span id="errorUsuario" style="color: red; display: none;"></span>
                                         </div>
                                         <div class="d-block d-md-none col-6 col-sm-6 col-md-6 mb-2">
                                         </div>
                                        
                                         
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="contra" class="form-label">Contraseña</label>
+                                            <label for="contra" class="form-label text-secondary">Contraseña</label>
                                             <input type="password" class="form-control" id="contra" placeholder="Ingrese Contraseña" name="password" required>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
-                                            <label for="contra2" class="form-label">Contraseña</label>
+                                            <label for="contra2" class="form-label text-secondary">Repita Contraseña</label>
                                             <input type="password" class="form-control" id="contra2" placeholder="Repita Contraseña" name="password2" required>
                                         </div>
                                         <div class="container">
@@ -82,15 +84,74 @@
                                         </div>
                                         <div class="row text-center">
                                             <div class="col-8 col-md-8">
-                                                <button class="btn btn-primary" type="submit">Registrar</button>
+                                                <button class="btn btn-primary" type="submit" title="Registrar Chofer">Registrar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
-                                                <a class="btn btn-primary" type="button" th:href= "@{/chofer/registrar}">Cancelar</a>
+                                                <a class="btn btn-primary" type="button" th:href= "@{/chofer/registrar}" title="Cancelar">Cancelar</a>
                                             </div>
                                         </div>
                                     </form>
-
+                                    </div>
                                 </div>
+                                                        <script>
+                                function checkLength(input) {
+    const errorMessage = document.getElementById("error-message");
+    const value = input.value;
+
+    if (value.length > 11) {
+        input.value = value.slice(0, 11); // Limitar a 11 dígitos
+        errorMessage.style.display = "block";
+    } else if (value.length < 11 && value.length > 0) {
+        errorMessage.style.display = "block";
+    } else {
+        errorMessage.style.display = "none"; // Ocultar error si cumple
+    }
+}
+
+document.getElementById('usuario').addEventListener('input', function (event) {
+    const usuario = event.target.value;
+    const errorUsuario = document.getElementById('errorUsuario');
+
+    // Verificar si contiene espacios
+    if (/\s/.test(usuario)) {
+        errorUsuario.style.display = 'inline';
+        errorUsuario.textContent = 'El nombre de usuario no puede contener espacios.';
+        event.target.value = usuario.replace(/\s/g, ''); // Eliminar espacios automáticamente
+        return;
+    }
+
+    // Verificar si contiene al menos un número
+    if (!/\d/.test(usuario)) {
+        errorUsuario.style.display = 'inline';
+        errorUsuario.textContent = 'El nombre de usuario debe contener al menos un número.';
+    } else {
+        errorUsuario.style.display = 'none'; // Todo está bien
+    }
+});
+
+// Validación al enviar el formulario
+function validarFormulario() {
+    const usuario = document.getElementById('usuario').value;
+    const errorUsuario = document.getElementById('errorUsuario');
+
+    // Verificar si contiene espacios
+    if (/\s/.test(usuario)) {
+        alert('El nombre de usuario no puede contener espacios.');
+        return false;
+    }
+
+    // Verificar si contiene al menos un número
+    if (!/\d/.test(usuario)) {
+        alert('El nombre de usuario debe contener al menos un número.');
+        return false;
+    }
+
+    // Si todo está bien
+    return true;
+}
+
+
+                            </script> 
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
                         </body>

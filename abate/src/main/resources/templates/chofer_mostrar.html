@@ -20,24 +20,20 @@
                                             </a>   
                                         </div>
                                         <div  class="col-8">
-                                            <h4>Detalle de Chofer</h4>
+                                            <h4>Mi Usuario</h4>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="card mb-1" id="color-card">
-                                  <div class="row">
-                                     <div class="col-8 ">
-                                        <div class="card-body">
+                                  <div class="card-body">
+                                     <div class="row mb-0">
+                                     <div class="col-8"> 
                                             <h6 th:text="${chofer.nombre}"></h6>
                                             <h6 id="dimgray" th:text="'Nombre de Usuario: '+${chofer.usuario}"></h6>
                                             <p id="dimgray" th:text="'CUIL '+${chofer.cuil}"></p>
-                                            <p class="mb-0" id="dimgray" th:text="'Porcentaje '+${chofer.porcentaje}+'%'"></p>
-                                            <p id="dimgray" th:text="'Camión '+${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:if="${chofer.camion} != null"></p>
-                                        </div>
                                     </div> 
                                       <div class="col-4 text-center">
-                                          <div class="card-body">
                                               <a th:href= "@{/chofer/modificarPswChofer/__${chofer.id}__}">
                                                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
                                                       <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
@@ -45,6 +41,9 @@
                                               </a>
                                           </div>
                                       </div>
+                                      <p class="mb-0" id="dimgray" th:text="'Porcentaje '+${chofer.porcentaje}+'%'"></p>
+                                    <p id="dimgray" th:text="'Camión '+${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:if="${chofer.camion} != null"></p>
+                                      </div>    
                                 </div>
                                 </div>
                                 <div th:if="${exito != null}" class="card-body mb-4 text-center" id="mensaje">                        

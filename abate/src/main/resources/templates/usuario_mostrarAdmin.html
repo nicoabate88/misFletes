@@ -23,7 +23,7 @@
                                         <div  class="col-7">
                                             <h4>Usuarios</h4>
                                         </div>
-                                        <div class="col-3 text-center">
+                                        <div title="Registrar Usuario" class="col-3 text-center">
                                             <a th:href="@{/usuario/registrarAdmin}">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
@@ -41,7 +41,7 @@
                                     <div class="card mb-1" id="color-card">
                                         <div class="row">
                                             <div class="col-8">
-                                                <div class="card-body">
+                                                <div title="Ir a Modificar Usuario" class="card-body">
                                                     <h6 th:text="'ID '+${usuario.idOrg}+' - '+${usuario.nombre}"></h6>
                                                 <h6 id="dimmgray" th:text="'CUIT: '+${usuario.cuil}"></h6>
                                                 <h6 class="mb-0" id="dimgray" th:text="'Nombre de Usuario: '+${usuario.usuario}" ></h6>

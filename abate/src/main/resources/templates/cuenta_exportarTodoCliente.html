@@ -76,8 +76,8 @@
                                         <tr th:each="transaccion : ${transacciones}">
                                             <td th:text="${transaccion.fecha}"></td>
                                             <td th:text="${transaccion.observacion}"></td>
-                                            <td th:text="'$'+${transaccion.importe}"></td>
-                                            <td th:text="'$'+${transaccion.saldoAcumulado}"></td>
+                                            <td th:text="${transaccion.importeS}"></td>
+                                            <td th:text="${transaccion.saldoAcumuladoS}"></td>
                                         </tr>
                                     </tbody>
                                 </table>

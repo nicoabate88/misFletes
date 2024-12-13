@@ -1,7 +1,10 @@
 package abate.abate.repositorios;
 
+import abate.abate.entidades.Camion;
 import abate.abate.entidades.Gasto;
+import abate.abate.entidades.Usuario;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +24,14 @@ public interface GastoRepositorio extends JpaRepository<Gasto, Long> {
     public Long ultimoGasto(@Param("id") Long id);
     
     Optional<Gasto> findTopByIdOrgAndNombreNotOrderByIdGastoDesc(Long idOrg, String estado);
+    
+    Gasto findTopByCamionAndEstadoNotOrderByIdDesc(Camion camion, String estado); //devuelve ultimo Gasto registrado de camion especifico
+    
+    Gasto findTopByChoferAndEstadoNotOrderByIdDesc(Usuario chofer, String estado); //devuelve ultimo Gasto registrado de chofer especifico
+    
+    ArrayList<Gasto> findByFechaBetweenAndEstadoNotAndCamionId(Date desde, Date hasta, String estado, Long idCamion);  
+
+    
+    
 
 }

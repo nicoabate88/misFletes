@@ -1,4 +1,3 @@
-
 package abate.abate.controladores;
 
 import abate.abate.entidades.Camion;
@@ -9,10 +8,13 @@ import abate.abate.servicios.ChoferServicio;
 import abate.abate.servicios.CombustibleServicio;
 import abate.abate.servicios.ExcelServicio;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/combustible")
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
 public class CombustibleControlador {
-    
+
     @Autowired
     private CombustibleServicio combustibleServicio;
     @Autowired
@@ -38,49 +40,49 @@ public class CombustibleControlador {
     private CamionServicio camionServicio;
     @Autowired
     private ExcelServicio excelServicio;
-    
+
     @GetMapping("/registrar")
-    public String registrar(ModelMap modelo, HttpSession session){
-        
+    public String registrar(ModelMap modelo, HttpSession session) {
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         modelo.put("chofer", choferServicio.buscarChofer(logueado.getId()));
         modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
-        
+
         return "combustible_registrar.html";
     }
 
     @PostMapping("/registrarChofer")
     public String registrarCarga(@RequestParam("idCamion") Long idCamion, ModelMap modelo) {
-        
+
         Camion camion = camionServicio.buscarCamion(idCamion);
-        
+
         boolean flag = combustibleServicio.kmIniciales(camion);
-        
-        if(flag == true){
-            
-        Combustible carga = combustibleServicio.cargaAnterior(camion);
-        
-        modelo.put("kmAnterior", carga.getKmCarga()); 
-        modelo.put("fechaAnterior", carga.getFechaCarga());
-        modelo.put("camion", camion);
-        
-        return "combustible_registrarChofer.html";
-            
-         } else {
-         
-        modelo.put("camion", camion);    
-        modelo.put("exito", "Comunicarse con su Administrador");
-        
-        return "combustible_mensajeKm.html";
-            
+
+        if (flag == true) {
+
+            Combustible carga = combustibleServicio.cargaAnterior(camion);
+
+            modelo.put("kmAnterior", carga.getKmCarga());
+            modelo.put("fechaAnterior", carga.getFechaCarga());
+            modelo.put("camion", camion);
+
+            return "combustible_registrarChofer.html";
+
+        } else {
+
+            modelo.put("camion", camion);
+            modelo.put("exito", "Comunicarse con su Administrador");
+
+            return "combustible_mensajeKm.html";
+
         }
-        
+
     }
-    
+
     @GetMapping("/registrarAdmin/{id}")
     public String registrarCargaAdmin(@PathVariable Long id, ModelMap modelo) {
-        
+
         Camion camion = camionServicio.buscarCamion(id);
 
         boolean flag = combustibleServicio.kmIniciales(camion);
@@ -88,8 +90,8 @@ public class CombustibleControlador {
         if (flag == true) {
 
             Combustible carga = combustibleServicio.cargaAnterior(camion);
-        
-            modelo.put("kmAnterior", carga.getKmCarga()); 
+
+            modelo.put("kmAnterior", carga.getKmCarga());
             modelo.put("fechaAnterior", carga.getFechaCarga());
             modelo.put("camion", camion);
 
@@ -104,114 +106,201 @@ public class CombustibleControlador {
         }
 
     }
-    
+
     @PostMapping("/registroPrimerCarga")
-    public String registroPrimerCarga(@RequestParam Long idCamion, @RequestParam String fecha, 
-            @RequestParam Double km, ModelMap modelo, HttpSession session) throws ParseException{
-        
+    public String registroPrimerCarga(@RequestParam Long idCamion, @RequestParam String fecha,
+            @RequestParam Double km, ModelMap modelo, HttpSession session) throws ParseException {
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         combustibleServicio.crearPrimerCarga(logueado.getIdOrg(), fecha, km, idCamion, logueado);
-        
+
         return "redirect:/combustible/registradoPrimerCarga";
-        
+
     }
-    
+
     @GetMapping("/registradoPrimerCarga")
     public String registradoPrimerCarga(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
-        
+
         modelo.put("carga", combustibleServicio.buscarCombustible(id));
         modelo.put("exito", "KM de Camión REGISTRADO con éxito");
-        
+
         return "combustible_registradoPrimerCarga";
     }
-    
+
     @PostMapping("/registro")
     public String registroCarga(@RequestParam Long idCamion, @RequestParam Double kmAnterior, @RequestParam String fecha, @RequestParam Double km,
             @RequestParam Double litro, @RequestParam String completo, ModelMap modelo, HttpSession session) throws ParseException {
-        
-            Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-            
-            combustibleServicio.crearCarga(logueado.getIdOrg(), idCamion, fecha, kmAnterior, km, litro, completo, logueado);
-            
-            return "redirect:/combustible/registrado";
-    
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        combustibleServicio.crearCarga(logueado.getIdOrg(), idCamion, fecha, kmAnterior, km, litro, completo, logueado);
+
+        return "redirect:/combustible/registrado";
+
     }
-    
+
     @GetMapping("/registrado")
     public String registrado(HttpSession session, ModelMap modelo) {
-    
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
-        Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
-            
-            modelo.put("carga", combustibleServicio.buscarCombustible(id));
-            modelo.put("exito", "Carga de Combustible REGISTRADA con éxito");
 
-            return "combustible_registrado.html";
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
+
+        modelo.put("carga", combustibleServicio.buscarCombustible(id));
+        modelo.put("exito", "Carga de Combustible REGISTRADA con éxito");
+
+        return "combustible_registrado.html";
     }
     
+    @PostMapping("/registroAdmin")
+    public String registroCargaAdmin(@RequestParam Long idCamion, @RequestParam Double kmAnterior, @RequestParam String fecha, @RequestParam Double km,
+            @RequestParam Double litro, @RequestParam String completo, ModelMap modelo, HttpSession session) throws ParseException {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        combustibleServicio.crearCargaAdmin(logueado.getIdOrg(), idCamion, fecha, kmAnterior, km, litro, completo, logueado);
+
+        return "redirect:/combustible/registradoAdmin";
+
+    }
+
+    @GetMapping("/registradoAdmin")
+    public String registradoAdmin(HttpSession session, ModelMap modelo) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        Long id = combustibleServicio.buscarUltimo(logueado.getIdOrg());
+
+        modelo.put("carga", combustibleServicio.buscarCombustible(id));
+        modelo.put("exito", "Carga de Combustible REGISTRADA con éxito");
+
+        return "combustible_registrado.html";
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/aceptar/{idCarga}")
+    public String aceptar(@PathVariable Long idCarga, ModelMap modelo, HttpSession session) {
+
+        combustibleServicio.aceptarCarga(idCarga);
+        
+        Long id = combustibleServicio.buscaridCamion(idCarga);
+
+        return "redirect:/combustible/listarAdmin/" + id;
+
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/volverPendiente/{idCarga}")
+    public String volverPendiente(@PathVariable Long idCarga, ModelMap modelo, HttpSession session) {
+
+        combustibleServicio.volverPendiente(idCarga);
+        
+        Long id = combustibleServicio.buscaridCamion(idCarga);
+
+        return "redirect:/combustible/listarAdmin/" + id;
+
+    }
+
     @GetMapping("/listarChofer/{id}")
-    public String listarCargas(@PathVariable Long id, ModelMap modelo) throws ParseException{
-        
+    public String listarCargas(@PathVariable Long id, ModelMap modelo) throws ParseException {
+
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
         
+        ArrayList<Combustible> cargas = combustibleServicio.buscarCargasIdChofer(id, desde, hasta);
+
+        for (Combustible c : cargas) {
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
+        }
+
         modelo.put("chofer", choferServicio.buscarChofer(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
-        modelo.addAttribute("cargas", combustibleServicio.buscarCargasIdChofer(id, desde, hasta));
-        
+        modelo.addAttribute("cargas", cargas);
+
         return "combustible_listarCargasChofer.html";
     }
-    
+
     @PostMapping("/listarChoferFiltro")
-    public String listarCargas(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException{
+    public String listarCargas(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
         
+        ArrayList<Combustible> cargas = combustibleServicio.buscarCargasIdChofer(id, desde, hasta);
+
+        for (Combustible c : cargas) {
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
+        }
+
         modelo.put("chofer", choferServicio.buscarChofer(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
-        modelo.addAttribute("cargas", combustibleServicio.buscarCargasIdChofer(id, desde, hasta));
-        
+        modelo.addAttribute("cargas", cargas);
+
         return "combustible_listarCargasChofer.html";
     }
-    
+
     @GetMapping("/listarAdmin/{id}")
-    public String listarAdmin(@PathVariable Long id, ModelMap modelo) throws ParseException{
-        
+    public String listarAdmin(@PathVariable Long id, ModelMap modelo) throws ParseException {
+
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
-        
-        modelo.addAttribute("cargas", combustibleServicio.buscarCargasIdCamion(id, desde, hasta));
+
+        ArrayList<Combustible> cargas = combustibleServicio.buscarCargasIdCamion(id, desde, hasta);
+        Double litro = 0.0;
+
+        for (Combustible c : cargas) {
+            litro = litro + c.getLitro();
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
+        }
+
+        String litros = convertirNumeroMiles(litro);
+
+        modelo.addAttribute("cargas", cargas);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
-        modelo.put("idCamion", id);
-        
+        modelo.put("camion", camionServicio.buscarCamion(id));
+        modelo.put("litros", litros);
+
         return "combustible_listarCargasAdmin.html";
     }
-    
+
     @PostMapping("/listarAdminFiltro")
-    public String listarAdminFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException{
-        
-        modelo.addAttribute("cargas", combustibleServicio.buscarCargasIdCamion(id, desde, hasta));
+    public String listarAdminFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
+
+        ArrayList<Combustible> cargas = combustibleServicio.buscarCargasIdCamion(id, desde, hasta);
+        Double litro = 0.0;
+
+        for (Combustible c : cargas) {
+            litro = litro + c.getLitro();
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
+        }
+
+        String litros = convertirNumeroMiles(litro);
+
+        modelo.addAttribute("cargas", cargas);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
-        modelo.put("idCamion", id);
-        
+        modelo.put("camion", camionServicio.buscarCamion(id));
+        modelo.put("litros", litros);
+
         return "combustible_listarCargasAdmin.html";
     }
-    
+
     @GetMapping("/mostrarConsumoAdmin/{id}")
-    public String mostrarConsumoAdmin(@PathVariable Long id, ModelMap modelo) {   
-        
+    public String mostrarConsumoAdmin(@PathVariable Long id, ModelMap modelo) {
+
         ArrayList<Combustible> cargas = combustibleServicio.buscarCargasCamion(id);
         Boolean flag = true;
-        if(cargas.isEmpty()){
-        flag = false;
+        if (cargas.isEmpty()) {
+            flag = false;
+        }
+        
+        for(Combustible c : cargas){
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
         }
 
         modelo.put("consumo", combustibleServicio.consumoPromedioCamion(id));
@@ -223,49 +312,53 @@ public class CombustibleControlador {
         return "combustible_mostrarConsumoAdmin.html";
 
     }
-    
-    @GetMapping("/mostrarConsumoChofer/{id}")
-    public String mostrarConsumo(@PathVariable Long id, ModelMap modelo) {        
 
+    @GetMapping("/mostrarConsumoChofer/{id}")
+    public String mostrarConsumo(@PathVariable Long id, ModelMap modelo) {
+
+        ArrayList<Combustible> cargas = combustibleServicio.buscarCargasCamion(id);
+        
+        for(Combustible c : cargas){
+            c.setKmCargaS(convertirNumeroMiles(c.getKmCarga()));
+        }
+        
         modelo.put("consumo", combustibleServicio.consumoPromedioCamion(id));
-        modelo.addAttribute("cargas", combustibleServicio.buscarCargasCamion(id));
+        modelo.addAttribute("cargas", cargas);
         modelo.put("camion", camionServicio.buscarCamion(id));
 
         return "combustible_mostrarConsumoChofer.html";
 
     }
-    
+
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo) {
-        
+
         Combustible carga = combustibleServicio.buscarCombustible(id);
-        
-        if(carga.getKmAnterior() == null){
-            
+
+        if (carga.getKmAnterior() == null) {
+
             modelo.put("carga", carga);
-            
+
             return "combustible_modificarPrimerCarga.html";
-            
+
         } else {
-            
+
             Combustible cargaAnterior = combustibleServicio.cargaAnteultimo(carga.getCamion());
-         
+
             modelo.put("fechaAnterior", cargaAnterior.getFechaCarga());
 
-        modelo.put("carga", carga);
+            modelo.put("carga", carga);
 
-        return "combustible_modificar.html";
-        
+            return "combustible_modificar.html";
+
         }
     }
 
-    @PostMapping("/modifica/{id}")   
-    public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km, 
+    @PostMapping("/modifica/{id}")
+    public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km,
             @RequestParam Double litro, @RequestParam String completo, ModelMap modelo, HttpSession session) throws ParseException {
-        
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
-        combustibleServicio.modificarCarga(id, fecha, km, litro, completo, logueado);
+
+        combustibleServicio.modificarCarga(id, fecha, km, litro, completo);
 
         modelo.put("carga", combustibleServicio.buscarCombustible(id));
         modelo.put("fecha", fecha);
@@ -274,10 +367,47 @@ public class CombustibleControlador {
         return "combustible_modificado.html";
     }
     
-    @PostMapping("/modificaPrimerCarga")   
-    public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km, 
+    @GetMapping("/modificarAdmin/{id}")
+    public String modificarAdmin(@PathVariable Long id, ModelMap modelo) {
+
+        Combustible carga = combustibleServicio.buscarCombustible(id);
+
+        if (carga.getKmAnterior() == null) {
+
+            modelo.put("carga", carga);
+
+            return "combustible_modificarPrimerCarga.html";
+
+        } else {
+
+            Combustible cargaAnterior = combustibleServicio.cargaAnteultimo(carga.getCamion());
+
+            modelo.put("fechaAnterior", cargaAnterior.getFechaCarga());
+
+            modelo.put("carga", carga);
+
+            return "combustible_modificarAdmin.html";
+
+        }
+    }
+
+    @PostMapping("/modificaAdmin/{id}")
+    public String modificaAdmin(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km,
+            @RequestParam Double litro, @RequestParam String completo, ModelMap modelo, HttpSession session) throws ParseException {
+
+        combustibleServicio.modificarCarga(id, fecha, km, litro, completo);
+
+        modelo.put("carga", combustibleServicio.buscarCombustible(id));
+        modelo.put("fecha", fecha);
+        modelo.put("exito", "Carga de Combustible MODIFICADA con éxito");
+
+        return "combustible_modificado.html";
+    }
+
+    @PostMapping("/modificaPrimerCarga")
+    public String modifica(@RequestParam Long id, @RequestParam String fecha, @RequestParam Double km,
             ModelMap modelo) throws ParseException {
-        
+
         combustibleServicio.modificarPrimerCarga(id, fecha, km);
 
         modelo.put("carga", combustibleServicio.buscarCombustible(id));
@@ -286,7 +416,7 @@ public class CombustibleControlador {
 
         return "combustible_modificado.html";
     }
-    
+
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, ModelMap modelo) {
 
@@ -296,54 +426,51 @@ public class CombustibleControlador {
 
     }
 
-    @GetMapping("/elimina/{id}")   
+    @GetMapping("/elimina/{id}")
     public String elimina(@PathVariable Long id, ModelMap modelo, HttpSession session) throws ParseException {
-        
+
         combustibleServicio.eliminarCarga(id);
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
 
         if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
 
             modelo.put("chofer", logueado);
             modelo.put("exito", "Carga de Combustible ELIMINADA con éxito");
-            modelo.put("usuario", nombreMayuscula);
 
             return "index_chofer.html";
 
         } else {
 
-            modelo.put("usuario", nombreMayuscula);
             modelo.put("exito", "Carga de Combustible ELIMINADA con éxito");
             modelo.put("id", logueado.getId());
 
             return "index_admin.html";
         }
     }
-    
+
     @PostMapping("/exportar")
     public String exportar(@RequestParam Long idCamion, ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("cargas", combustibleServicio.buscarCargasCamion(idCamion));
-            modelo.put("id", idCamion);
+        modelo.addAttribute("cargas", combustibleServicio.buscarCargasCamion(idCamion));
+        modelo.put("id", idCamion);
 
-            return "combustible_exportar.html";
-  
+        return "combustible_exportar.html";
+
     }
-    
-   @PostMapping("/exporta")
+
+    @PostMapping("/exporta")
     public void exporta(@RequestParam Long idCamion, HttpServletResponse response) throws IOException, ParseException {
-  
+
         ArrayList<Combustible> myObjects = combustibleServicio.buscarCargasCamion(idCamion);
         Double consumo = combustibleServicio.consumoPromedioCamion(idCamion);
-        
+
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcelCombustible(htmlContent, response, consumo);
 
     }
-    
-      public String obtenerFechaDesde() {
+
+    public String obtenerFechaDesde() {
 
         LocalDate now = LocalDate.now();
 
@@ -368,8 +495,20 @@ public class CombustibleControlador {
         return formattedToday;
 
     }
-    
-     private String generateHtmlFromObjects(ArrayList<Combustible> objects) {
+
+    private String convertirNumeroMiles(Double num) {
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
+        String numeroFormateado = formato.format(num);
+
+        return numeroFormateado;
+    }
+
+    private String generateHtmlFromObjects(ArrayList<Combustible> objects) {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
         sb.append("<thead><tr>"
@@ -391,11 +530,11 @@ public class CombustibleControlador {
                     + "<td>").append(carga.getUsuario().getNombre()).append("</td>"
                     + "<td>").append(carga.getKmAnterior()).append("</td>"
                     + "<td>").append(carga.getKmCarga()).append("</td>"
-                    + "<td>").append(carga.getKmRecorrido()).append("</td>"        
-                    + "<td>").append(carga.getLitro()).append("</td>"        
+                    + "<td>").append(carga.getKmRecorrido()).append("</td>"
+                    + "<td>").append(carga.getLitro()).append("</td>"
                     + "<td>").append(carga.getConsumo()).append("</td>"
                     + "<td>").append(carga.getCompleto()).append("</td>"
-                    + "<td>").append(carga.getConsumoPromedio()).append("</td>"                            
+                    + "<td>").append(carga.getConsumoPromedio()).append("</td>"
                     + "</tr>");
         }
         sb.append("</tbody></table>");

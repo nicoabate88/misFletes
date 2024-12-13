@@ -35,7 +35,7 @@
                                         <div  class="col-7">
                                             <h4>Estadística Camión</h4>
                                         </div>
-                                         <div class="col-3 text-center">
+                                         <div title="Exportar a Excel" class="col-3 text-center">
                                             <form class="row g-3" th:action="@{/camion/estadisticaExportar}" method="POST">
                                                 <input hidden th:value="${desde}" name="desde"> 
                                                    <input hidden th:value="${hasta}" name="hasta"> 
@@ -48,15 +48,15 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-
                                     <div class="mb-3">
                                         <h6 th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
                                     </div>
-
-                                    <table class="table table-borderless table-sm" id="dimgray">
+                                </div>
+                                <div th:if="${!estadistica.isEmpty()}">
+                                    <table class="table table-borderless bg-light table-hover table-sm mb-5" id="dimgray">
                                        <thead>
                                             <tr class="row">
-                                                <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">Año</th>
+                                                <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-right">Año</th>
                                                 <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center">Mes</th>                                            
                                                 <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">Km</th>
                                                 <th class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center">Diesel</th>
@@ -68,7 +68,7 @@
                                         </thead>
                                         <tbody th:each="e : ${estadistica}">
                                             <tr class="row">
-                                                <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1" th:text="${e.year}"></td>
+                                                <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-right" th:text="${e.year}"></td>
                                                 <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center" th:text="${e.month}"></td>
                                                 <td class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${e.kmRecorrido}"></td>
                                                 <td class="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 text-center" th:text="${e.litro}"></td>
@@ -79,6 +79,11 @@
                                             </tr>     
                                         </tbody>
                                     </table>
+                                </div>
+                                <div th:if="${estadistica.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                            <h6 id="azul">No existen Estadísticas de Camión para mostrar</h6>
+                                    </div>
                                 </div>
                             </div>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -88,6 +88,11 @@ label {
     background: darkblue;
 }
 
+th {
+    color: darkblue;
+  }
+
+
 #bgWhite {
     background: white;
 }
@@ -105,6 +110,12 @@ label {
 #modificar {
 
     color : #ff3333;
+    font-size: 12px;
+}
+
+#imprimir {
+
+    color: dimgray;
     font-size: 12px;
 }
 
@@ -141,6 +152,14 @@ label {
 #ingreso {
     
     background: dimgrey;
+    border: none;
+    font-size: 12px;
+    color: white;
+}
+
+#gasto {
+    
+    background: darkslateblue;
     border: none;
     font-size: 12px;
     color: white;

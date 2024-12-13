@@ -34,8 +34,9 @@
                                     </div>  
                                 </div>  
 
-                                <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
+                                <div th:if="${error == null}" class="card-header mb-4 text-center">
                                     <h6 id="white">¿Seguro desea ELIMINAR este Chofer?</h6>
+                                    <p id="dimgray">Si el chofer es eliminado del sistema, no podrá ser recuperado</p>
                                 </div>
                                 <div th:if="${error != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${error}"></h6>                                                                             
@@ -43,10 +44,10 @@
 
                                 <div class="row text-center">
                                     <div th:if="${error == null}" class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-1"> 
-                                        <a class="btn btn-primary" type="button" th:href= "@{/chofer/elimina/__${chofer.id}__}">Eliminar</a>
+                                        <a class="btn btn-primary" type="button" th:href= "@{/chofer/elimina/__${chofer.id}__}" title="Eliminar Chofer">Eliminar</a>
                                     </div>
                                     <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                                        <a class="btn btn-primary" type="button" th:href= "@{/chofer/listar}">Cancelar</a>
+                                        <a class="btn btn-primary" type="button" th:href= "@{/chofer/listar}" title="Cancelar">Cancelar</a>
                                     </div>
                                 </div>
                                 

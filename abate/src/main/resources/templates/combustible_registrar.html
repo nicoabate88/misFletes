@@ -21,7 +21,7 @@
                                             <div  class="col-7">
                                                 <h4>Carga Diesel</h4>
                                             </div>
-                                            <div  class="col-3 text-center">
+                                            <div title="Ir a Ver Cargas" class="col-3 text-center">
                                                 <a th:href="@{/combustible/listarChofer/__${chofer.id}__}">
                                                     <svg id='white' xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-fuel-pump-diesel" viewBox="0 0 16 16">
                                                         <path d="M3.5 2a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5zM4 14V9h1.796q.75 0 1.237.293t.725.85Q8 10.7 8 11.487q0 .792-.242 1.355a1.8 1.8 0 0 1-.732.861Q6.54 14 5.796 14zm1.666-4.194h-.692v3.385h.692q.343 0 .595-.103a1 1 0 0 0 .412-.315q.162-.213.241-.528.084-.314.083-.74 0-.565-.144-.94a1.1 1.1 0 0 0-.436-.569q-.293-.19-.75-.19Z"/>
@@ -30,10 +30,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="card p-2 bg-light border-light">
                                     <form class="row g-3" id="miFormulario" method="POST">
                                         
                                          <div class="col-6 col-md-6 col-lg-4 col-xl-4  mb-2">
-                                            <label for="opciones" class="form-floting">Camión</label>
+                                            <label for="opciones" class="form-floting text-secondary">Camión</label>
                                             <select class="form-control" id="opciones" name="opciones" required>
                                                 <option value="" selected disabled>Seleccione Camión</option>
                                                 <option th:if="${chofer.camion} != null" th:text="${chofer.camion.dominio}+' - '+${chofer.camion.marca}+' '+${chofer.camion.modelo}" th:value="${chofer.camion.id}"></option>
@@ -43,17 +44,17 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                            <label for="kmAnterior" class="form-floting">KM Carga Anterior</label>
+                                            <label for="kmAnterior" class="form-floting text-secondary">KM Carga Anterior</label>
                                             <input type="text" class="form-control" id="kmAnterior">
                                         </div>
                                         <div class="d-none d-sm-block col-lg-4 col-xl-4">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                            <label for="fecha" class="form-label">Fecha</label>
+                                            <label for="fecha" class="form-label text-secondary">Fecha</label>
                                             <input type="date" class="form-control" id="fecha" name="fecha">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                            <label for="km" class="form-label">KM Carga Actual</label>
+                                            <label for="km" class="form-label text-secondary">KM Carga Actual</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">KM</span>
                                                 <input type="number" class="form-control" id="km" placeholder="Ingrese KM" name="km">
@@ -62,14 +63,14 @@
                                         <div class="d-none d-sm-block col-lg-4 col-xl-4">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                            <label for="importe" class="form-label">Litros Carga</label>
+                                            <label for="importe" class="form-label text-secondary">Litros Carga</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">Lts</span>
                                                 <input type="number" class="form-control" id="importe" placeholder="Ingrese Litros" name="litro">
                                             </div>    
                                         </div>
                                           <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-5">
-                                            <label for="cereal" class="form-floting">Tanque Completo</label>
+                                            <label for="cereal" class="form-floting text-secondary">Tanque Completo</label>
                                             <select class="form-control" id="cereal" name="completo">
                                                 <option selected disabled value="">Seleccione</option>
                                             </select>
@@ -79,13 +80,14 @@
                                          
                                         <div class="row text-center">
                                             <div class="col-8 col-md-8">
-                                                <button class="btn btn-primary" th:href="@{/combustible/registrar}">Aceptar</button>
+                                                <button class="btn btn-primary" th:href="@{/combustible/registrar}" title="Registrar Carga de Diesel">Aceptar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
-                                                <a class="btn btn-primary" type="button" th:href="@{/combustible/registrar}">Cancelar</a>
+                                                <a class="btn btn-primary" type="button" th:href="@{/combustible/registrar}" title="Cancelar">Cancelar</a>
                                             </div>
                                         </div>
                                     </form>
+                                    </div>
                                 </div>
                             
                             <script>

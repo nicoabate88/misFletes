@@ -20,33 +20,33 @@
                                             </a>   
                                         </div>
                                         <div  class="col-10">
-                                            <h4>Modificar Contraseña</h4>
+                                            <h4>Modificar Mi Contraseña</h4>
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="card p-2 bg-light border-light">
                                 <form id="form" class="row g-3" th:action="@{/usuario/modificaPsw/__${usuario.id}__}" method="POST">
 
                                     <input hidden th:value="${usuario.id}" name="id">
                                         
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="usuario" class="form-label">Nombre de Usuario</label>
+                                            <label for="usuario" class="form-label text-secondary">Nombre de Usuario</label>
                                             <input type="text" class="form-control" id="usuario" name="nombreUsuario" th:value="${usuario.usuario}" disabled readonly>
                                         </div>
                                         
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-7 col-xl-7">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="password" class="form-label">Ingrese Nueva Contraseña</label>
+                                            <label for="password" class="form-label text-secondary">Ingrese Nueva Contraseña</label>
                                             <input type="password" class="form-control" id="password" placeholder="Ingrese Contraseña" name="password" required>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
-                                            <label for="password2" class="form-label">Repita Nueva Contraseña</label>
+                                            <label for="password2" class="form-label text-secondary">Repita Nueva Contraseña</label>
                                             <input type="password" class="form-control" id="password2" placeholder="Repita Contraseña" required>
                                         </div>
                                         
-                                         <div class="container">
-                                        <div th:if="${error == null}" class="card-header mb-5 col-lg-10 col-xl-10 text-center" id="eliminar">
+                                        <div class="container">
+                                        <div th:if="${error == null}" class="card border-primary mb-5 p-3 col-lg-10 col-xl-10 text-center" id="eliminar">
                                             <h6 id="darkblue">¿Seguro desea MODIFICAR su Contraseña?</h6>
                                         </div>
                                         </div>
@@ -58,14 +58,14 @@
                                         </div>
                                         <div class="row text-center">    
                                             <div class="col-8 col-md-8">
-                                                <button class="btn btn-primary" type="submit">Modificar</button>
+                                                <button class="btn btn-primary" type="submit" title="Modificar Contraseña">Modificar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
-                                                <a class="btn btn-primary" type="button" th:href= "@{/usuario/mostrar/__${usuario.id}__}">Cancelar</a>
+                                                <a class="btn btn-primary" type="button" th:href= "@{/usuario/mostrar/__${usuario.id}__}" title="Cancelar">Cancelar</a>
                                             </div>
                                         </div>
                                 </form>
-
+                                </div>
                             </div>
                             <script>
                                 document.getElementById('form').addEventListener('submit', function(event) {

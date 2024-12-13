@@ -22,7 +22,7 @@
                                         <div  class="col-7">
                                             <h4>Modificar Chofer</h4>
                                         </div>
-                                        <div  class="col-3 text-center">
+                                        <div title="Ir a Eliminar Chofer" class="col-3 text-center">
                                             <a th:href="@{/chofer/eliminar/__${chofer.id}__}">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-bounding-box" viewBox="0 0 16 16">
                                                     <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"/>
@@ -31,20 +31,21 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="card p-2 bg-light border-light">
                                 <form class="row g-3" th:action="@{/chofer/modifica/__${chofer.id}__}" method="POST">
 
                                     <input hidden th:value="${chofer.id}" name="id">
                                         <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="nombre" class="form-label">Apellido y Nombre</label>
+                                            <label for="nombre" class="form-label text-secondary">Apellido y Nombre</label>
                                             <input type="text" class="form-control" id="nombre" name="nombre" th:value="${chofer.nombre}" required>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="cuil" class="form-label">CUIL</label>
-                                            <input type="number" class="form-control" id="cuil" name="cuil" th:value="${chofer.cuil}" required>
+                                            <label for="cuil" class="form-label text-secondary">CUIL</label>
+                                            <input type="number" class="form-control" id="cuil" min="10000000000" max="99999999999" oninput="checkLength(this)" name="cuil" th:value="${chofer.cuil}" required>
+                                            <span id="error-message" style="color: red; display: none;">El CUIL debe tener 11 dígitos.</span>  
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="camion" class="form-floting">Dominio de Camión</label>
+                                            <label for="camion" class="form-floting text-secondary">Dominio de Camión</label>
                                             <select class="form-control" id="camion" name="idCamion">
                                                 <option th:if="${chofer.camion} != null" selected th:text="${chofer.camion.dominio}" th:value="${chofer.camion.id}"></option>
                                                 <option th:if="${chofer.camion} == null" selected th:text="NO" th:value="0"></option>
@@ -55,33 +56,34 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-2">
-                                            <label for="porcentaje" class="form-label">Porcentaje Chofer</label>
+                                            <label for="porcentaje" class="form-label text-secondary">Porcentaje Chofer</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">%</span>
                                                 <input type="number" step="0.01" class="form-control" id="porcentaje" name="porcentaje" th:value="${chofer.porcentaje}" required>     
                                             </div>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
-                                            <label for="usuario" class="form-label">Nombre de Usuario</label>
+                                            <label for="usuario" class="form-label text-secondary">Nombre de Usuario</label>
                                             <input type="text" class="form-control" id="usuario" name="nombreUsuario" th:value="${chofer.usuario}" required>
+                                            <span id="errorUsuario" style="color: red; display: none;"></span>    
                                         </div>
                                         <div class="d-none d-sm-block col-md-6">
                                         </div>
                                         
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
-                                            <a type="button" th:href="@{/chofer/modificarPsw/__${chofer.id}__}" class="text-center btn btn-primary" style="background: whitesmoke; border: none">
+                                        <div title="Ir a Modificar Contraseña" class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5">
+                                            <a type="button" th:href="@{/chofer/modificarPsw/__${chofer.id}__}" class="text-center btn btn-primary" style="background: whitesmoke;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
                                                     <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
                                                 </svg> <h6 id="modificarpsw">Modificar Contraseña</h6> </a>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5" th:if="${chofer.caja == 'NO'}">
-                                            <a type="button" th:href="@{/caja/habilitar/__${chofer.id}__}" class="text-center btn btn-primary" style="background: whitesmoke; border: none">
+                                        <div title="Ir a Habilitar Caja" class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5" th:if="${chofer.caja == 'NO'}">
+                                            <a type="button" th:href="@{/caja/habilitar/__${chofer.id}__}" class="text-center btn btn-primary" style="background: whitesmoke;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                                                 </svg> <h6 id="modificarpsw">Habilitar Caja</h6> </a>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5" th:if="${chofer.caja == 'SI'}">
-                                            <a type="button" th:href="@{/caja/inhabilitar/__${chofer.id}__}" class="text-center btn btn-primary" style="background: whitesmoke; border: none">
+                                        <div title="Ir a Inhabilitar Caja" class="col-6 col-sm-6 col-md-6 col-lg-5 col-xl-5 mb-5" th:if="${chofer.caja == 'SI'}">
+                                            <a type="button" th:href="@{/caja/inhabilitar/__${chofer.id}__}" class="text-center btn btn-danger" style="background: whitesmoke">
                                                 <svg id="modificar" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
                                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1z"/>
                                                 </svg> <h6 id="modificar">Inhabilitar Caja</h6> </a>
@@ -101,8 +103,66 @@
                                             </div>
                                         </div>
                                 </form>
-
+                                </div>
                             </div>
+                             <script>
+                                function checkLength(input) {
+    const errorMessage = document.getElementById("error-message");
+    const value = input.value;
+
+    if (value.length > 11) {
+        input.value = value.slice(0, 11); // Limitar a 11 dígitos
+        errorMessage.style.display = "block";
+    } else if (value.length < 11 && value.length > 0) {
+        errorMessage.style.display = "block";
+    } else {
+        errorMessage.style.display = "none"; // Ocultar error si cumple
+    }
+}
+
+document.getElementById('usuario').addEventListener('input', function (event) {
+    const usuario = event.target.value;
+    const errorUsuario = document.getElementById('errorUsuario');
+
+    // Verificar si contiene espacios
+    if (/\s/.test(usuario)) {
+        errorUsuario.style.display = 'inline';
+        errorUsuario.textContent = 'El nombre de usuario no puede contener espacios.';
+        event.target.value = usuario.replace(/\s/g, ''); // Eliminar espacios automáticamente
+        return;
+    }
+
+    // Verificar si contiene al menos un número
+    if (!/\d/.test(usuario)) {
+        errorUsuario.style.display = 'inline';
+        errorUsuario.textContent = 'El nombre de usuario debe contener al menos un número.';
+    } else {
+        errorUsuario.style.display = 'none'; // Todo está bien
+    }
+});
+
+// Validación al enviar el formulario
+function validarFormulario() {
+    const usuario = document.getElementById('usuario').value;
+    const errorUsuario = document.getElementById('errorUsuario');
+
+    // Verificar si contiene espacios
+    if (/\s/.test(usuario)) {
+        alert('El nombre de usuario no puede contener espacios.');
+        return false;
+    }
+
+    // Verificar si contiene al menos un número
+    if (!/\d/.test(usuario)) {
+        alert('El nombre de usuario debe contener al menos un número.');
+        return false;
+    }
+
+    // Si todo está bien
+    return true;
+}
+
+                            </script>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
                         </body>

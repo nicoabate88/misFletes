@@ -7,7 +7,7 @@
                     <link rel="stylesheet" href="/css/medidas_container.css">   
                         </head>
                         <body>
-                            <div class="container">                           
+                            <div class="container mb-5">                           
                                 <div class="card-header mb-2">
                                     <div class="row">
                                         <div class="col-2">   
@@ -22,6 +22,9 @@
                                         </div>
                                     </div>
                                 </div> 
+                                <div class="card-body pb-0">
+                                    <h6 id="dimgray" th:text="'Total Entregas $'+${total}"></h6>
+                                </div>
                                 <div class="card-header" id="bgWhite">
                                     <form class="row g-3" th:action="@{/entrega/listarIdChoferFiltro}" method="POST">
                                         <input hidden th:value="${id}" name="id">  
@@ -45,13 +48,20 @@
                                         </div>
                                     </form>   
                                 </div>
+                                <div th:if="${!entregas.isEmpty()}">
                                 <div th:each="entrega : ${entregas}">
                                     <div class="card mb-1" id="color-card">
                                                 <div class="card-body">
-                                                    <h6 id="darkblue" th:text="'Importe $'+${entrega.importe}"></h6>
+                                                    <h6 id="darkblue" th:text="'Importe $'+${entrega.importeS}"></h6>
                                                     <h6 id="dimgray" th:text="'Fecha '+${entrega.fecha}+' - ID'+${entrega.idEntrega}"></h6>
                                                     <p class="mb-0" id="dimgray" th:text="${entrega.observacion}"></p>
                                                 </div> 
+                                    </div>
+                                </div>
+                                </div> 
+                                <div th:if="${entregas.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                        <h6 id="azul">No existen Entregas para la fecha seleccionada</h6>
                                     </div>
                                 </div>
                             </div>

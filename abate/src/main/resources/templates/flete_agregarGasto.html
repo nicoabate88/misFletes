@@ -30,13 +30,12 @@
                                                 <div class="card-body">
                                                     <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
                                                     <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
-                                                    <p class="mb-0" id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
-                                                    <p class="mb-0" id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
-                                                    <p id="dimgray" th:text="'KM '+${flete.kmFlete}"></p>
+                                                    <p class='mb-0' id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
+                                                    <p class='mb-0' id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
+                                                    <p class='mb-1' id="dimgray" th:text="'KM '+${flete.kmFlete}"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="${flete.tipoCereal}+' '+${flete.kgFlete}+' KG - Tarifa $'+${flete.tarifa}"></h6>
+                                                    <h6 id="dimgray" th:text="${flete.tipoCereal}+' '+${flete.kgFleteS}+' KG - Tarifa $'+${flete.tarifaS}"></h6>
                                                     <p id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
-                                                    <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}+' - '+${flete.camion.marca}+' '+${flete.camion.modelo}"></h6>
                                                 </div>
                                     </div>    

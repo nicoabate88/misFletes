@@ -1,7 +1,7 @@
-
 package abate.abate.controladores;
 
 import abate.abate.entidades.Caja;
+import abate.abate.entidades.Ingreso;
 import abate.abate.entidades.Transaccion;
 import abate.abate.servicios.CajaServicio;
 import abate.abate.servicios.ChoferServicio;
@@ -12,10 +12,12 @@ import abate.abate.servicios.IngresoServicio;
 import abate.abate.servicios.TransaccionServicio;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/caja")
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
 public class CajaControlador {
-    
+
     @Autowired
     private CajaServicio cajaServicio;
     @Autowired
@@ -46,7 +48,7 @@ public class CajaControlador {
     private DetalleServicio detalleServicio;
     @Autowired
     private IngresoServicio ingresoServicio;
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/mostrarAdmin/{id}")
     public String mostrarIdChoferAdmin(@PathVariable Long id, ModelMap modelo) throws ParseException {
@@ -55,10 +57,10 @@ public class CajaControlador {
         String saldo = convertirNumeroMiles(caja.getSaldo());
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFecha(caja.getId(), desde, hasta);
         Boolean flag = true;
-        if(lista.isEmpty()){
+        if (lista.isEmpty()) {
             flag = false;
         }
 
@@ -72,37 +74,31 @@ public class CajaControlador {
         return "caja_mostrarAdmin.html";
 
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/mostrarFiltroAdmin")
-    public String mostrarFiltroAdmin(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException{
-        
+    public String mostrarFiltroAdmin(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
+
         String saldo = "0.0";
         Boolean flag = true;
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFechaFiltro(id, desde, hasta);
-        /*
-        ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFecha(id, desde, hasta);
-        if (!lista.isEmpty()) {
-          Transaccion primeraTransaccion = lista.get(0);
-          saldo = convertirNumeroMiles(primeraTransaccion.getSaldoAcumulado());
-        }
-        */
-        if(lista.isEmpty()){
+
+        if (lista.isEmpty()) {
             flag = false;
         }
-        
+
         modelo.put("flag", flag);
         modelo.put("caja", cajaServicio.buscarCaja(id));
         modelo.put("saldo", saldo);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.addAttribute("transacciones", lista);
-        
+
         return "caja_mostrarFiltroAdmin.html";
-       
+
     }
-    
+
     @GetMapping("/mostrarChofer/{id}")
     public String mostrarChofer(@PathVariable Long id, ModelMap modelo) throws ParseException {
 
@@ -110,10 +106,10 @@ public class CajaControlador {
         String saldo = convertirNumeroMiles(caja.getSaldo());
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFecha(caja.getId(), desde, hasta);
         Boolean flag = true;
-        if(lista.isEmpty()){
+        if (lista.isEmpty()) {
             flag = false;
         }
 
@@ -127,146 +123,150 @@ public class CajaControlador {
         return "caja_mostrarChofer.html";
 
     }
-    
+
     @PostMapping("/mostrarFiltroChofer")
-    public String mostrarFiltroChofer(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException{
+    public String mostrarFiltroChofer(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
 
         Boolean flag = true;
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFechaFiltro(id, desde, hasta);
 
-        if(lista.isEmpty()){
+        if (lista.isEmpty()) {
             flag = false;
         }
-        
+
         modelo.put("flag", flag);
         modelo.put("caja", cajaServicio.buscarCaja(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.addAttribute("transacciones", lista);
-        
+
         return "caja_mostrarFiltroChofer.html";
-        
+
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/habilitar/{id}")
-    public String habilitarCaja(@PathVariable Long id, ModelMap modelo){
-        
+    public String habilitarCaja(@PathVariable Long id, ModelMap modelo) {
+
         modelo.put("caja", cajaServicio.buscarCajaChofer(id));
-        
+
         return "caja_habilitar.html";
-        
+
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/habilita/{id}")
-    public String habilitaCaja(@PathVariable Long id, ModelMap modelo){
-        
+    public String habilitaCaja(@PathVariable Long id, ModelMap modelo) {
+
         Caja caja = cajaServicio.buscarCaja(id);
-        
+
         choferServicio.habilitarCajaChofer(caja.getChofer().getId());
-        
+
         modelo.put("caja", caja);
         modelo.put("exito", "Caja HABILITADA con éxito");
-        
+
         return "caja_habilitada.html";
-        
+
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/inhabilitar/{id}")
-    public String inhabilitarCaja(@PathVariable Long id, ModelMap modelo){
-        
+    public String inhabilitarCaja(@PathVariable Long id, ModelMap modelo) {
+
         modelo.put("caja", cajaServicio.buscarCajaChofer(id));
-        
+
         return "caja_inhabilitar.html";
-        
+
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/inhabilita/{id}")
-    public String inhabilitaCaja(@PathVariable Long id, ModelMap modelo){
-        
+    public String inhabilitaCaja(@PathVariable Long id, ModelMap modelo) {
+
         Caja caja = cajaServicio.buscarCaja(id);
-        
+
         choferServicio.inhabilitarCajaChofer(caja.getChofer().getId());
-        
+
         modelo.put("caja", caja);
         modelo.put("exito", "Caja INHABILITADA con éxito");
-        
+
         return "caja_habilitada.html";
-        
+
     }
-    
+
     @GetMapping("/mostrarTransaccionChofer/{id}")
     public String mostrarTransaccionChofer(@PathVariable Long id, ModelMap modelo) {
 
         Transaccion transaccion = transaccionServicio.buscarTransaccion(id);
-        
+
         if (transaccion.getIngreso() != null) {
-            
-             modelo.put("ingreso", ingresoServicio.buscarIngreso(transaccion.getIngreso().getId()));
+
+            modelo.put("ingreso", ingresoServicio.buscarIngreso(transaccion.getIngreso().getId()));
 
             return "transaccion_cajaIngreso.html";
-            
-        } if (transaccion.getGasto() != null && !transaccion.getObservacion().startsWith("GASTO FTE")){ 
-            
+
+        }
+        if (transaccion.getGasto() != null && !transaccion.getObservacion().startsWith("GASTO FTE")) {
+
             Double valorAbsoluto = Math.abs(transaccion.getImporte());
-            modelo.put("importe", valorAbsoluto);
+            modelo.put("importe", convertirNumeroMiles(valorAbsoluto));
             modelo.put("gasto", gastoServicio.buscarGasto(transaccion.getGasto().getId()));
             modelo.addAttribute("detalles", detalleServicio.buscarDetallesGasto(transaccion.getGasto().getId()));
 
             return "transaccion_cajaGasto.html";
 
         } else {
-            
+
             Double valorAbsoluto = Math.abs(transaccion.getImporte());
-            modelo.put("importe", valorAbsoluto);
+            modelo.put("importe", convertirNumeroMiles(valorAbsoluto));
             modelo.put("gasto", gastoServicio.buscarGasto(transaccion.getGasto().getId()));
             modelo.addAttribute("detalles", detalleServicio.buscarDetallesFleteIdGasto(transaccion.getGasto().getId()));
 
-            return "transaccion_cajaGasto.html"; 
-            
+            return "transaccion_cajaGastoFlete.html";
+
         }
     }
-    
+
     @GetMapping("/mostrarTransaccionAdmin/{id}")
     public String mostrarTransaccionAdmin(@PathVariable Long id, ModelMap modelo) {
 
         Transaccion transaccion = transaccionServicio.buscarTransaccion(id);
 
         if (transaccion.getIngreso() != null) {
-            
-             modelo.put("ingreso", ingresoServicio.buscarIngreso(transaccion.getIngreso().getId()));
+
+            Ingreso ingreso = ingresoServicio.buscarIngreso(transaccion.getIngreso().getId());
+            modelo.put("ingreso", ingreso);
+            modelo.put("importe", convertirNumeroMiles(ingreso.getImporte()));
 
             return "transaccion_cajaIngresoAdmin.html";
-            
-        } if (transaccion.getGasto() != null && !transaccion.getObservacion().startsWith("GASTO FTE")){ 
-            
+
+        }
+        if (transaccion.getGasto() != null && !transaccion.getObservacion().startsWith("GASTO FTE")) {
+
             Double valorAbsoluto = Math.abs(transaccion.getImporte());
-            modelo.put("importe", valorAbsoluto);
+            modelo.put("importe", convertirNumeroMiles(valorAbsoluto));
             modelo.put("gasto", gastoServicio.buscarGasto(transaccion.getGasto().getId()));
             modelo.addAttribute("detalles", detalleServicio.buscarDetallesGasto(transaccion.getGasto().getId()));
 
             return "transaccion_cajaGastoAdmin.html";
 
         } else {
-            
+
             Double valorAbsoluto = Math.abs(transaccion.getImporte());
-            modelo.put("importe", valorAbsoluto);
+            modelo.put("importe", convertirNumeroMiles(valorAbsoluto));
             modelo.put("gasto", gastoServicio.buscarGasto(transaccion.getGasto().getId()));
             modelo.addAttribute("detalles", detalleServicio.buscarDetallesFleteIdGasto(transaccion.getGasto().getId()));
 
-            return "transaccion_cajaGastoAdmin.html"; 
-            
+            return "transaccion_cajaGastoAdmin.html";
+
         }
 
     }
-    
+
     @PostMapping("/exportarAdmin")
     public String exportarAdmin(@RequestParam Long id, ModelMap modelo) throws ParseException {
-            
+
         Caja caja = cajaServicio.buscarCaja(id);
         String saldo = convertirNumeroMiles(caja.getSaldo());
         String desde = obtenerFechaDesde();
@@ -276,71 +276,71 @@ public class CajaControlador {
         modelo.put("saldo", saldo);
         modelo.addAttribute("transacciones", transaccionServicio.buscarTransaccionIdCajaFecha(id, desde, hasta));
 
-        return "caja_exportarAdmin.html";         
-  
+        return "caja_exportarAdmin.html";
+
     }
-    
+
     @PostMapping("/exportaAdmin")
     public void exportaAdmin(@RequestParam Long id, HttpServletResponse response) throws IOException, ParseException {
-  
+
         Caja caja = cajaServicio.buscarCaja(id);
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
-        
+
         ArrayList<Transaccion> myObjects = transaccionServicio.buscarTransaccionIdCajaFecha(id, desde, hasta);
         String htmlContent = generateHtmlFromObjects(myObjects);
-        excelServicio.exportHtmlToExcelCaja(htmlContent, response, caja.getChofer().getNombre(), caja.getSaldo() );
+        excelServicio.exportHtmlToExcelCaja(htmlContent, response, caja.getChofer().getNombre(), caja.getSaldo());
 
     }
-    
+
     @PostMapping("/exportarFiltroChofer")
-    public String exportarFiltroChofer(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {  
-        
+    public String exportarFiltroChofer(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
+
         String saldo = "0.0";
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFechaFiltro(id, desde, hasta);
         if (!lista.isEmpty()) {
-          Transaccion primeraTransaccion = lista.get(0);
-          saldo = convertirNumeroMiles(primeraTransaccion.getSaldoAcumulado());
+            Transaccion primeraTransaccion = lista.get(0);
+            saldo = convertirNumeroMiles(primeraTransaccion.getSaldoAcumulado());
         }
-        
+
         modelo.put("caja", cajaServicio.buscarCaja(id));
         modelo.put("saldo", saldo);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.addAttribute("transacciones", lista);
-        
+
         return "caja_exportarFiltroChofer.html";
-  
+
     }
-    
+
     @PostMapping("/exportarFiltroAdmin")
-    public String exportarFiltroAdmin(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {  
-        
+    public String exportarFiltroAdmin(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFechaFiltro(id, desde, hasta);
-        
+
         modelo.put("caja", cajaServicio.buscarCaja(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.addAttribute("transacciones", lista);
-        
+
         return "caja_exportarFiltroAdmin.html";
-  
+
     }
-    
+
     @PostMapping("/exportaFiltroAdmin")
     public void exportaFiltroAdmin(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
-  
+
         Caja caja = cajaServicio.buscarCaja(id);
-        
+
         ArrayList<Transaccion> lista = transaccionServicio.buscarTransaccionIdCajaFechaFiltro(id, desde, hasta);
-        
+
         ArrayList<Transaccion> myObjects = lista;
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcelCajaMovimiento(htmlContent, response, caja.getChofer().getNombre(), desde, hasta);
 
     }
-    
+
     private String generateHtmlFromObjects(ArrayList<Transaccion> objects) {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
@@ -355,37 +355,36 @@ public class CajaControlador {
             sb.append("<tr><td>").append(transaccion.getFecha()).append("</td>"
                     + "<td>").append(transaccion.getObservacion()).append("</td>"
                     + "<td>").append(transaccion.getImporte()).append("</td>"
-                    + "<td>").append(transaccion.getSaldoAcumulado()).append("</td>"                           
+                    + "<td>").append(transaccion.getSaldoAcumulado()).append("</td>"
                     + "</tr>");
         }
         sb.append("</tbody></table>");
         return sb.toString();
     }
     
-    private String convertirNumeroMiles(Double num) {   
+    private String convertirNumeroMiles(Double num) { 
 
-        DecimalFormat formato = new DecimalFormat("#,##0.00");
-        String numeroFormateado = formato.format(num);
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+    symbols.setGroupingSeparator('.'); 
+    symbols.setDecimalSeparator(','); 
 
-        return numeroFormateado;
+    DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
+    String numeroFormateado = formato.format(num);
 
-    }
-    
-     public String obtenerFechaDesde() {
-    // Obtener la fecha actual
-    LocalDate now = LocalDate.now();
-
-    // Obtener el primer día del mes anterior
-    LocalDate firstDayOfPreviousMonth = now.minusMonths(1).withDayOfMonth(1);
-
-    // Formatear la fecha a 'yyyy-MM-dd'
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    // Convertir la fecha a String
-    String formattedDate = firstDayOfPreviousMonth.format(formatter);
-
-    return formattedDate;
+    return numeroFormateado;
 }
+
+    public String obtenerFechaDesde() {
+        LocalDate now = LocalDate.now();
+
+        LocalDate firstDayOfPreviousMonth = now.minusMonths(1).withDayOfMonth(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formattedDate = firstDayOfPreviousMonth.format(formatter);
+
+        return formattedDate;
+    }
 
     public String obtenerFechaHasta() {
 
@@ -397,7 +396,6 @@ public class CajaControlador {
 
         return formattedToday;
 
-    }    
-     
-    
+    }
+
 }

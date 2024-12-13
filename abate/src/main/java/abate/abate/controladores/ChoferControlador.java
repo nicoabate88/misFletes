@@ -27,26 +27,26 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrar")
     public String registrar(ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
 
         return "chofer_registrar.html";
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre, @RequestParam Long cuil, @RequestParam(required = false) Long idCamion,
             @RequestParam String caja, @RequestParam Double porcentaje, @RequestParam String nombreUsuario, @RequestParam String password,
             @RequestParam String password2, ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
             choferServicio.crearChofer(logueado.getIdOrg(), nombre, cuil, idCamion, caja, nombreUsuario, porcentaje, password, password2);
-            
+
             return "redirect:/chofer/registrado";
 
         } catch (MiException ex) {
@@ -56,29 +56,30 @@ public class ChoferControlador {
             modelo.put("caja", caja);
             modelo.put("nombreUsuario", nombreUsuario);
             modelo.put("porcentaje", porcentaje);
+            modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
             modelo.put("error", ex.getMessage());
 
             return "chofer_registrar.html";
         }
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registrado")
     public String choferRegistrado(HttpSession session, ModelMap modelo) {
-    
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
-        Long id = choferServicio.buscarUltimo(logueado.getIdOrg());
-            modelo.put("chofer", choferServicio.buscarChofer(id));
-            modelo.put("exito", "Chofer REGISTRADO con éxito");
 
-            return "chofer_registrado.html";
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        Long id = choferServicio.buscarUltimo(logueado.getIdOrg());
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+        modelo.put("exito", "Chofer REGISTRADO con éxito");
+
+        return "chofer_registrado.html";
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/listar")
     public String listar(ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc(logueado.getIdOrg()));
 
@@ -88,17 +89,17 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
     @GetMapping("/mostrar/{id}")
     public String mostrar(@PathVariable Long id, ModelMap modelo) {
-            
-            modelo.put("chofer", choferServicio.buscarChofer(id));
 
-            return "chofer_mostrar.html";
-                    
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+
+        return "chofer_mostrar.html";
+
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.put("chofer", choferServicio.buscarChofer(id));
@@ -128,13 +129,13 @@ public class ChoferControlador {
             modelo.put("chofer", choferServicio.buscarChofer(id));
             modelo.addAttribute("camiones", camionServicio.buscarCamionesAsc(logueado.getIdOrg()));
             modelo.put("error", ex.getMessage());
-            
+
             return "chofer_modificar.html";
 
         }
 
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificarPsw/{id}")
     public String modificarPsw(@PathVariable Long id, ModelMap modelo) {
@@ -148,16 +149,16 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/modificaPsw/{id}")
     public String modificaPsw(@RequestParam Long id, @RequestParam String password, ModelMap modelo, HttpSession session) {
-            
-            choferServicio.modificarPswChofer(id, password);
 
-            modelo.put("chofer", choferServicio.buscarChofer(id));
-            modelo.put("exito", "Contraseña de Chofer MODIFICADA con éxito");
+        choferServicio.modificarPswChofer(id, password);
 
-            return "chofer_registrado.html";
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+        modelo.put("exito", "Contraseña de Chofer MODIFICADA con éxito");
+
+        return "chofer_registrado.html";
 
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
     @GetMapping("/modificarPswChofer/{id}")
     public String modificarPswChofer(@PathVariable Long id, ModelMap modelo) {
@@ -171,13 +172,13 @@ public class ChoferControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER')")
     @PostMapping("/modificaPswChofer/{id}")
     public String modificaPswChofer(@RequestParam Long id, @RequestParam String password, ModelMap modelo) {
-            
-            choferServicio.modificarPswChofer(id, password);
 
-            modelo.put("chofer", choferServicio.buscarChofer(id));
-            modelo.put("exito", "Contraseña MODIFICADA con éxito");
+        choferServicio.modificarPswChofer(id, password);
 
-            return "chofer_modificadoPsw.html";
+        modelo.put("chofer", choferServicio.buscarChofer(id));
+        modelo.put("exito", "Contraseña MODIFICADA con éxito");
+
+        return "chofer_modificadoPsw.html";
 
     }
 
@@ -199,9 +200,7 @@ public class ChoferControlador {
         try {
 
             choferServicio.eliminarChofer(id);
-            String nombreMayuscula = logueado.getUsuario().toUpperCase();
-        
-            modelo.put("usuario", nombreMayuscula);
+
             modelo.put("id", logueado.getId());
             modelo.put("exito", "Chofer ELIMINADO con éxito");
 

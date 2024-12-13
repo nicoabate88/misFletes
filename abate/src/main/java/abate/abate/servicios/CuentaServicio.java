@@ -9,9 +9,12 @@ import abate.abate.repositorios.CuentaRepositorio;
 import abate.abate.repositorios.TransaccionRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.CuentaComparador;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +122,10 @@ public class CuentaServicio {
         ArrayList<Cuenta> lista = new ArrayList();
 
         lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasChofer(idOrg);
+        
+        for(Cuenta c : lista){
+            c.setSaldoN(convertirNumeroMiles(c.getSaldo()));
+        }
 
         Collections.sort(lista, CuentaComparador.ordenarNombreChoferAsc);
 
@@ -130,6 +137,10 @@ public class CuentaServicio {
         ArrayList<Cuenta> lista = new ArrayList();
 
         lista = (ArrayList<Cuenta>) cuentaRepositorio.buscarCuentasCliente(idOrg);
+        
+        for(Cuenta c : lista){
+            c.setSaldoN(convertirNumeroMiles(c.getSaldo()));
+        }
 
         Collections.sort(lista, CuentaComparador.ordenarNombreClienteAsc);
 
@@ -255,6 +266,8 @@ public class CuentaServicio {
         transaccion.setConcepto("ELIMINADO");
         transaccion.setCliente(null);
         transaccion.setImporte(0.0);
+        transaccion.setFlete(null);
+        transaccion.setRecibo(null);
         transaccionRepositorio.save(transaccion);
 
         Cuenta cuenta = cuentaRepositorio.buscarCuentaIdCliente(idCliente);
@@ -282,7 +295,11 @@ public class CuentaServicio {
         transaccion.setConcepto("ELIMINADO");
         transaccion.setImporte(0.0);
         transaccion.setChofer(null);
+        transaccion.setFlete(null);
         transaccion.setGasto(null);
+        transaccion.setEntrega(null);
+        transaccion.setRecibo(null);
+        
         transaccionRepositorio.save(transaccion);
 
         Cuenta cuenta = cuentaRepositorio.buscarCuentaIdChofer(idChofer);
@@ -299,6 +316,18 @@ public class CuentaServicio {
 
         cuentaRepositorio.save(cuenta);
 
+    }
+    
+    private String convertirNumeroMiles(Double num) {
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
+        String numeroFormateado = formato.format(num);
+
+        return numeroFormateado;
     }
 
 }

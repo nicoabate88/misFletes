@@ -7,9 +7,12 @@ import abate.abate.servicios.ClienteServicio;
 import abate.abate.servicios.CuentaServicio;
 import abate.abate.servicios.ReciboServicio;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +38,7 @@ public class ReciboControlador {
 
     @GetMapping("/registrar")
     public String registrarRecibo(ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.addAttribute("cuentas", cuentaServicio.buscarCuentasCliente(logueado.getIdOrg()));
@@ -45,13 +48,13 @@ public class ReciboControlador {
 
     @GetMapping("/registrarId/{id}")
     public String registrarReciboId(@PathVariable Long id, ModelMap modelo) {
-        
+
         Cuenta cuenta = cuentaServicio.buscarCuentaCliente(id);
         String saldo = convertirNumeroMiles(cuenta.getSaldo());
-        
+
         modelo.put("cuenta", cuenta);
         modelo.put("saldo", saldo);
-        
+
         return "recibo_registrarId.html";
     }
 
@@ -63,16 +66,16 @@ public class ReciboControlador {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         reciboServicio.crearRecibo(logueado.getIdOrg(), idCliente, fecha, importe, observacion, logueado.getId());
-  
+
         return "redirect:/recibo/registrado";
-        
+
     }
-    
+
     @GetMapping("/registrado")
     public String reciboRegistrado(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         Long id = reciboServicio.buscarUltimo(logueado.getIdOrg());
         Recibo recibo = reciboServicio.buscarRecibo(id);
         String total = convertirNumeroMiles(recibo.getImporte());
@@ -82,65 +85,94 @@ public class ReciboControlador {
         modelo.put("exito", "Recibo REGISTRADO con éxito");
 
         return "recibo_registrado.html";
-        
+
     }
 
     @GetMapping("/listar")
     public String listar(ModelMap modelo, HttpSession session) throws ParseException {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
+        ArrayList<Recibo> lista = reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta);
+        Double total = 0.0;
+        for (Recibo r : lista) {
+            total = r.getImporte() + total;
+            r.setImporteS(convertirNumeroMiles(r.getImporte()));
+        }
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta));
+        modelo.addAttribute("recibos", lista);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.put("id", logueado.getIdOrg());
+        modelo.put("total", convertirNumeroMiles(total));
 
         return "recibo_listar.html";
     }
-    
+
     @PostMapping("/listarFiltro")
     public String listar(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo, HttpSession session) throws ParseException {
-        
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta));
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+        ArrayList<Recibo> lista = reciboServicio.buscarRecibos(logueado.getIdOrg(), desde, hasta);
+        Double total = 0.0;
+        for (Recibo r : lista) {
+            total = r.getImporte() + total;
+            r.setImporteS(convertirNumeroMiles(r.getImporte()));
+        }
+
+        modelo.addAttribute("recibos", lista);
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
         modelo.put("id", logueado.getIdOrg());
+        modelo.put("total", convertirNumeroMiles(total));
 
         return "recibo_listar.html";
     }
 
     @GetMapping("/listarIdCliente/{id}")
     public String listarIdCliente(@PathVariable Long id, ModelMap modelo) throws ParseException {
-        
+
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
+        ArrayList<Recibo> lista = reciboServicio.buscarRecibosIdCliente(id, desde, hasta);
+        Double total = 0.0;
+        for (Recibo r : lista) {
+            total = r.getImporte() + total;
+            r.setImporteS(convertirNumeroMiles(r.getImporte()));
+        }
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibosIdCliente(id, desde, hasta));
+        modelo.addAttribute("recibos", lista);
         modelo.put("cliente", clienteServicio.buscarCliente(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
+        modelo.put("total", convertirNumeroMiles(total));
 
         return "recibo_listarCliente.html";
     }
-    
-    @PostMapping("/listarIdClienteFiltro")
-    public String listarIdClienteFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta,  ModelMap modelo) throws ParseException {
 
-        modelo.addAttribute("recibos", reciboServicio.buscarRecibosIdCliente(id, desde, hasta));
+    @PostMapping("/listarIdClienteFiltro")
+    public String listarIdClienteFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta, ModelMap modelo) throws ParseException {
+
+        ArrayList<Recibo> lista = reciboServicio.buscarRecibosIdCliente(id, desde, hasta);
+        Double total = 0.0;
+        for (Recibo r : lista) {
+            total = r.getImporte() + total;
+            r.setImporteS(convertirNumeroMiles(r.getImporte()));
+        }
+
+        modelo.addAttribute("recibos", lista);
         modelo.put("cliente", clienteServicio.buscarCliente(id));
         modelo.put("desde", desde);
         modelo.put("hasta", hasta);
+        modelo.put("total", convertirNumeroMiles(total));
 
         return "recibo_listarCliente.html";
     }
 
     @GetMapping("/modificar/{id}")
     public String modificar(@PathVariable Long id, ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.put("recibo", reciboServicio.buscarRecibo(id));
@@ -159,15 +191,32 @@ public class ReciboControlador {
 
         reciboServicio.modificarRecibo(id, idCliente, fecha, importe, observacion, logueado.getId());
 
+        return "redirect:/recibo/modificado/" + id;
+    }
+
+    @GetMapping("/modificado/{id}")
+    public String reciboModificado(@PathVariable Long id, ModelMap modelo) {
+
         Recibo recibo = reciboServicio.buscarRecibo(id);
         String total = convertirNumeroMiles(recibo.getImporte());
 
         modelo.put("recibo", recibo);
         modelo.put("importe", total);
-        modelo.put("fecha", fecha);
         modelo.put("exito", "Recibo MODIFICADO con éxito");
 
         return "recibo_registrado.html";
+    }
+
+    @GetMapping("/modificarDesdeCliente/{id}")
+    public String modificarDesdeCliente(@PathVariable Long id, ModelMap modelo, HttpSession session) {
+
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        modelo.put("recibo", reciboServicio.buscarRecibo(id));
+        modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc(logueado.getIdOrg()));
+
+        return "recibo_modificarDesdeCliente.html";
+
     }
 
     @GetMapping("/eliminar/{id}")
@@ -184,9 +233,7 @@ public class ReciboControlador {
         reciboServicio.eliminarRecibo(id);
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
-        
-        modelo.put("usuario", nombreMayuscula);
+
         modelo.put("id", logueado.getId());
         modelo.put("exito", "Recibo ELIMINADO con éxito");
 
@@ -194,16 +241,31 @@ public class ReciboControlador {
 
     }
 
-    private String convertirNumeroMiles(Double num) {   
+    @GetMapping("/imprimir/{id}")
+    public String imprimir(@PathVariable Long id, ModelMap modelo) {
 
-        DecimalFormat formato = new DecimalFormat("#,##0.00");
+        Recibo recibo = reciboServicio.buscarRecibo(id);
+        String total = convertirNumeroMiles(recibo.getImporte());
+
+        modelo.put("recibo", recibo);
+        modelo.put("total", total);
+
+        return "recibo_imprimir.html";
+    }
+
+    private String convertirNumeroMiles(Double num) {
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
         String numeroFormateado = formato.format(num);
 
         return numeroFormateado;
-
     }
-    
-        public String obtenerFechaDesde() {
+
+    public String obtenerFechaDesde() {
 
         LocalDate now = LocalDate.now();
 

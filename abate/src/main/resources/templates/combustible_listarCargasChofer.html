@@ -11,7 +11,6 @@
 
                                 <div class="card-header mb-2">
                                     <div class="row">
-
                                         <div class="col-2">   
                                             <a title="Volver" th:href="@{/combustible/registrar}" type="button">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
@@ -22,7 +21,7 @@
                                         <div  class="col-7">
                                             <h4>Cargas Diesel</h4>
                                         </div>
-                                        <div  class="col-3 text-center" th:if="${chofer.camion} != null">
+                                        <div title="Ver Consumo" class="col-3 text-center" th:if="${chofer.camion} != null">
                                             <a th:href="@{/combustible/mostrarConsumoChofer/__${chofer.camion.id}__}">
                                                 <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
                                                     <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
@@ -44,7 +43,7 @@
                                                     <label for="hasta" class="form-label">Hasta</label>
                                                     <input type="date" class="form-control" id="hasta" th:value="${hasta}" name="hasta" required>                                                                                              
                                                 </div>
-                                                <div class="col-2 text-center">
+                                                <div title="Buscar" class="col-2 text-center">
                                                     <label for="ver" class="form-label">Ver</label>
                                                     <button id="ver" class="btn btn-primary" type="submit">
                                                         <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -63,7 +62,7 @@
                                                 <div class="card-body">
                                                     <h6 th:if="${carga.camion != null}" th:text="${carga.camion.dominio}+' - '+${carga.camion.marca}+' '+${carga.camion.modelo}"></h6>
                                                     <h6 id="dimgray" th:text="'Fecha '+${carga.fechaCarga}"></h6>
-                                                    <p class="mb-1" id="dimgray" th:text="'KM Actual '+${carga.kmCarga}"></p>
+                                                    <p class="mb-1" id="dimgray" th:text="'KM Carga '+${carga.kmCargaS}"></p>
                                                     <p class="mb-1" id="dimgray" th:text="'KM Recorrido '+${carga.kmRecorrido}"></p>
                                                     <p class="mb-1" id="darkgray" th:text="${carga.litro}+' L - Tanque Lleno '+${carga.completo}"></p>
                                                     <h6 class="mb-0" th:text="'Consumo '+${carga.consumo}+' L / 100 Km'"></h6>                                                  
@@ -78,8 +77,8 @@
                                                         </svg>    <p id="icono2">Imagen</p>
                                                     </a>
                                                 </div>
-                                                <div>
-                                                    <a th:href="@{/combustible/modificar/__${carga.id}__}" th:if="${carga.estado == 'ULTIMO'}">
+                                                <div th:if="${carga.estado == 'PENDIENTE'}" title="Ir a Modificar Carga">
+                                                    <a th:href="@{/combustible/modificar/__${carga.id}__}" th:if="${carga.kmAnterior == 99.99}">
                                                         <svg id="modificar" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                                                         </svg>     <p id="modificar">Modificar</p>

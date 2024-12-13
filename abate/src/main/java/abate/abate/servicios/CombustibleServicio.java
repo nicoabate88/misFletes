@@ -79,6 +79,46 @@ public class CombustibleServicio {
         carga.setKmAnterior(kmAnterior);
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
+        carga.setEstado("PENDIENTE");
+        carga.setCamion(camion);
+
+        if (completo.equalsIgnoreCase("NO")) {
+            carga.setCompleto("NO");
+            carga.setConsumoPromedio(0.0);
+        } else {
+            carga.setCompleto("SI");
+            Double consumoPromedio = consumoPromedioTanque(consumoRed, kmRecorrido, litros, camion);
+            carga.setConsumoPromedio(consumoPromedio);
+        }
+
+        combustibleRepositorio.save(carga);
+
+    }
+    
+    @Transactional
+    public void crearCargaAdmin(Long idOrg, Long idCamion, String fecha, Double kmAnterior, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+
+        Camion camion = new Camion();
+        Optional<Camion> cam = camionRepositorio.findById(idCamion);
+        if (cam.isPresent()) {
+            camion = cam.get();
+        }
+
+        Date f = convertirFecha(fecha);
+        Double kmRecorrido = kmCarga - kmAnterior;
+        Double consumo = ((100 * litros) / kmRecorrido);
+        Double consumoRed = Math.round(consumo * 100.0) / 100.0;
+
+        Combustible carga = new Combustible();
+
+        carga.setIdOrg(idOrg);
+        carga.setFechaCarga(f);
+        carga.setLitro(litros);
+        carga.setUsuario(usuario);
+        carga.setKmCarga(kmCarga);
+        carga.setKmAnterior(kmAnterior);
+        carga.setKmRecorrido(kmRecorrido);
+        carga.setConsumo(consumoRed);
         carga.setEstado("ACEPTADO");
         carga.setCamion(camion);
 
@@ -93,6 +133,46 @@ public class CombustibleServicio {
 
         combustibleRepositorio.save(carga);
 
+    }
+    
+    @Transactional
+    public void aceptarCarga(Long idCarga) {
+
+        Combustible carga = new Combustible();
+        Optional<Combustible> comb = combustibleRepositorio.findById(idCarga);
+        if (comb.isPresent()) {
+            carga = comb.get();
+        }
+
+        carga.setEstado("ACEPTADO");
+
+        combustibleRepositorio.save(carga);
+
+    }
+    
+    @Transactional
+    public void volverPendiente(Long idCarga) {
+
+        Combustible carga = new Combustible();
+        Optional<Combustible> comb = combustibleRepositorio.findById(idCarga);
+        if (comb.isPresent()) {
+            carga = comb.get();
+        }
+
+        carga.setEstado("PENDIENTE");
+
+        combustibleRepositorio.save(carga);
+
+    }
+    
+    public Long buscaridCamion(Long idCarga){
+        
+        Camion camion = combustibleRepositorio.findCamionByCargaId(idCarga);
+        
+        Long idCamion = camion.getId();
+        
+        return idCamion;
+        
     }
     
     @Transactional
@@ -114,7 +194,7 @@ public class CombustibleServicio {
     }
 
     @Transactional
-    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo, Usuario usuario) throws ParseException {
+    public void modificarCarga(Long id, String fecha, Double kmCarga, Double litros, String completo) throws ParseException {
 
         Combustible carga = new Combustible();
         Optional<Combustible> cga = combustibleRepositorio.findById(id);
@@ -132,8 +212,6 @@ public class CombustibleServicio {
         carga.setLitro(litros);
         carga.setKmRecorrido(kmRecorrido);
         carga.setConsumo(consumoRed);
-        carga.setEstado("ACEPTADO");
-        carga.setUsuario(usuario);
 
         if (completo.equalsIgnoreCase("NO")) {
             carga.setCompleto("NO");
@@ -193,7 +271,7 @@ public class CombustibleServicio {
 
         if (!lista.isEmpty()) {
             Combustible carga = lista.get(0);
-            carga.setEstado("ULTIMO");
+            carga.setKmAnterior(99.99);
         }
 
         return lista;
@@ -225,7 +303,7 @@ public class CombustibleServicio {
 
         if (!lista.isEmpty() && flag == true) {
             Combustible carga = lista.get(0);
-            carga.setEstado("ULTIMO");
+            carga.setKmAnterior(99.99);
         }
 
         return lista;

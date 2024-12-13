@@ -23,13 +23,14 @@ public class Entrega {
     private Date fecha;
     private Double importe;
     private String observacion;
+    private String importeS;
     @OneToOne
     private Usuario usuario;
 
     public Entrega() {
     }
 
-    public Entrega(Long id, Long idEntrega, Long idOrg, Usuario chofer, Date fecha, Double importe, String observacion, Usuario usuario) {
+    public Entrega(Long id, Long idEntrega, Long idOrg, Usuario chofer, Date fecha, Double importe, String observacion, String importeS, Usuario usuario) {
         this.id = id;
         this.idEntrega = idEntrega;
         this.idOrg = idOrg;
@@ -37,6 +38,7 @@ public class Entrega {
         this.fecha = fecha;
         this.importe = importe;
         this.observacion = observacion;
+        this.importeS = importeS;
         this.usuario = usuario;
     }
 
@@ -96,6 +98,14 @@ public class Entrega {
         this.observacion = observacion;
     }
 
+    public String getImporteS() {
+        return importeS;
+    }
+
+    public void setImporteS(String importeS) {
+        this.importeS = importeS;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -103,9 +113,7 @@ public class Entrega {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
-    
-   
 
+    
     
 }

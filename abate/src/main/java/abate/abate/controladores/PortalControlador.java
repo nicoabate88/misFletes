@@ -18,41 +18,37 @@ public class PortalControlador {
     public String login(@RequestParam(required = false) String error, ModelMap modelo) {
 
         if (error != null) {
-            
+
             modelo.put("error", "Usuario o Contraseña incorrecto");
         }
 
         return "login.html";
     }
-    
+
     @GetMapping("/index")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CHOFER', 'ROLE_CEO')")
     public String index(HttpSession session, ModelMap modelo) {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
 
         if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
 
             modelo.put("chofer", logueado);
-            modelo.put("usuario", nombreMayuscula);
 
             return "index_chofer.html";
 
-        } else if(logueado.getRol().equalsIgnoreCase("ADMIN")) {
+        } else if (logueado.getRol().equalsIgnoreCase("ADMIN")) {
 
-            modelo.put("usuario", nombreMayuscula);
             modelo.put("id", logueado.getId());
 
             return "index_admin.html";
-            
+
         } else {
-            
-            modelo.put("usuario", nombreMayuscula);
+
             modelo.put("id", logueado.getId());
 
             return "index_ceo.html";
-            
+
         }
 
     }

@@ -61,7 +61,7 @@ public class EntregaServicio {
     }
 
     @Transactional
-    public void modificarEntrega(Long idEntrega, Long idChofer, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException { //modificar Cliente u observacion de Recibo
+    public void modificarEntrega(Long idEntrega, Long idChofer, String fecha, Double importe, String observacion, Long idUsuario) throws ParseException { 
 
         Entrega entrega = new Entrega();
         Optional<Entrega> ent = entregaRepositorio.findById(idEntrega);

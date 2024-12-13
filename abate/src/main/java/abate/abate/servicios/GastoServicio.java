@@ -1,15 +1,21 @@
 package abate.abate.servicios;
 
+import abate.abate.entidades.Camion;
 import abate.abate.entidades.Detalle;
 import abate.abate.entidades.Flete;
 import abate.abate.entidades.Gasto;
+import abate.abate.entidades.Transaccion;
 import abate.abate.entidades.Usuario;
+import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.GastoRepositorio;
+import abate.abate.repositorios.TransaccionRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
+import abate.abate.util.GastoComparador;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -29,6 +35,10 @@ public class GastoServicio {
     private DetalleServicio detalleServicio;
     @Autowired
     private FleteRepositorio fleteRepositorio;
+    @Autowired
+    private CamionRepositorio camionRepositorio;
+    @Autowired
+    private TransaccionRepositorio transaccionRepositorio;
 
     @Transactional
     public void crearGasto(Long idOrg, Long idFlete, Long idUsuario) throws ParseException {
@@ -53,7 +63,7 @@ public class GastoServicio {
 
         String nombre = "GASTO FTE ID" + flete.getIdFlete();
         Gasto gasto = new Gasto();
-
+        
         gasto.setIdOrg(idOrg);
         gasto.setChofer(flete.getChofer());
         gasto.setFecha(flete.getFechaFlete());
@@ -61,38 +71,46 @@ public class GastoServicio {
         gasto.setImporte(importe);
         gasto.setUsuario(user);
         gasto.setCamion(flete.getCamion());
-        gasto.setEstado("FLETE");
+        if(user.getRol().equalsIgnoreCase("ADMIN")){
+        gasto.setEstado("ACEPTADO");
+        } else {
+            gasto.setEstado("FLETE");
+        }
 
         gastoRepositorio.save(gasto);
 
-        Long idGasto = buscarUltimo(idOrg);
-        flete.setGasto(gastoRepositorio.getById(idGasto));
+        flete.setGasto(gasto);
         fleteRepositorio.save(flete);   //persiste Gasto en el flete correspondiente
+        
+        if(gasto.getEstado().equalsIgnoreCase("ACEPTADO")){
+           transaccionServicio.crearTransaccionGasto(gasto.getId()); 
+        }
 
     }
     
     @Transactional
-    public Long crearGastoCaja(Long idOrg, String fecha, Long idUsuario) throws ParseException {
+    public Long crearGastoCaja(Long idOrg, String fecha, Long idCamion, Long idChofer, Long idUsuario) throws ParseException {
 
-        Usuario user = new Usuario();
-        Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
-        if (u.isPresent()) {
-            user = u.get();
-        }
+        Usuario chofer = usuarioRepositorio.getById(idChofer);
+        Usuario usuario = usuarioRepositorio.getById(idUsuario);
+        Camion camion = camionRepositorio.getById(idCamion);
+        
         Date f = convertirFecha(fecha);
         Long idGasto = buscarUltimoIdOrg(idOrg);
         
         Gasto gasto = new Gasto();
         
-        gasto.setChofer(user);
-        gasto.setUsuario(user);
+        gasto.setChofer(chofer);
+        gasto.setUsuario(usuario);
         gasto.setIdOrg(idOrg);
-        if(user.getCamion() != null){
-        gasto.setCamion(user.getCamion());
-        }
+        gasto.setCamion(camion);
         gasto.setFecha(f);
         gasto.setIdGasto(idGasto+1);
-        gasto.setEstado("PENDIENTE");
+        if(usuario.getRol().equalsIgnoreCase("ADMIN")){
+        gasto.setEstado("ACEPTADO");
+        } else {
+            gasto.setEstado("PENDIENTE");
+        }
 
         gastoRepositorio.save(gasto);
 
@@ -124,8 +142,8 @@ public class GastoServicio {
 
     }
     
-     @Transactional
-    public void modificarGastoCaja(Long idGasto, Long idUsuario) throws ParseException {
+    @Transactional
+    public void modificarGastoCaja(Long idGasto, Long idUsuario, String fecha, Long idCamion) throws ParseException {
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
@@ -144,9 +162,14 @@ public class GastoServicio {
         if (gto.isPresent()) {
             gasto = gto.get();
         }
-
+        
+        Camion camion = camionRepositorio.getById(idCamion);
+        Date f = convertirFecha(fecha);
+        
         gasto.setImporte(importe);
         gasto.setUsuario(user);
+        gasto.setFecha(f);
+        gasto.setCamion(camion);
 
         gastoRepositorio.save(gasto);
 
@@ -154,7 +177,7 @@ public class GastoServicio {
     }
     
     @Transactional
-    public void modificarGastoFleteDesdeCaja(Long idFlete, Long idGasto, Long idUsuario) throws ParseException {
+    public void modificarGastoFleteDesdeCaja(Long idFlete, Long idGasto, Long idUsuario, String fecha, Long idCamion) throws ParseException {
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
@@ -173,9 +196,13 @@ public class GastoServicio {
         if (gto.isPresent()) {
             gasto = gto.get();
         }
+        Camion camion = camionRepositorio.getById(idCamion);
+        Date f = convertirFecha(fecha);
 
         gasto.setImporte(importe);
         gasto.setUsuario(user);
+        gasto.setFecha(f);
+        gasto.setCamion(camion);
 
         gastoRepositorio.save(gasto);
 
@@ -207,15 +234,6 @@ public class GastoServicio {
         if (gto.isPresent()) {
             gasto = gto.get();
         }
-        
-        
-        /*
-        if (!gasto.getNombre().startsWith("GASTO FTE")) {
-            gasto.setEstado("PENDIENTE");
-        } else {
-            gasto.setEstado("FLETE");
-        }
-        */
         gasto.setEstado("PENDIENTE");
         gasto.setUsuario(logueado);
 
@@ -244,6 +262,7 @@ public class GastoServicio {
         }
 
         gasto.setNombre("ELIMINADO");
+        gasto.setEstado("ELIMINADO");
         gasto.setUsuario(user);
         gasto.setImporte(0.0);
         gasto.setIdOrg(null);
@@ -276,6 +295,7 @@ public class GastoServicio {
         }
 
         gasto.setNombre("ELIMINADO");
+        gasto.setEstado("ELIMINADO");
         gasto.setUsuario(user);
         gasto.setImporte(0.0);
         gasto.setIdOrg(null);
@@ -286,7 +306,7 @@ public class GastoServicio {
     }
 
     @Transactional
-    public void modificarGasto(Long idFlete, Long idGasto, Long idUsuario) throws ParseException {
+    public void modificarGasto(Long idFlete, Long idGasto, Long idUsuario, String fecha, Long idCamion) throws ParseException {
 
         Usuario user = new Usuario();
         Optional<Usuario> u = usuarioRepositorio.findById(idUsuario);
@@ -306,23 +326,29 @@ public class GastoServicio {
             gasto = gto.get();
         }
 
-        Flete flete = new Flete();
-        Optional<Flete> fte = fleteRepositorio.findById(idFlete);
-        if (fte.isPresent()) {
-            flete = fte.get();
-        }
-
+        Camion camion = camionRepositorio.getById(idCamion);
+        Date f = convertirFecha(fecha);
+        
         gasto.setImporte(importe);
         gasto.setUsuario(user);
+        gasto.setFecha(f);
+        gasto.setCamion(camion);
 
         gastoRepositorio.save(gasto);
 
-        if (user.getRol().equalsIgnoreCase("ADMIN") && flete.getEstado().equalsIgnoreCase("ACEPTADO")) {   //si el Rol de Usuario es Admin ya persiste en gasto en cuenta de chofer
-
+        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdGasto(idGasto);
+        if(transaccion != null){
             transaccionServicio.modificarTransaccionGasto(gasto.getId());
-
-        }
-
+        } 
+    }
+    
+    @Transactional
+    public void modificarChoferGasto(Gasto gasto, Usuario chofer){
+        
+        gasto.setChofer(chofer);
+        
+        gastoRepositorio.save(gasto);
+        
     }
 
     @Transactional
@@ -360,6 +386,7 @@ public class GastoServicio {
         }
 
         gasto.setNombre("ELIMINADO");
+        gasto.setEstado("ELIMINADO");
         gasto.setUsuario(user);
         gasto.setImporte(0.0);
 
@@ -401,6 +428,19 @@ public class GastoServicio {
         }
 
     }
+     
+    public ArrayList<Gasto> buscarGastosCamion(Long idCamion, String desde, String hasta) throws ParseException {
+        
+        Date d = convertirFecha(desde);
+        Date h = convertirFecha(hasta);
+
+        ArrayList<Gasto> lista = gastoRepositorio.findByFechaBetweenAndEstadoNotAndCamionId(d, h, "ELIMINADO", idCamion);
+
+        Collections.sort(lista, GastoComparador.ordenarFechaDesc);
+
+        return lista;
+
+    } 
 
     public Date convertirFecha(String fecha) throws ParseException { 
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");

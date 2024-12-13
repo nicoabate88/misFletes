@@ -32,13 +32,13 @@ public class ClienteControlador {
     public String registroCliente(@RequestParam String nombre, @RequestParam(required = false) Long cuit,
             @RequestParam(required = false) String localidad, @RequestParam(required = false) String direccion,
             @RequestParam(required = false) Long telefono, @RequestParam(required = false) String email, ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         try {
 
             clienteServicio.crearCliente(logueado.getIdOrg(), nombre, cuit, localidad, direccion, telefono, email);
-            
+
             return "redirect:/cliente/registrado";
 
         } catch (MiException ex) {
@@ -54,22 +54,22 @@ public class ClienteControlador {
             return "cliente_registrar.html";
         }
     }
-    
+
     @GetMapping("/registrado")
     public String clienteRegistrado(HttpSession session, ModelMap modelo) {
-    
-        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
-        Long id = clienteServicio.buscarUltimo(logueado.getIdOrg());
-            modelo.put("cliente", clienteServicio.buscarCliente(id));
-            modelo.put("exito", "Cliente REGISTRADO con éxito");
 
-            return "cliente_mostrar.html";
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        Long id = clienteServicio.buscarUltimo(logueado.getIdOrg());
+        modelo.put("cliente", clienteServicio.buscarCliente(id));
+        modelo.put("exito", "Cliente REGISTRADO con éxito");
+
+        return "cliente_mostrar.html";
     }
 
     @GetMapping("/listar")
     public String listarClientes(ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         modelo.addAttribute("clientes", clienteServicio.buscarClientesNombreAsc(logueado.getIdOrg()));
@@ -125,9 +125,7 @@ public class ClienteControlador {
         try {
 
             clienteServicio.eliminarCliente(id);
-            String nombreMayuscula = logueado.getUsuario().toUpperCase();
-        
-            modelo.put("usuario", nombreMayuscula);
+
             modelo.put("id", logueado.getId());
             modelo.put("exito", "Cliente ELIMINADO con éxito");
 

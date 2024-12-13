@@ -24,7 +24,7 @@
                                 </div>
                                 <div th:if="${!cuentas.isEmpty()}">
                                 <div class="card-body">
-                                    <h6 th:text="'Total Saldo $'+${saldo}"></h6>  
+                                    <h6 id="dimgray" th:text="'Total Saldo $'+${saldo}"></h6>  
                                 </div>
                                 <div th:each="cuenta : ${cuentas}">
                                     <div class="card mb-1" id="color-card">
@@ -35,7 +35,7 @@
                                                     <h6 id="dimgray" th:text="'Saldo $'+${cuenta.saldoN}"></h6>
                                                 </div>
                                                 <div class="col-3">
-                                                    <div class="text-center">
+                                                    <div title="Ver Cuenta" class="text-center">
                                                         <a th:href= "@{/cuenta/mostrarCliente/__${cuenta.id}__}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
                                                                 <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>

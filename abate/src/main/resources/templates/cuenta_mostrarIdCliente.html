@@ -35,7 +35,7 @@
                                         <div  class="col-7">
                                             <h4>Cuenta Cliente</h4>
                                         </div>
-                                        <div class="col-3 text-center" th:if="${flag == true}">
+                                        <div title="Exportar a Excel" class="col-3 text-center" th:if="${flag == true}">
                                             <form class="row g-3" th:action="@{/cuenta/exportarTodoCliente}" method="POST">   
                                                 <input hidden th:value="${cuenta.id}" name="id">     
                                                     <button class="btn btn-light" type="submit">
@@ -46,26 +46,26 @@
                                     </div>
 
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body pb-0">
                                     <h6 th:text="${cuenta.cliente.nombre}"></h6>
                                     <h6 id="dimgray" th:text="'Saldo $'+${saldo}"></h6>
                                 </div>
-                                <div class="card-header" id="bgWhite">
+                                <div class="card-header pb-0" id="bgWhite">
                                     <form class="row g-3" th:action="@{/cuenta/mostrarIdClienteFiltro}" method="POST">
                                         <input hidden th:value="${cuenta.id}" name="id">  
                                             <div class="row">    
                                                 <div class="col-5">
-                                                    <label for="desde" class="form-label">Desde</label>
-                                                    <input type="date" class="form-control" id="desde" th:value="${desde}" name="desde" required>
+                                                    <label id="darkblue" for="desde" class="form-label">Desde</label>
+                                                    <input type="date" class="form-control text-secondary" id="desde" th:value="${desde}" name="desde" required>
 
                                                 </div>
                                                 <div class="col-5">
-                                                    <label for="hasta" class="form-label">Hasta</label>
-                                                    <input type="date" class="form-control" id="hasta" th:value="${hasta}" name="hasta" required>                                                                                          
+                                                    <label id="darkblue" for="hasta" class="form-label">Hasta</label>
+                                                    <input type="date" class="form-control text-secondary" id="hasta" th:value="${hasta}" name="hasta" required>                                                                                          
 
                                                 </div>
-                                                <div class="col-2 text-center">
-                                                    <label for="ver" class="form-label">Ver</label>
+                                                <div title="Buscar" class="col-2 text-center">
+                                                    <label id="darkblue" for="ver" class="form-label">Ver</label>
                                                     <button id="ver"  class="btn btn-primary" type="submit">
                                                         <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
@@ -75,7 +75,8 @@
                                             </div>
                                     </form>   
                                 </div> 
-                                <table class="table table-borderless table-sm" id="dimgray">
+                                <div th:if="${!transacciones.isEmpty()}" class="bg-light border-light">
+                                <table class="table table-borderless table-hover table-sm mb-5" id="dimgray">
                                     <thead>
                                         <tr class="row">
                                             <th class="col-3 text-center">Fecha</th>
@@ -89,11 +90,17 @@
                                             <td class="col-3 text-center" th:text="${transaccion.fecha}"></td>
                                             <td class="col-4 text-center"><b><a id="dimgray" th:href="@{/cuenta/mostrarTransaccionCliente/__${transaccion.id}__}" 
                                             th:text="${transaccion.observacion}"></a></b></td>
-                                            <td class="col-2 text-center" th:text="'$'+${transaccion.importe}"></td>
-                                            <td id="darkgray" class="col-3 text-center" th:text="'$'+${transaccion.saldoAcumulado}"></td>
+                                            <td class="col-2 text-center" th:text="${transaccion.importeS}"></td>
+                                            <td id="darkgray" class="col-3 text-center" th:text="${transaccion.saldoAcumuladoS}"></td>
                                         </tr>     
                                     </tbody>
                                 </table>
+                                </div>                                
+                                <div th:if="${transacciones.isEmpty()}">
+                                    <div class="card-body mb-1 text-center" id="color-card">
+                                        <h6 id="azul">No existen Movimientos para la fecha seleccionada</h6>
+                                    </div>
+                                </div>
                             </div>
 
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

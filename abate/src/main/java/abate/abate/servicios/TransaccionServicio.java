@@ -20,11 +20,14 @@ import abate.abate.repositorios.FleteRepositorio;
 import abate.abate.repositorios.GastoRepositorio;
 import abate.abate.repositorios.IngresoRepositorio;
 import abate.abate.util.TransaccionComparador;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 @Service
 public class TransaccionServicio {
@@ -132,9 +135,9 @@ public class TransaccionServicio {
     @Transactional
     public void modificarTransaccionEntrega(Entrega entrega) {
 
-        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdEntrega(entrega.getIdEntrega());
+        Transaccion transaccion = transaccionRepositorio.buscarTransaccionIdEntrega(entrega.getId());
 
-        if (!entrega.getChofer().getNombre().equalsIgnoreCase(transaccion.getChofer().getNombre())) {    //si lo que se modifico en la transacion es chofer, entra en este if
+        if (entrega.getChofer().getId() != transaccion.getChofer().getId()) {    //si lo que se modifico en la transacion es chofer, entra en este if
 
             cuentaServicio.eliminarTransaccionCuentaChofer(transaccion); //elimina transaccion en cuenta cliente modificado
 
@@ -276,6 +279,7 @@ public class TransaccionServicio {
 
         Transaccion tChofer = new Transaccion();
         Transaccion tCliente = new Transaccion();
+
         for (Transaccion t : lista) {
             if (t.getChofer() != null) {
                 tChofer = t;                  //se obtiene la transaccin de Chofer
@@ -285,20 +289,43 @@ public class TransaccionServicio {
             }
         }
 
-        if (!flete.getChofer().getNombre().equalsIgnoreCase(tChofer.getChofer().getNombre())) {    //si lo que se modifico en la transacion es chofer, entra en este if
-
+        if  (flete.getChofer() != tChofer.getChofer()) {   //si lo que se modifico en la transacion es chofer, entra en este if
+            
             cuentaServicio.eliminarTransaccionCuentaChofer(tChofer); //elimina transaccion en cuenta chofer modificado
 
             crearTransaccionFleteChofer(idFlete);   //agrega transaccion en cuenta Chofer modificado
+            
+            Transaccion tGasto = new Transaccion();
+            
+            if(flete.getGasto() != null){
 
+            Long idGasto = flete.getGasto().getId();
+            tGasto = transaccionRepositorio.buscarTransaccionIdGasto(idGasto);
+            
+            }
+            
+            if(tGasto.getGasto() != null && tGasto.getChofer().getCaja().equalsIgnoreCase("SI")){
+
+                crearTransaccionGasto(tGasto.getGasto().getId());
+                cajaServicio.eliminarTransaccionCajaChofer(tGasto);
+            }
+            
+            if(tGasto.getGasto() != null && tGasto.getChofer().getCaja().equalsIgnoreCase("NO")){
+
+                crearTransaccionGasto(tGasto.getGasto().getId());
+                cuentaServicio.eliminarTransaccionCuentaChofer(tGasto);           
+            }
         }
-        if (!flete.getCliente().getNombre().equalsIgnoreCase(tCliente.getCliente().getNombre())) {    //si lo que se modifico en la transacion es cliente, entra en este if
+        
+        else if (flete.getCliente() != tCliente.getCliente()) {    //si lo que se modifico en la transacion es cliente, entra en este if
 
             cuentaServicio.eliminarTransaccionCuentaCliente(tCliente); //elimina transaccion en cuenta cliente modificado
 
             crearTransaccionFleteCliente(idFlete);   //agrega transaccion en cuenta Chofer modificado
 
-        } else {
+        } 
+        
+        else {
 
             tChofer.setFecha(flete.getFechaFlete());
             tChofer.setImporte(flete.getPorcentajeChofer());
@@ -386,6 +413,7 @@ public class TransaccionServicio {
         if(chofer.getCaja().equalsIgnoreCase("NO")){
         
         transaccion.setImporte(gasto.getImporte());
+        transaccion.setFecha(gasto.getFecha());
 
         transaccionRepositorio.save(transaccion);
 
@@ -394,6 +422,7 @@ public class TransaccionServicio {
         } else {
             
         transaccion.setImporte(gasto.getImporte() * -1);
+        transaccion.setFecha(gasto.getFecha());
 
         transaccionRepositorio.save(transaccion);
 
@@ -475,6 +504,11 @@ public class TransaccionServicio {
             lista.get(i).setSaldoAcumulado(saldoAcumulado);
         }
         
+        for(Transaccion t : lista){
+            t.setImporteS(convertirNumeroMiles(t.getImporte()));
+            t.setSaldoAcumuladoS(convertirNumeroMiles(t.getSaldoAcumulado()));
+        }
+        
         return lista;
     }
     
@@ -493,6 +527,11 @@ public class TransaccionServicio {
             saldoAcumulado = saldoAcumulado + t.getImporte();
             saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
             t.setSaldoAcumulado(saldoAcumulado);
+        }
+        
+        for(Transaccion t : lista){
+            t.setImporteS(convertirNumeroMiles(t.getImporte()));
+            t.setSaldoAcumuladoS(convertirNumeroMiles(t.getSaldoAcumulado()));
         }
 
         Collections.reverse(lista);
@@ -520,6 +559,11 @@ public class TransaccionServicio {
             saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
             lista.get(i).setSaldoAcumulado(saldoAcumulado);
         }
+        
+        for(Transaccion t : lista){
+            t.setImporteS(convertirNumeroMiles(t.getImporte()));
+            t.setSaldoAcumuladoS(convertirNumeroMiles(t.getSaldoAcumulado()));
+        }
 
         return lista;
     }
@@ -539,6 +583,11 @@ public class TransaccionServicio {
             saldoAcumulado = saldoAcumulado + t.getImporte();
             saldoAcumulado = Math.round(saldoAcumulado * 100.0) / 100.0;  //redondeamos saldoAcumulado solo a 2 decimales
             t.setSaldoAcumulado(saldoAcumulado);
+        }
+        
+        for(Transaccion t : lista){
+            t.setImporteS(convertirNumeroMiles(t.getImporte()));
+            t.setSaldoAcumuladoS(convertirNumeroMiles(t.getSaldoAcumulado()));
         }
 
         Collections.reverse(lista);
@@ -561,6 +610,17 @@ public class TransaccionServicio {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private String convertirNumeroMiles(Double num) {
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("es", "AR"));
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+
+        DecimalFormat formato = new DecimalFormat("#,##0.00", symbols);
+        String numeroFormateado = formato.format(num);
+
+        return numeroFormateado;
+    }
   
     
     

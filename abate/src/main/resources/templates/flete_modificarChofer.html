@@ -36,7 +36,7 @@
                                             <div  class="col-7">
                                                 <h4>Modificar Flete</h4>
                                             </div>
-                                             <div  class="col-3 text-center">
+                                             <div title="Ir a Eliminar Flete" class="col-3 text-center">
                                                 <a th:href="@{/flete/eliminar/__${flete.id}__}">
                                                     <svg id="white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-truck-front" viewBox="0 0 16 16">
                                                         <path d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0m8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zM4 2a1 1 0 0 0-1 1v3.9c0 .625.562 1.092 1.17.994C5.075 7.747 6.792 7.5 8 7.5s2.925.247 3.83.394A1.008 1.008 0 0 0 13 6.9V3a1 1 0 0 0-1-1zm0 1h8v3.9q0 .002 0 0l-.002.004-.005.002h-.004C11.088 6.761 9.299 6.5 8 6.5s-3.088.26-3.99.406h-.003l-.005-.002L4 6.9q0 .002 0 0z"/>
@@ -45,17 +45,17 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="card p-2 bg-light border-light">
                                     <form class="row g-3" id="form" th:action="@{/flete/modificaChofer/__${flete.id}__}" method="POST">
 
                                         <input hidden th:value="${flete.id}" name="id"> 
                                             
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="chofer" class="form-floting">Chofer</label>
+                                            <label for="chofer" class="form-floting text-secondary">Chofer</label>
                                             <input type="text" class="form-control" id="chofer" th:value="${flete.chofer.nombre}" disabled readonly>
                                         </div>
                                          <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="camion" class="form-floting">Dominio Camión</label>
+                                            <label for="camion" class="form-floting text-secondary">Dominio Camión</label>
                                             <select class="form-control" id="camion" name="idCamion" required>
                                                 <option selected th:text="${flete.camion.dominio}" th:value="${flete.camion.id}"></option>
                                                 <option th:each="camion : ${camiones}"
@@ -64,7 +64,7 @@
                                             </select>
                                         </div>    
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
-                                            <label for="cliente" class="form-floting">Cliente</label>
+                                            <label for="cliente" class="form-floting text-secondary">Cliente</label>
                                             <select class="form-control" id="cliente" name="idCliente">
                                                 <option selected th:text="${flete.cliente.nombre}" th:value="${flete.cliente.id}"></option>
                                                 <option th:each="cliente : ${clientes}"
@@ -73,26 +73,26 @@
                                             </select>
                                         </div>    
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="fc" class="form-label">Fecha de Carga</label>
+                                            <label for="fc" class="form-label text-secondary">Fecha de Carga</label>
                                             <input type="date" class="form-control" id="fc" th:value="${flete.fechaCarga}" name="fechaCarga" required>
                                         </div>
                                         
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="ff" class="form-label">Fecha de Flete</label>
+                                            <label for="ff" class="form-label text-secondary">Fecha de Flete</label>
                                             <input type="date" class="form-control" id="ff" th:value="${flete.fechaFlete}" name="fechaFlete" required>
                                         </div>  
                                         <div class="d-none d-sm-block col-md-6">
                                         </div>    
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
-                                            <label for="origen" class="form-label">Origen de Carga</label>
-                                            <input type="text" class="form-control" id="origen" th:value="${flete.origenFlete}" name="origen" required>
+                                            <label for="origen" class="form-label text-secondary">Origen de Carga</label>
+                                            <input type="text" class="form-control" id="origen" th:value="${flete.origenFlete}" name="origen" required minlength="1" maxlength="120" size="120">
                                         </div>
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-2">
-                                            <label for="destino" class="form-label">Destino de Carga</label>
-                                            <input type="text" class="form-control" id="destino" th:value="${flete.destinoFlete}" name="destino" required>
+                                            <label for="destino" class="form-label text-secondary">Destino de Carga</label>
+                                            <input type="text" class="form-control" id="destino" th:value="${flete.destinoFlete}" name="destino" required minlength="1" maxlength="120" size="120">
                                         </div> 
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="km" class="form-label">KM de Flete</label>
+                                            <label for="km" class="form-label text-secondary">KM de Flete</label>
                                             <div class="input-group">
                                             <span class="input-group-text">km</span>
                                             <input type="number" step="0.01" class="form-control" id="km" th:value="${flete.kmFlete}" name="km" required>
@@ -100,41 +100,55 @@
                                         </div>
                                           
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="cereal" class="form-floting">Tipo de Carga</label>
+                                            <label for="cereal" class="form-floting text-secondary">Tipo de Carga</label>
                                             <select class="form-control" id="cereal" name="tipoCereal" required>
                                                 <option selected th:text="${flete.tipoCereal}" th:value="${flete.tipoCereal}"></option>
                                                 <option value="SOJA">SOJA</option>
                                                 <option value="MAIZ">MAIZ</option>
                                                 <option value="TRIGO">TRIGO</option>
+                                                <option value="AGROQUIMICO">AGROQUIMICO</option>
                                                 <option value="ALGODON">ALGODON</option>
-                                                <option value="ROLLOS">ROLLOS</option>
-                                                <option value="PAPA">PAPA</option>
-                                                <option value="CEBOLLA">CEBOLLA</option>
-                                                <option value="FERTILIZANTE">FERTILIZANTE</option>
-                                                <option value="HARINA">HARINA</option>
-                                                <option value="EXPELLER">EXPELLER</option>
                                                 <option value="ARENA">ARENA</option>
+                                                <option value="ARROZ">ARROZ</option>
+                                                <option value="CEBADA">CEBADA</option>
+                                                <option value="CEBOLLA">CEBOLLA</option>
+                                                <option value="CEMENTO">CEMENTO</option>
+                                                <option value="CENTENO">CENTENO</option>
+                                                <option value="EXPELLER">EXPELLER</option>
+                                                <option value="FERTILIZANTE">FERTILIZANTE</option>
+                                                <option value="FRUTA">FRUTA</option>
+                                                <option value="GIRASOL">GIRASOL</option>
+                                                <option value="HARINA">HARINA</option>
+                                                <option value="HIERRO">HIERRO</option>
+                                                <option value="LADRILLO">LADRILLO</option>
+                                                <option value="MADERA">MADERA</option>
+                                                <option value="PAPA">PAPA</option>
                                                 <option value="PIEDRA">PIEDRA</option>
+                                                <option value="ROLLOS">ROLLOS</option>
+                                                <option value="SEMILLA">SEMILLA</option>
+                                                <option value="SILOBOLSA">SILOBOLSA</option>
+                                                <option value="SORGO">SORGO</option>
+                                                <option value="VERDURA">VERDURA</option>
                                                 <option value="OTRO">OTRO</option>
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="cp" class="form-label">Carta de Porte</label>
-                                            <input type="text" class="form-control" id="cp" th:value="${flete.cartaPorte}" name="cPorte" required>
+                                            <label for="cp" class="form-label text-secondary">Carta de Porte</label>
+                                            <input type="text" class="form-control" id="cp" th:value="${flete.cartaPorte}" name="cPorte" required minlength="1" maxlength="40" size="40">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="ctg" class="form-label">CTG</label>
-                                            <input type="text" class="form-control" id="ctg" th:value="${flete.ctg}" name="ctg" required>
+                                            <label for="ctg" class="form-label text-secondary">CTG</label>
+                                            <input type="text" class="form-control" id="ctg" th:value="${flete.ctg}" name="ctg" required minlength="1" maxlength="40" size="40">
                                         </div>
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-2">
-                                            <label for="tarifa" class="form-label">Tarifa de Flete</label>
+                                            <label for="tarifa" class="form-label text-secondary">Tarifa de Flete</label>
                                             <div class="input-group">
                                             <span class="input-group-text">$</span>
                                             <input type="number" step="0.01" class="form-control" id="tarifa" th:value="${flete.tarifa}" name="tarifa" required>
                                             </div>    
                                         </div>    
                                         <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 mb-5">
-                                            <label for="kg" class="form-label">KG de Flete</label>
+                                            <label for="kg" class="form-label text-secondary">KG de Flete</label>
                                             <div class="input-group">
                                             <span class="input-group-text">kg</span>
                                             <input type="number" step="0.01" class="form-control" id="kg" th:value="${flete.kgFlete}" name="kg" required>
@@ -146,14 +160,14 @@
 
                                         <div class="row text-center mb-5">
                                             <div class="col-8 col-md-8">
-                                                <button class="btn btn-primary" type="submit">Modificar</button>
+                                                <button class="btn btn-primary" type="submit" title="Modificar Flete">Modificar</button>
                                             </div>
                                             <div class="col-4 col-md-4">
-                                                <a class="btn btn-primary" type="button" th:href= "@{/flete/listar}">Cancelar</a>
+                                                <a class="btn btn-primary" type="button" th:href="@{/flete/listar}" title="Cancelar">Cancelar</a>
                                             </div>
                                         </div>
                                     </form>
-
+                                    </div>
                                 </div>
                             </section>
                              <script>
@@ -187,6 +201,38 @@
                                                     return;
                                                 }
 
+                                                });
+                                                const conceptoInput = document.getElementById('origen');
+                                                const maxLength = 120;
+
+                                                conceptoInput.addEventListener('input', function () {
+                                                if (conceptoInput.value.length > maxLength) {
+                                                conceptoInput.value = conceptoInput.value.slice(0, maxLength); 
+                                                }
+                                                });
+                                                const conceptoInput = document.getElementById('destino');
+                                                const maxLength = 120;
+
+                                                conceptoInput.addEventListener('input', function () {
+                                                if (conceptoInput.value.length > maxLength) {
+                                                conceptoInput.value = conceptoInput.value.slice(0, maxLength); 
+                                                }
+                                                });
+                                                const conceptoInput = document.getElementById('cp');
+                                                const maxLength = 40;
+
+                                                conceptoInput.addEventListener('input', function () {
+                                                if (conceptoInput.value.length > maxLength) {
+                                                conceptoInput.value = conceptoInput.value.slice(0, maxLength); 
+                                                }
+                                                });
+                                                const conceptoInput = document.getElementById('ctg');
+                                                const maxLength = 40;
+
+                                                conceptoInput.addEventListener('input', function () {
+                                                if (conceptoInput.value.length > maxLength) {
+                                                conceptoInput.value = conceptoInput.value.slice(0, maxLength); 
+                                                }
                                                 });
                                             </script>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -34,16 +34,17 @@
                                     </div>
                                         </div>
 
-                                <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
+                                <div th:if="${error == null}" class="card-header mb-4 text-center">
                                     <h6 id="white">¿Seguro desea ELIMINAR esta Carga Diesel?</h6>
+                                    <p id="dimgray">Si la carga es eliminada del sistema, no podrá ser recuperada</p>
                                 </div>
 
                                 <div class="row text-center">
                                     <div th:if="${error == null}" class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-1"> 
-                                        <a class="btn btn-primary" type="button" th:href= "@{/combustible/elimina/__${carga.id}__}">Eliminar</a>
+                                        <a class="btn btn-primary" type="button" th:href= "@{/combustible/elimina/__${carga.id}__}" title="Eliminar Carga">Eliminar</a>
                                     </div>
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-2">
-                                        <a class="btn btn-primary" type="button" th:href="@{/index}">Cancelar</a>
+                                        <a class="btn btn-primary" type="button" th:href="@{/index}" title="Cancelar">Cancelar</a>
                                     </div>
                                 </div>
                             </div>

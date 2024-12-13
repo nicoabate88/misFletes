@@ -32,8 +32,9 @@
                                             </div>
                                 </div>  
 
-                                <div th:if="${error == null}" class="card-header mb-4 col-lg-6 col-xl-6 text-center">
+                                <div th:if="${error == null}" class="card-header mb-4 text-center">
                                     <h6 id="white">¿Seguro desea ELIMINAR este Camión?</h6>
+                                    <p id="dimgray">Si el camión es eliminado del sistema, no podrá ser recuperado</p>
                                 </div>
                                 <div th:if="${error != null}" class="card-body mb-4 text-center" id="mensaje">                        
                                     <h6 id="white" th:text="${error}"></h6>                                                                             

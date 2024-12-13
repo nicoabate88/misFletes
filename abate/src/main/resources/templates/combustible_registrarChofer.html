@@ -34,6 +34,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="card p-2 bg-light border-light">
                                 <form id="form" class="row g-3" th:action="@{/combustible/registro}" method="POST">
 
                                     <input hidden th:value="${camion.id}" name="idCamion"> 
@@ -41,21 +42,21 @@
                                             <input type="date" id="fechaAnterior" hidden th:value="${fechaAnterior}">     
 
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                                    <label for="camion" class="form-floting">Camión</label>
+                                                    <label for="camion" class="form-floting text-secondary">Camión</label>
                                                     <input type="text" class="form-control" id="camion" th:value="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}" disabled readonly>
                                                 </div>
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                                    <label for="kmAnterior" class="form-floting">KM Carga Anterior</label>
+                                                    <label for="kmAnterior" class="form-floting text-secondary">KM Carga Anterior</label>
                                                     <input type="text" class="form-control" id="kmAnterior" th:value="${kmAnterior}" disabled readonly>
                                                 </div>
                                                 <div class="d-none d-sm-block col-lg-4 col-xl-4">
                                                 </div>
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                                    <label for="fecha" class="form-label">Fecha</label>
+                                                    <label for="fecha" class="form-label text-secondary">Fecha</label>
                                                     <input type="date" class="form-control" id="fecha" name="fecha" required>
                                                 </div>
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                                    <label for="km" class="form-label">KM Carga Actual</label>
+                                                    <label for="km" class="form-label text-secondary">KM Carga Actual</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">KM</span>
                                                         <input type="number" class="form-control" id="km" placeholder="Ingrese KM" name="km" required>
@@ -64,14 +65,14 @@
                                                 <div class="d-none d-sm-block col-lg-4 col-xl-4">
                                                 </div>
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-2">
-                                                    <label for="litro" class="form-label">Litros Carga</label>
+                                                    <label for="litro" class="form-label text-secondary">Litros Carga</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Lts</span>
                                                         <input type="number" class="form-control" id="litro" placeholder="Ingrese Litros" name="litro" required>
                                                     </div>    
                                                 </div>
                                                 <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-5">
-                                                    <label for="completo" class="form-floting">Tanque Completo</label>
+                                                    <label for="completo" class="form-floting text-secondary">Tanque Completo</label>
                                                     <select class="form-control" id="completo" name="completo" required>
                                                         <option selected disabled value="">Seleccione</option>
                                                         <option value="SI">SI</option>
@@ -83,13 +84,14 @@
 
                                                 <div class="row text-center">
                                                     <div class="col-8 col-md-8">
-                                                        <button class="btn btn-primary" type="submit">Aceptar</button>
+                                                        <button class="btn btn-primary" type="submit" title="Registrar Carga de Diesel">Aceptar</button>
                                                     </div>
                                                     <div class="col-4 col-md-4">
-                                                        <a class="btn btn-primary" type="button" th:href= "@{/combustible/registrar}">Cancelar</a>
+                                                        <a class="btn btn-primary" type="button" th:href= "@{/combustible/registrar}" title="Cancelar">Cancelar</a>
                                                     </div>
                                                 </div>
                                                 </form>
+                                </div>
                                                 </div>
                                                 <script>
                                                     document.getElementById('form').addEventListener('submit', function (event) {

@@ -27,9 +27,37 @@ public class UsuarioServicio implements UserDetailsService {
     private UsuarioRepositorio usuarioRepositorio;
 
     @Transactional
-    public void crearUsuario(Long idOrg, String nombre, String nombreUsuario, Long cuil, String password, String password2) throws MiException {
+    public void crearUsuario(String nombre, String nombreUsuario, String password, String password2, Usuario usuario) throws MiException {
 
         String nombreMay = nombre.toUpperCase();
+        String nombreUsuarioMin = nombreUsuario.toLowerCase();
+        
+        validarDatos(usuario.getCuil(), nombreMay, nombreUsuarioMin, password, password2);
+        
+        Usuario user = new Usuario();
+
+        user.setNombre(nombreMay);
+        user.setCuil(usuario.getCuil());
+        user.setUsuario(nombreUsuarioMin);
+        user.setIdOrg(usuario.getIdOrg());
+        user.setEmpresa(usuario.getEmpresa());
+        user.setDireccion(usuario.getDireccion());
+        user.setLocalidad(usuario.getLocalidad());
+        user.setTelefono(usuario.getTelefono());
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setRol("ADMIN");
+        user.setCaja("NO");
+
+        usuarioRepositorio.save(user);
+
+    }
+    
+    @Transactional
+    public void crearUsuarioAdmin(Long idOrg, String nombre, String nombreUsuario, Long cuil, String empresa,
+            String direccion, String localidad, String telefono, String password, String password2) throws MiException {
+
+        String nombreMay = nombre.toUpperCase();
+        String empresaMay = empresa.toUpperCase();
         String nombreUsuarioMin = nombreUsuario.toLowerCase();
         
         validarDatos(idOrg, nombreMay, nombreUsuarioMin, password, password2);
@@ -40,6 +68,10 @@ public class UsuarioServicio implements UserDetailsService {
         user.setCuil(cuil);
         user.setUsuario(nombreUsuarioMin);
         user.setIdOrg(idOrg);
+        user.setEmpresa(empresaMay);
+        user.setDireccion(direccion);
+        user.setLocalidad(localidad);
+        user.setTelefono(telefono);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRol("ADMIN");
         user.setCaja("NO");

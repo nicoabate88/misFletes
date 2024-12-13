@@ -134,6 +134,7 @@ public class CajaServicio {
         transaccion.setImporte(0.0);
         transaccion.setChofer(null);
         transaccion.setGasto(null);
+        transaccion.setIngreso(null);
         transaccionRepositorio.save(transaccion);
 
         Caja caja = cajaRepositorio.buscarCajaIdChofer(idChofer);

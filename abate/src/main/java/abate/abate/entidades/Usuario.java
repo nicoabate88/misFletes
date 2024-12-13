@@ -20,13 +20,17 @@ public class Usuario {
     private Long cuil;
     private Double porcentaje;
     private String caja;
+    private String empresa;
+    private String direccion;
+    private String localidad;
+    private String telefono;
     @OneToOne
     private Camion camion;
 
     public Usuario() {
     }
 
-    public Usuario(Long id, Long idOrg, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, String caja, Camion camion) {
+    public Usuario(Long id, Long idOrg, String nombre, String usuario, String password, String rol, Long cuil, Double porcentaje, String caja, String empresa, String direccion, String localidad, String telefono, Camion camion) {
         this.id = id;
         this.idOrg = idOrg;
         this.nombre = nombre;
@@ -36,6 +40,10 @@ public class Usuario {
         this.cuil = cuil;
         this.porcentaje = porcentaje;
         this.caja = caja;
+        this.empresa = empresa;
+        this.direccion = direccion;
+        this.localidad = localidad;
+        this.telefono = telefono;
         this.camion = camion;
     }
 
@@ -111,6 +119,38 @@ public class Usuario {
         this.caja = caja;
     }
 
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public Camion getCamion() {
         return camion;
     }
@@ -118,9 +158,6 @@ public class Usuario {
     public void setCamion(Camion camion) {
         this.camion = camion;
     }
-
-    
-    
 
     
 }

@@ -6,11 +6,9 @@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
                     <link rel="stylesheet" href="/css/medidas_container.css"> 
                         </head>
-
                         <body>
                             <section>
                                 <div class="container">
-
                                     <div class="card-header mb-2">
                                         <div class="row">
                                             <div class="col-2">   
@@ -25,40 +23,40 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="card mb-4" id="color-card">
                                                 <div class="card-body">
-                                                   <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
-                                                     <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
-                                                    <p id="dimgray" th:text="'Origen '+${flete.origenFlete}+ ' Destino '+${flete.destinoFlete}+' ' +${flete.kmFlete} +' KM'"></p>
+                                                    <h6 th:text="${flete.estado}" th:if="${flete.estado != 'ACEPTADO'}"></h6>
+                                                    <h6 th:text="'Fecha '+${flete.fechaFlete}+' - ID'+${flete.idFlete}"></h6>
+                                                    <p class='mb-0' id="dimgray" th:text="'Origen '+${flete.origenFlete}"></p>
+                                                    <p class='mb-0' id="dimgray" th:text="'Destino '+${flete.destinoFlete}"></p>
+                                                    <p class='mb-1' id="dimgray" th:text="'KM '+${flete.kmFlete}"></p>
                                                     <h6 id="azul" th:text="'Cliente '+${flete.cliente.nombre}"></h6>
-                                                    <h6 id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFlete}+ ' KG - Tarifa $'+${flete.tarifa}"></h6>
-                                                     <h6 id="dimgray" th:text="'Neto $' +${flete.neto} +' + IVA $' +${flete.iva}"></h6>
-                                                     <h6 id="dimgray" th:text="'TOTAL $' +${flete.total}"></h6>
-                                                    <p class="card-text" id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
+                                                    <h6 id="dimgray" th:text="${flete.tipoCereal}+ ' ' +${flete.kgFleteS}+ ' KG - Tarifa $'+${flete.tarifaS}"></h6>
+                                                    <h6 id="azul" th:text="'Comisión Tpte: '+${flete.comisionTpte}+'% - $'+${flete.comisionS}"></h6>
+                                                    <h6 id="dimgray" th:text="'Neto $' +${flete.netoS} +' + IVA $' +${flete.ivaS}"></h6>
+                                                    <h6 id="dimgray" th:text="'TOTAL $' +${flete.totalS}"></h6>
+                                                    <p id="dimgray" th:text="'CP '+${flete.cartaPorte}+ ' - CTG '+${flete.ctg}"></p>
                                                     <h6 id="azul" th:text="'Chofer '+${flete.chofer.nombre}"></h6>
                                                     <h6 id="dimgray" th:text="'Camión '+${flete.camion.dominio}+' - '+${flete.camion.marca}+' '+${flete.camion.modelo}"></h6>
-                                                    <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.porcentajeChofer}"></h6>
+                                                    <p th:if="${flete.comisionTpte} != 0.0" class="mb-1" id="dimgray" th:text="'Descuento Comisión Tpte '+${flete.comisionTpteChofer}"></p>
+                                                    <h6 id="dimgray" th:text="${flete.porcientoChofer}+ '% - Ganancia $'+${flete.gananciaChofer}"></h6>
                                                     <p id="dimgray" th:text="'Gasto $'+${flete.gasto.importe}" th:if="${flete.gasto != null}"></p>
                                                 </div>
-                                    </div>    
-                                    
-                                    <div class="card-header mb-4 col-md-6 text-center">
-                                    <h6 id="white">¿Seguro desea Retornar este Flete a Pendiente?</h6>
+                                    </div>                                     
+                                    <div class="card border-primary mb-5 p-3 text-center" id="eliminar">
+                                    <h6 id="darkblue">¿Seguro desea Retornar este Flete a Pendiente?</h6>
+                                    <p class="mb-0" id="dimgray">Retornar el Flete a Pendiente lo ELIMINARÁ de la Cuenta Corriente de Cliente y de Chofer.</p>
+                                    <p id="dimgray">Y permitirá al Chofer MODIFICAR/ELIMINAR el Flete.</p>
                                 </div>
-
                                 <div class="row text-center">
                                     <div th:if="${error == null}" class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-1"> 
-                                        <a class="btn btn-primary" type="button" th:href="@{/flete/pendiente/__${flete.id}__}">Retornar</a>
+                                        <a class="btn btn-primary" type="button" th:href="@{/flete/pendiente/__${flete.id}__}" title="Retornar Flete a Pendiente">Retornar</a>
                                     </div>
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 col-xl-2">
-                                        <a class="btn btn-primary" type="button" th:href="@{/index}">Cancelar</a>
+                                        <a class="btn btn-primary" type="button" th:href="@{/index}" title="Cancelar">Cancelar</a>
                                     </div>
                                 </div>
-                                    
                                 </div>
-
-
                             </section>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>

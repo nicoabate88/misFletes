@@ -35,7 +35,7 @@
                                         <div  class="col-7">
                                             <h4>Consumo Diesel</h4>
                                         </div>
-                                         <div class="col-3 text-center" th:if="${flag == true}">
+                                         <div title="Exportar a Excel" class="col-3 text-center" th:if="${flag == true}">
                                             <form class="row g-3" th:action="@{/combustible/exportar}" method="POST">   
                                                    <input hidden th:value="${id}" name="idCamion">     
                                                        <button class="btn btn-light" type="submit">
@@ -45,14 +45,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-body">
-
-                                    <div class="mb-3">
+                                <div class="card-body">          
                                         <h6 th:text="${camion.dominio}+' - '+${camion.marca}+' '+${camion.modelo}"></h6>
                                         <h6 id="dimgray" th:text="'Consumo '+${consumo}+' L / 100 Km'"></h6>
-                                    </div>
-
-                                    <table class="table table-borderless table-sm" id="dimgray">
+                                </div>
+                                    <div th:if="${!cargas.isEmpty()}">
+                                    <table class="table table-borderless bg-light table-hover table-sm mb-5" id="dimgray">
                                        <thead>
                                             <tr class="row">
                                                 <th class="col-3 col-sm-3 col-md-3 col-lg-2 col-xl-2 text-center">Fecha</th>                                          
@@ -66,14 +64,19 @@
                                         <tbody th:each="carga : ${cargas}">
                                             <tr class="row">
                                                 <td class="col-3 col-sm-3 col-md-3 col-lg-2 col-xl-2 text-center" th:text="${carga.fechaCarga}"></td>
-                                                <td class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.kmCarga}"></td>
+                                                <td class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.kmCargaS}"></td>
                                                 <td id="darkgray" class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.kmRecorrido}"></td>
                                                 <td class="col-1 col-sm-1 col-md-1 col-lg-2 col-xl-2 text-center" th:text="${carga.litro}"></td>
-                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.consumo}+' L'"></th>
-                                                <th id="darkblue" class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center" th:text="${carga.consumoPromedio}+' L'" th:if="${carga.completo == 'SI'}"></th>
+                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center text-dark" th:text="${carga.consumo}+' L'"></th>
+                                                <th class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center text-dark" th:text="${carga.consumoPromedio}+' L'" th:if="${carga.completo == 'SI'}"></th>
                                             </tr>     
                                         </tbody>
                                     </table>
+                                    </div> 
+                                <div th:if="${cargas.isEmpty()}">
+                                     <div class="card-body mb-1 text-center" id="color-card">
+                                            <h6 id="azul">No existen Cargas de Combustible para mostrar consumo</h6>
+                                    </div>
                                 </div>
                             </div>
                             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

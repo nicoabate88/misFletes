@@ -8,7 +8,7 @@
                         </head>
                         <body>
 
-                            <div class="container">                           
+                            <div class="container mb-5">                           
                                 <div class="card-header mb-2">
                                     <div class="row">
                                         <div class="col-2">   
@@ -25,44 +25,44 @@
                                 </div>
 
                                 <div class="card mb-4" id="color-card">
-                                     <div class="card-body">
-                                        <h6 th:text="'Importe $'+${gasto.importe}"></h6>
-                                        <h6 id="dimgray" th:text="${gasto.nombre}"></h6>
-                                        <p id="dimgray" th:text="'Fecha '+${gasto.fecha}"></p>
+                                     <div class="card-body pb-0">
+                                        <h6 id="darkblue" th:text="'Importe: $'+${gasto.importe}"></h6>
+                                        <p class='mb-1' id="dimgray" th:text="'Fecha: '+${gasto.fecha}"></p>
+                                        <h6 class='mb-1' id="dimgray" th:text="${gasto.nombre}"></h6>
+                                        <p id="dimgray" th:text="'Camión '+${gasto.camion.dominio}"></p>
                                     </div>
 
                                     <div class="table-responsive">
                                         <table class="table table-borderless table-sm">
                                             <thead>
-                                                <tr id="dimgray">
-                                                    <th class="col-1"></th>
-                                                    <th class="col-5">Concepto</th>
-                                                    <th class="col-1">Cantidad</th>
-                                                    <th class="col-2">Precio</th>
-                                                    <th class="col-2">SubTotal</th> 
-                                                    <th class="col-1"></th>
-
+                                                <tr id="darkblue">
+                                                    <td class="col-1"></td>
+                                                    <td class="col-5">Concepto</td>
+                                                    <td class="col-1 text-center}">Cantidad</td>
+                                                    <td class="col-2 text-center">Precio</td>
+                                                    <td class="col-2 text-center">SubTotal</td> 
+                                                    <td class="col-1"></td>
                                                 </tr>
                                             </thead>
 
                                             <tbody th:each="detalle : ${detalles}">
                                                 <tr id="dimgray">
-                                                    <th></th>
-                                                    <td th:text="${detalle.concepto}"></td>
-                                                    <td th:text="${detalle.cantidad}"></td>
-                                                    <td type="number" step="0.01" th:text="'$'+${detalle.precio}"></td>
-                                                    <td type="number" step="0.01" th:text="'$'+${detalle.total}"></td>
-                                                    <th></th>
+                                                    <td class="col-1"></td>
+                                                    <td class="col-5" th:text="${detalle.concepto}"></td>
+                                                    <td class="col-1 text-center" th:text="${detalle.cantidad}"></td>
+                                                    <td class="col-2 text-center" type="number" step="0.01" th:text="'$'+${detalle.precio}"></td>
+                                                    <td class="col-2 text-center" type="number" step="0.01" th:text="'$'+${detalle.total}"></td>
+                                                    <th class="col-1"></th>
                                                 </tr>
 
                                             </tbody>
                                             <tr id="dimgray">
-                                                <th></th>
-                                                <td></td>
-                                                <td></td>
-                                                <th id="darkblue">TOTAL</th>
-                                                <th id="darkblue" th:text="'$'+${gasto.importe}"></th>
-                                                <td></td>
+                                                <td class="col-1"></td>
+                                                <td class="col-5"></td>
+                                                <td class="col-1"></td>
+                                                <th class="col-2 text-center" id="dimgray">TOTAL</th>
+                                                <th class="col-2 text-center" id="dimgray" th:text="'$'+${gasto.importe}"></th>
+                                                <td class="col-1"></td>
                                             </tr>
                                         </table>
                                     </div>

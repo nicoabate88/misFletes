@@ -71,53 +71,53 @@ public class FleteControlador {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         fleteServicio.crearFleteChofer(logueado.getIdOrg(), fechaCarga, idCliente, idCamion, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg, logueado.getId());
-        
+
         return "redirect:/flete/registradoChofer";
 
     }
-    
+
     @GetMapping("/registradoChofer")
     public String registradoChofer(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         Long id = fleteServicio.buscarUltimo(logueado.getIdOrg());
 
         modelo.put("flete", fleteServicio.buscarFlete(id));
         modelo.put("exito", "Flete REGISTRADO con éxito");
 
         return "flete_registradoChofer.html";
-        
+
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/registroAdmin")
     public String registroFleteAdmin(@RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, @RequestParam String fechaFlete,
-            @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal, @RequestParam String cPorte, 
+            @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal, @RequestParam String cPorte,
             @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, @RequestParam Double comisionTpte, @RequestParam String comisionTpteChofer,
             @RequestParam String iva, ModelMap modelo, HttpSession session) throws ParseException {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         fleteServicio.crearFleteAdmin(logueado.getIdOrg(), idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg, comisionTpte, comisionTpteChofer, iva, logueado.getId());
-        
-        return "redirect:/flete/registradoChofer";
+
+        return "redirect:/flete/registradoAdmin";
 
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/registradoAdmin")
     public String registradoAdmin(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         Long id = fleteServicio.buscarUltimo(logueado.getIdOrg());
 
         modelo.put("flete", fleteServicio.buscarFlete(id));
         modelo.put("exito", "Flete REGISTRADO con éxito");
 
         return "flete_registradoAdmin.html";
-        
+
     }
 
     @GetMapping("/listar")
@@ -131,8 +131,8 @@ public class FleteControlador {
             String hasta = obtenerFechaHasta();
             ArrayList<Flete> fletes = fleteServicio.buscarFletesIdChoferFecha(logueado.getId(), desde, hasta);
             Boolean flag = true;
-            if(fletes.isEmpty()){
-            flag = false;
+            if (fletes.isEmpty()) {
+                flag = false;
             }
 
             modelo.addAttribute("fletes", fletes);
@@ -154,10 +154,10 @@ public class FleteControlador {
     @PostMapping("/listarChoferFiltro")
     public String listarChoferFiltro(@RequestParam Long id, @RequestParam String desde, @RequestParam String hasta,
             ModelMap modelo) throws ParseException {
-        
+
         ArrayList<Flete> fletes = fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
 
@@ -177,7 +177,7 @@ public class FleteControlador {
         String hasta = obtenerFechaHasta();
         ArrayList<Flete> fletes = fleteServicio.buscarFletesIdClienteFecha(id, desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
 
@@ -195,7 +195,7 @@ public class FleteControlador {
 
         ArrayList<Flete> fletes = fleteServicio.buscarFletesIdClienteFecha(id, desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
 
@@ -215,7 +215,7 @@ public class FleteControlador {
         String hasta = obtenerFechaHasta();
         ArrayList<Flete> fletes = fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
 
@@ -234,7 +234,7 @@ public class FleteControlador {
 
         ArrayList<Flete> fletes = fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
 
@@ -249,16 +249,16 @@ public class FleteControlador {
 
     @GetMapping("/listarTodo")
     public String listarMes(ModelMap modelo, HttpSession session) throws ParseException {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         String desde = obtenerFechaDesde();
         String hasta = obtenerFechaHasta();
         ArrayList<Flete> fletes = fleteServicio.buscarFletesRangoFecha(logueado.getIdOrg(), desde, hasta);
         Boolean flag = true;
-        if(fletes.isEmpty()){
+        if (fletes.isEmpty()) {
             flag = false;
         }
-        
+
         modelo.addAttribute("fletes", fletes);
         modelo.put("flag", flag);
         modelo.addAttribute("choferes", choferServicio.bucarChoferesNombreAsc(logueado.getIdOrg()));
@@ -271,15 +271,15 @@ public class FleteControlador {
     @PostMapping("/listarXfechaAdmin")
     public String listarXfechaAdmin(@RequestParam String desde, @RequestParam String hasta, @RequestParam(required = false) Long id,
             ModelMap modelo, HttpSession session) throws ParseException {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         if (id == null) {
-            
+
             ArrayList<Flete> fletes = fleteServicio.buscarFletesRangoFecha(logueado.getIdOrg(), desde, hasta);
             Boolean flag = true;
-            if(fletes.isEmpty()){
-            flag = false;
+            if (fletes.isEmpty()) {
+                flag = false;
             }
 
             modelo.addAttribute("fletes", fletes);
@@ -292,11 +292,11 @@ public class FleteControlador {
             return "flete_listarTodoFiltrado";
 
         } else {
-            
+
             ArrayList<Flete> fletes = fleteServicio.buscarFletesIdChoferFecha(id, desde, hasta);
             Boolean flag = true;
-            if(fletes.isEmpty()){
-            flag = false;
+            if (fletes.isEmpty()) {
+                flag = false;
             }
 
             modelo.addAttribute("fletes", fletes);
@@ -330,30 +330,30 @@ public class FleteControlador {
         }
 
     }
-    
+
     @GetMapping("/mostrarPendiente/{id}")
     public String mostrarPendiente(@PathVariable Long id, ModelMap modelo) {
 
-            modelo.put("flete", fleteServicio.buscarFlete(id));
+        modelo.put("flete", fleteServicio.buscarFlete(id));
 
-            return "flete_mostrarPendienteAdmin.html";
-        }
-    
+        return "flete_mostrarPendienteAdmin.html";
+    }
+
     @GetMapping("/mostrarDesdeCtaChofer/{id}")
     public String mostrarDesdeCtaChofer(@PathVariable Long id, ModelMap modelo) {
 
-            modelo.put("flete", fleteServicio.buscarFlete(id));
+        modelo.put("flete", fleteServicio.buscarFlete(id));
 
-            return "flete_mostrarAdminCtaChofer.html";
+        return "flete_mostrarAdminCtaChofer.html";
 
     }
-    
+
     @GetMapping("/mostrarDesdeCtaCliente/{id}")
     public String mostrarDesdeCtaCliente(@PathVariable Long id, ModelMap modelo) {
 
-            modelo.put("flete", fleteServicio.buscarFlete(id));
+        modelo.put("flete", fleteServicio.buscarFlete(id));
 
-            return "flete_mostrarAdminCtaCliente.html";
+        return "flete_mostrarAdminCtaCliente.html";
 
     }
 
@@ -369,7 +369,7 @@ public class FleteControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/aceptar/{id}")
     public String aceptarFlete(@PathVariable Long id, ModelMap modelo, HttpSession session) {
-        
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
 
         fleteServicio.aceptarFlete(id, logueado);
@@ -381,14 +381,14 @@ public class FleteControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/aceptado")
     public String fleteAceptado(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         modelo.addAttribute("fletes", fleteServicio.buscarFletesPendiente(logueado.getIdOrg()));
-        modelo.put("exito", "Flete ACEPTADO con éxito");
+        modelo.put("exito", "Flete CONFIRMADO con éxito");
 
         return "flete_listarPendiente.html";
-        
+
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -400,15 +400,15 @@ public class FleteControlador {
         return "flete_volverPendiente.html";
 
     }
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/pendiente/{id}")
     public String pendienteFlete(@PathVariable Long id, ModelMap modelo, HttpSession session) {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        
+
         fleteServicio.pendienteFlete(id, logueado.getId());
-        
+
         return "redirect:/flete/fletePendiente";
 
     }
@@ -416,16 +416,14 @@ public class FleteControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/fletePendiente")
     public String fletePendiente(HttpSession session, ModelMap modelo) {
-    
+
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
-        
-        modelo.put("usuario", nombreMayuscula);
+
         modelo.put("id", logueado.getId());
         modelo.put("exito", "Flete RETORNADO a Pendiente");
 
         return "index_admin.html";
-        
+
     }
 
     @GetMapping("/modificar/{id}")
@@ -450,53 +448,51 @@ public class FleteControlador {
             return "flete_modificarAdmin.html";
         }
     }
-    
+
     @PostMapping("/modificaChofer/{id}")
-    public String modificaChofer(@RequestParam Long id, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, 
+    public String modificaChofer(@RequestParam Long id, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga,
             @RequestParam String fechaFlete, @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal,
             @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, ModelMap modelo) throws ParseException {
 
         Flete flete = fleteServicio.buscarFlete(id);
 
-            fleteServicio.modificarFleteChofer(id, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg);
+        fleteServicio.modificarFleteChofer(id, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, kg);
 
-            modelo.put("flete", flete);
-            modelo.put("fecha", fechaFlete);
-            modelo.put("exito", "Flete MODIFICADO con éxito");
+        modelo.put("flete", flete);
+        modelo.put("fecha", fechaFlete);
+        modelo.put("exito", "Flete MODIFICADO con éxito");
 
-            return "flete_modificadoChofer.html";
-        
+        return "flete_modificadoChofer.html";
+
     }
 
     @PostMapping("/modificaAdmin/{id}")
-    public String modificaAdmin(@RequestParam Long id, @RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga, 
+    public String modificaAdmin(@RequestParam Long id, @RequestParam Long idChofer, @RequestParam Long idCamion, @RequestParam Long idCliente, @RequestParam String fechaCarga,
             @RequestParam String fechaFlete, @RequestParam String origen, @RequestParam String destino, @RequestParam Double km, @RequestParam String tipoCereal,
-            @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, @RequestParam Double comisionTpte, 
+            @RequestParam String cPorte, @RequestParam String ctg, @RequestParam Double tarifa, @RequestParam Double kg, @RequestParam Double comisionTpte,
             @RequestParam String comisionTpteChofer, @RequestParam Double iva, @RequestParam Double porcentaje, @RequestParam Double porcentajeChofer,
             ModelMap modelo, HttpSession session) throws ParseException {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         Flete flete = fleteServicio.buscarFlete(id);
-        
-        if (flete.getEstado().equalsIgnoreCase("PENDIENTE")){
-            
-            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
+
+        if (flete.getEstado().equalsIgnoreCase("PENDIENTE")) {
+
+            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg,
                     kg, iva, porcentaje, porcentajeChofer, comisionTpte, comisionTpteChofer, logueado.getId());
 
-            modelo.put("flete", flete);
+            modelo.put("flete", fleteServicio.buscarFlete(id));
             modelo.put("fecha", fechaFlete);
             modelo.put("exito", "Flete MODIFICADO con éxito");
 
             return "flete_modificadoAdminPendiente.html";
-            
-        }
-        
-        else {
 
-            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg, 
+        } else {
+
+            fleteServicio.modificarFleteAdmin(id, idChofer, idCamion, fechaCarga, idCliente, origen, fechaFlete, destino, km, tipoCereal, tarifa, cPorte, ctg,
                     kg, iva, porcentaje, porcentajeChofer, comisionTpte, comisionTpteChofer, logueado.getId());
 
-            modelo.put("flete", flete);
+            modelo.put("flete", fleteServicio.buscarFlete(id));
             modelo.put("fecha", fechaFlete);
             modelo.put("exito", "Flete MODIFICADO con éxito");
 
@@ -504,7 +500,7 @@ public class FleteControlador {
 
         }
     }
-    
+
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, HttpSession session, ModelMap modelo) {
 
@@ -526,11 +522,8 @@ public class FleteControlador {
 
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
         fleteServicio.eliminarFlete(id, logueado.getId());
-        
-        String nombreMayuscula = logueado.getUsuario().toUpperCase();
 
         if (logueado.getRol().equalsIgnoreCase("CHOFER")) {
-            modelo.put("usuario", nombreMayuscula);
             modelo.put("chofer", logueado);
             modelo.put("exito", "Flete ELIMINADO con éxito");
 
@@ -538,7 +531,6 @@ public class FleteControlador {
 
         } else {
 
-            modelo.put("usuario", nombreMayuscula);
             modelo.put("id", logueado.getId());
             modelo.put("exito", "Flete ELIMINADO con éxito");
 
@@ -576,101 +568,101 @@ public class FleteControlador {
     @PostMapping("/exportarAdminIdChofer")
     public String exportarIdChofer(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long idChofer, ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta));
-            modelo.put("desde", desde);
-            modelo.put("hasta", hasta);
-            modelo.put("id", idChofer);
+        modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", idChofer);
 
-            return "flete_exportarAdminIdChofer.html";
-  
+        return "flete_exportarAdminIdChofer.html";
+
     }
-    
+
     @PostMapping("/exportaAdminIdChofer")
     public void exporta(@RequestParam Long idChofer, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
-  
+
         ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta);
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcel(htmlContent, response);
 
     }
-    
+
     @PostMapping("/exportarAdminTodos")
     public String exportarTodos(@RequestParam String desde, @RequestParam String hasta, ModelMap modelo, HttpSession session) throws ParseException {
-        
-            Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-                
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesRangoFechaAsc(logueado.getIdOrg(), desde, hasta));
-            modelo.put("desde", desde);
-            modelo.put("hasta", hasta);
-            modelo.put("id", logueado.getIdOrg());
 
-            return "flete_exportarAdminTodos.html";
+        Usuario logueado = (Usuario) session.getAttribute("usuariosession");
+
+        modelo.addAttribute("fletes", fleteServicio.buscarFletesRangoFechaAsc(logueado.getIdOrg(), desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", logueado.getIdOrg());
+
+        return "flete_exportarAdminTodos.html";
 
     }
-    
+
     @PostMapping("/exportaAdminTodos")
     public void exportaTodos(@RequestParam Long idOrg, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
-  
+
         ArrayList<Flete> myObjects = fleteServicio.buscarFletesRangoFechaAsc(idOrg, desde, hasta);
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcel(htmlContent, response);
 
     }
-    
+
     @PostMapping("/exportarAdminDesdeChofer")
     public String exportarDesdeChofer(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long idChofer, ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta));
-            modelo.put("desde", desde);
-            modelo.put("hasta", hasta);
-            modelo.put("id", idChofer);
+        modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", idChofer);
 
-            return "flete_exportarAdminDesdeChofer.html";
-        
+        return "flete_exportarAdminDesdeChofer.html";
+
     }
-    
+
     @PostMapping("/exportaAdminDesdeChofer")
     public void exportaAdminDesdeChofer(@RequestParam Long idChofer, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
-  
+
         ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdChoferFechaAsc(idChofer, desde, hasta);
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcel(htmlContent, response);
 
     }
-    
+
     @PostMapping("/exportarAdminDesdeCliente")
     public String exportarAdminDesdeCliente(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long idCliente, ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdClienteFechaAsc(idCliente, desde, hasta));
-            modelo.put("desde", desde);
-            modelo.put("hasta", hasta);
-            modelo.put("id", idCliente);
+        modelo.addAttribute("fletes", fleteServicio.buscarFletesIdClienteFechaAsc(idCliente, desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", idCliente);
 
-            return "flete_exportarAdminDesdeCliente.html";
-        
+        return "flete_exportarAdminDesdeCliente.html";
+
     }
-    
+
     @PostMapping("/exportaAdminDesdeCliente")
     public void exportaAdminDesdeCliente(@RequestParam Long idCliente, @RequestParam String desde, @RequestParam String hasta, HttpServletResponse response) throws IOException, ParseException {
-  
+
         ArrayList<Flete> myObjects = fleteServicio.buscarFletesIdClienteFechaAsc(idCliente, desde, hasta);
         String htmlContent = generateHtmlFromObjects(myObjects);
         excelServicio.exportHtmlToExcel(htmlContent, response);
 
     }
-    
+
     @PostMapping("/exportarChofer")
     public String exportarFletes(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id,
             ModelMap modelo) throws ParseException {
 
-            modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(id, desde, hasta));
-            modelo.put("desde", desde);
-            modelo.put("hasta", hasta);
-            modelo.put("id", id);
+        modelo.addAttribute("fletes", fleteServicio.buscarFletesIdChoferFechaAsc(id, desde, hasta));
+        modelo.put("desde", desde);
+        modelo.put("hasta", hasta);
+        modelo.put("id", id);
 
-            return "flete_exportarChofer.html";
-        }
-    
+        return "flete_exportarChofer.html";
+    }
+
     @PostMapping("/exportaChofer")
     public void exportToExcel(@RequestParam String desde, @RequestParam String hasta, @RequestParam Long id, HttpServletResponse response) throws IOException, ParseException {
 
@@ -711,18 +703,18 @@ public class FleteControlador {
                     + "<td>").append(flete.getCliente().getNombre()).append("</td>"
                     + "<td>").append(flete.getOrigenFlete()).append("</td>"
                     + "<td>").append(flete.getDestinoFlete()).append("</td>"
-                    + "<td>").append(flete.getChofer().getNombre()).append("</td>" 
-                    + "<td>").append(flete.getPorcentajeChofer()).append("</td>"        
-                    + "<td>").append(flete.getCamion().getDominio()).append("</td>"        
+                    + "<td>").append(flete.getChofer().getNombre()).append("</td>"
+                    + "<td>").append(flete.getPorcentajeChofer()).append("</td>"
+                    + "<td>").append(flete.getCamion().getDominio()).append("</td>"
                     + "<td>").append(flete.getKmFlete()).append("</td>"
                     + "<td>").append(flete.getTipoCereal()).append("</td>"
                     + "<td>").append(flete.getCartaPorte()).append("</td>"
                     + "<td>").append(flete.getCtg()).append("</td>"
-                    + "<td>").append(flete.getTarifa()).append("</td>"                            
+                    + "<td>").append(flete.getTarifa()).append("</td>"
                     + "<td>").append(flete.getKgFlete()).append("</td>"
                     + "<td>").append(flete.getNeto()).append("</td>"
                     + "<td>").append(flete.getIva()).append("</td>"
-                    + "<td>").append(flete.getTotal()).append("</td>"                            
+                    + "<td>").append(flete.getTotal()).append("</td>"
                     + "</tr>");
         }
         sb.append("</tbody></table>");
@@ -755,12 +747,12 @@ public class FleteControlador {
                     + "<td>").append(flete.getFechaFlete()).append("</td>"
                     + "<td>").append(flete.getCliente().getNombre()).append("</td>"
                     + "<td>").append(flete.getOrigenFlete()).append("</td>"
-                    + "<td>").append(flete.getDestinoFlete()).append("</td>"       
+                    + "<td>").append(flete.getDestinoFlete()).append("</td>"
                     + "<td>").append(flete.getKmFlete()).append("</td>"
                     + "<td>").append(flete.getTipoCereal()).append("</td>"
                     + "<td>").append(flete.getCartaPorte()).append("</td>"
                     + "<td>").append(flete.getCtg()).append("</td>"
-                    + "<td>").append(flete.getTarifa()).append("</td>"                            
+                    + "<td>").append(flete.getTarifa()).append("</td>"
                     + "<td>").append(flete.getKgFlete()).append("</td>"
                     + "<td>").append(flete.getNeto()).append("</td>"
                     + "<td>").append(flete.getPorcentajeChofer()).append("</td>"
@@ -769,6 +761,5 @@ public class FleteControlador {
         sb.append("</tbody></table>");
         return sb.toString();
     }
-
 
 }

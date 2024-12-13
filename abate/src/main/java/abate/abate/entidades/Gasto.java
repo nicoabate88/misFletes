@@ -26,6 +26,7 @@ public class Gasto {
     private Date fecha;
     private String nombre;
     private Double importe;
+    private String importeS;
     @OneToOne
     private Camion camion;
     @OneToOne
@@ -34,7 +35,7 @@ public class Gasto {
     public Gasto() {
     }
 
-    public Gasto(Long id, Long idGasto, Long idOrg, String estado, Usuario chofer, Usuario usuario, Date fecha, String nombre, Double importe, Camion camion, Imagen imagen) {
+    public Gasto(Long id, Long idGasto, Long idOrg, String estado, Usuario chofer, Usuario usuario, Date fecha, String nombre, Double importe, String importeS, Camion camion, Imagen imagen) {
         this.id = id;
         this.idGasto = idGasto;
         this.idOrg = idOrg;
@@ -44,6 +45,7 @@ public class Gasto {
         this.fecha = fecha;
         this.nombre = nombre;
         this.importe = importe;
+        this.importeS = importeS;
         this.camion = camion;
         this.imagen = imagen;
     }
@@ -120,6 +122,14 @@ public class Gasto {
         this.importe = importe;
     }
 
+    public String getImporteS() {
+        return importeS;
+    }
+
+    public void setImporteS(String importeS) {
+        this.importeS = importeS;
+    }
+
     public Camion getCamion() {
         return camion;
     }
@@ -136,5 +146,6 @@ public class Gasto {
         this.imagen = imagen;
     }
 
+    
     
 }

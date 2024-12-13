@@ -5,6 +5,7 @@ import abate.abate.entidades.Camion;
 import abate.abate.entidades.Combustible;
 import abate.abate.entidades.Entrega;
 import abate.abate.entidades.Flete;
+import abate.abate.entidades.Gasto;
 import abate.abate.entidades.Ingreso;
 import abate.abate.entidades.Usuario;
 import abate.abate.excepciones.MiException;
@@ -13,6 +14,7 @@ import abate.abate.repositorios.CamionRepositorio;
 import abate.abate.repositorios.CombustibleRepositorio;
 import abate.abate.repositorios.EntregaRepositorio;
 import abate.abate.repositorios.FleteRepositorio;
+import abate.abate.repositorios.GastoRepositorio;
 import abate.abate.repositorios.IngresoRepositorio;
 import abate.abate.repositorios.UsuarioRepositorio;
 import abate.abate.util.ChoferComparador;
@@ -45,6 +47,8 @@ public class ChoferServicio {
     private IngresoRepositorio ingresoRepositorio;
     @Autowired
     private CajaRepositorio cajaRepositorio;
+    @Autowired
+    private GastoRepositorio gastoRepositorio;
 
     @Transactional
     public void crearChofer(Long idOrg, String nombre, Long cuil, Long idCamion, String caja, String nombreUsuario, Double porcentaje, String password, String password2) throws MiException {
@@ -174,8 +178,9 @@ public class ChoferServicio {
         Combustible combustible = combustibleRepositorio.findTopByUsuarioOrderByIdDesc(chofer);
         Ingreso ingreso = ingresoRepositorio.findTopByChoferAndObservacionNotOrderByIdDesc(chofer, "ELIMINADO");
         Caja caja = cajaServicio.buscarCajaChofer(id);
+        Gasto gasto = gastoRepositorio.findTopByChoferAndEstadoNotOrderByIdDesc(chofer, "ELIMINADO");
         
-        if (flete == null && entrega == null && combustible == null && ingreso == null) {
+        if (flete == null && entrega == null && combustible == null && ingreso == null && gasto == null) {
             
             cajaRepositorio.deleteById(caja.getId());
             usuarioRepositorio.deleteById(id);
@@ -183,7 +188,7 @@ public class ChoferServicio {
 
         } else {
 
-            throw new MiException("El Chofer no puede ser eliminado, tiene Flete, Entrega y/o Combustible asociado");
+            throw new MiException("El Chofer no puede ser eliminado, tiene Flete / Gasto / Entrega y/o Combustible asociado");
         }
 
     }
@@ -227,7 +232,7 @@ public class ChoferServicio {
         ArrayList<Usuario> lista = bucarTodosUsuarios();
         for (Usuario u : lista) {
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
+                throw new MiException("El Nombre de Usuario no es válido, por favor ingrese otro");
             }
         }
         
@@ -270,7 +275,7 @@ public class ChoferServicio {
         if(!user.getUsuario().equalsIgnoreCase(nombreUsuario)){
         for(Usuario u: lista){    
             if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
-                throw new MiException("El Nombre de Usuario no está disponible, por favor ingrese otro");
+                throw new MiException("El Nombre de Usuario no es válido, por favor ingrese otro");
             }
         }
         }
